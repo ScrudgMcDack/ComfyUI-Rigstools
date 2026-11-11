@@ -1,0 +1,53 @@
+name: Publish to Comfy Registry
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "pyproject.toml"
+
+permissions:
+  issues: write
+  contents: write   # to create the GitHub release (the version / release date badges in the README read it)
+
+jobs:
+  publish-node:
+    name: Publish Custom Node to registry
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'ScrudgMcDack' }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      - name: Read name and version from pyproject.toml
+        id: ver
+        run: |
+          name=$(grep -m1 -E '^name *=' pyproject.toml | sed -E 's/^name *= *"([^"]+)".*/\1/')
+          version=$(grep -m1 -E '^version *=' pyproject.toml | sed -E 's/^version *= *"([^"]+)".*/\1/')
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          code=$(curl -s -o /dev/null -w '%{http_code}' "https://api.comfy.org/nodes/$name/versions/$version" || true)
+          if [ "$code" = "200" ]; then
+            echo "Version $version of $name is already in the Comfy Registry, the publish step is skipped"
+            echo "published=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Publish Custom Node
+        id: publish
+        if: ${{ steps.ver.outputs.published != 'true' }}
+        uses: Comfy-Org/publish-node-action@main
+        with:
+          personal_access_token: ${{ secrets.REGISTRY_ACCESS_TOKEN }}
+      - name: Create GitHub release for the version in pyproject.toml
+        if: ${{ !cancelled() && steps.ver.outcome == 'success' && steps.publish.outcome != 'failure' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.ver.outputs.version }}
+        run: |
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "Release v$VERSION already exists"
+          else
+            gh release create "v$VERSION" --title "v$VERSION" --generate-notes --target "$GITHUB_SHA"
+          fi

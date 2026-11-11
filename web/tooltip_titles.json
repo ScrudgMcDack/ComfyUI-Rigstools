@@ -1,0 +1,234 @@
+{
+ "Load image with metadata [Rigstools]": {
+  "IMAGE": {
+   "en": "The image (RGB)",
+   "ru": "Картинка (RGB)"
+  },
+  "MASK": {
+   "en": "Mask from the alpha channel (transparent = 1). Mask-editor masks are kept",
+   "ru": "Маска из альфа-канала (прозрачное = 1). Маски из редактора масок сохраняются"
+  },
+  "METADATA_RAW": {
+   "en": "File metadata (prompt, workflow, parameters, fileinfo…). Connect it to Metadata extractor",
+   "ru": "Метаданные файла (prompt, workflow, parameters, fileinfo…). Подключается к Metadata extractor"
+  },
+  "PARAMETERS": {
+   "en": "A1111 parameters. Connect it to Parameters extractor. ↻ — the parameters are rebuilt from the prompt",
+   "ru": "Параметры A1111. Подключается к Parameters extractor. ↻ — параметры восстановлены из prompt"
+  },
+  "FILENAME": {
+   "en": "File name with extension",
+   "ru": "Имя файла с расширением"
+  }
+ },
+ "Load image from folder [Rigstools]": {
+  "IMAGE": {
+   "en": "The image (RGB)",
+   "ru": "Картинка (RGB)"
+  },
+  "MASK": {
+   "en": "Mask from the alpha channel (transparent = 1). Mask-editor masks are kept",
+   "ru": "Маска из альфа-канала (прозрачное = 1). Маски из редактора масок сохраняются"
+  },
+  "METADATA_RAW": {
+   "en": "File metadata (prompt, workflow, parameters, fileinfo…). Connect it to Metadata extractor",
+   "ru": "Метаданные файла (prompt, workflow, parameters, fileinfo…). Подключается к Metadata extractor"
+  },
+  "PARAMETERS": {
+   "en": "A1111 parameters. Connect it to Parameters extractor. ↻ — the parameters are rebuilt from the prompt",
+   "ru": "Параметры A1111. Подключается к Parameters extractor. ↻ — параметры восстановлены из prompt"
+  },
+  "FILENAME": {
+   "en": "File name with extension",
+   "ru": "Имя файла с расширением"
+  },
+  "INDEX": {
+   "en": "Number of the loaded file in the list (after wrapping around)",
+   "ru": "Номер загруженного файла в списке (после возврата к началу)"
+  },
+  "COUNT": {
+   "en": "Number of files that match",
+   "ru": "Сколько файлов подходит под фильтр"
+  }
+ },
+ "Load image with parameters [Rigstools]": {
+  "IMAGE": {
+   "en": "The image (RGB)",
+   "ru": "Картинка (RGB)"
+  },
+  "MASK": {
+   "en": "Mask from the alpha channel (transparent = 1). Mask-editor masks are kept",
+   "ru": "Маска из альфа-канала (прозрачное = 1). Маски из редактора масок сохраняются"
+  },
+  "METADATA_RAW": {
+   "en": "File metadata (prompt, workflow, parameters, fileinfo…). Connect it to Metadata extractor",
+   "ru": "Метаданные файла (prompt, workflow, parameters, fileinfo…). Подключается к Metadata extractor"
+  },
+  "PARAMETERS": {
+   "en": "A1111 parameters. Values typed in the panel are not written into them. ↻ — the parameters are rebuilt from the prompt",
+   "ru": "Параметры A1111. Значения, введённые в панели, в них не попадают. ↻ — параметры восстановлены из prompt"
+  },
+  "POSITIVE": {
+   "en": "Positive prompt exactly as stored in the image (LoRA tags included).",
+   "ru": "Позитивный промпт ровно как в картинке (с тегами LoRA)."
+  },
+  "NEGATIVE": {
+   "en": "Negative prompt exactly as stored in the image.",
+   "ru": "Негативный промпт ровно как в картинке."
+  },
+  "SEED": {
+   "en": "Seed",
+   "ru": "Сид генерации"
+  },
+  "STEPS": {
+   "en": "Sampling steps",
+   "ru": "Шаги сэмплирования"
+  },
+  "CFG": {
+   "en": "CFG scale",
+   "ru": "CFG"
+  },
+  "CLIP": {
+   "en": "Clip skip — the value for CLIP Set Last Layer.",
+   "ru": "Clip skip — значение для CLIP Set Last Layer."
+  },
+  "WIDTH": {
+   "en": "Image width",
+   "ru": "Ширина картинки"
+  },
+  "HEIGHT": {
+   "en": "Image height",
+   "ru": "Высота картинки"
+  },
+  "MODEL_NAME": {
+   "en": "Checkpoint: path in models/checkpoints when the file is found, otherwise the name from the image.",
+   "ru": "Чекпоинт: путь в models/checkpoints, если файл найден, иначе имя из картинки."
+  },
+  "SAMPLER": {
+   "en": "Sampler (ComfyUI name)",
+   "ru": "Сэмплер (имя ComfyUI)"
+  },
+  "SCHEDULER": {
+   "en": "Scheduler (ComfyUI name)",
+   "ru": "Планировщик (имя ComfyUI)"
+  },
+  "LORA_STACK": {
+   "en": "LoRA stack as <lora:name:weight> tags: the 'Lora stack' field, otherwise the LoRA tags of the positive prompt; None when the image has no LoRA — e.g. for LoRA hashes for Image Saver",
+   "ru": "Стек LoRA тегами <lora:имя:вес>: поле «Lora stack», иначе теги LoRA из позитивного промпта; None, если в картинке нет LoRA — например, для LoRA hashes for Image Saver"
+  }
+ },
+ "Parameters extractor [Rigstools]": {
+  "SEED": {
+   "en": "Seed",
+   "ru": "Сид генерации"
+  },
+  "STEPS": {
+   "en": "Sampling steps",
+   "ru": "Шаги сэмплирования"
+  },
+  "CFG": {
+   "en": "CFG scale",
+   "ru": "CFG"
+  },
+  "CLIP": {
+   "en": "Clip skip — the value for CLIP Set Last Layer.",
+   "ru": "Clip skip — значение для CLIP Set Last Layer."
+  },
+  "WIDTH": {
+   "en": "Image width",
+   "ru": "Ширина картинки"
+  },
+  "HEIGHT": {
+   "en": "Image height",
+   "ru": "Высота картинки"
+  },
+  "POSITIVE": {
+   "en": "Positive prompt exactly as stored in the image (LoRA tags included).",
+   "ru": "Позитивный промпт ровно как в картинке (с тегами LoRA)."
+  },
+  "NEGATIVE": {
+   "en": "Negative prompt exactly as stored in the image.",
+   "ru": "Негативный промпт ровно как в картинке."
+  },
+  "MODEL_NAME": {
+   "en": "Checkpoint: path in models/checkpoints when the file is found, otherwise the name from the image.",
+   "ru": "Чекпоинт: путь в models/checkpoints, если файл найден, иначе имя из картинки."
+  },
+  "LORA_STACK": {
+   "en": "LoRA stack as <lora:name:weight> tags: the 'Lora stack' field, otherwise the LoRA tags of the positive prompt; None when the image has no LoRA",
+   "ru": "Стек LoRA тегами <lora:имя:вес>: поле «Lora stack», иначе теги LoRA из позитивного промпта; None, если в картинке нет LoRA"
+  },
+  "SAMPLER": {
+   "en": "Sampler (ComfyUI name)",
+   "ru": "Сэмплер (имя ComfyUI)"
+  },
+  "SCHEDULER": {
+   "en": "Scheduler (ComfyUI name)",
+   "ru": "Планировщик (имя ComfyUI)"
+  }
+ },
+ "Metadata extractor [Rigstools]": {
+  "PROMPT": {
+   "en": "ComfyUI API prompt stored in the image (JSON)",
+   "ru": "Промпт ComfyUI (API-формат), сохранённый в картинке (JSON)"
+  },
+  "WORKFLOW": {
+   "en": "ComfyUI workflow stored in the image (JSON)",
+   "ru": "Workflow ComfyUI, сохранённый в картинке (JSON)"
+  },
+  "FILEINFO": {
+   "en": "File information: name, resolution, date, size (JSON)",
+   "ru": "Информация о файле: имя, разрешение, дата, размер (JSON)"
+  },
+  "PARAMETERS": {
+   "en": "A1111 parameters. Connect it to Parameters extractor. ↻ — the parameters are rebuilt from the prompt",
+   "ru": "Параметры A1111. Подключается к Parameters extractor. ↻ — параметры восстановлены из prompt"
+  },
+  "RAW2JSON": {
+   "en": "All metadata as JSON",
+   "ru": "Все метаданные в JSON"
+  },
+  "RAW2PROPERTIES": {
+   "en": "All metadata as key=value lines",
+   "ru": "Все метаданные строками ключ=значение"
+  },
+  "RAW2CSV": {
+   "en": "All metadata as tab-separated key/value lines",
+   "ru": "Все метаданные строками «ключ — значение» через табуляцию"
+  }
+ },
+ "Color correction [Rigstools]": {
+  "IMAGE": {
+   "en": "The corrected image",
+   "ru": "Исправленная картинка"
+  },
+  "HISTOGRAM": {
+   "en": "RGB histograms of the result; the original is drawn as an outline",
+   "ru": "Гистограммы RGB результата; оригинал нарисован контуром"
+  }
+ },
+ "Save image [Rigstools]": {
+  "FILEPATH": {
+   "en": "Full paths of the saved files",
+   "ru": "Полные пути сохранённых файлов"
+  },
+  "PARAMETERS": {
+   "en": "A1111-style parameters text written into the files (empty when no sampler was found and no value is connected)",
+   "ru": "Текст параметров A1111, записанный в файлы (пусто, если сэмплер не найден и значения не подключены)"
+  },
+  "HASHES": {
+   "en": "Hashes of the model, LoRA and embeddings: 'name:HASH' separated by commas",
+   "ru": "Хэши модели, LoRA и embeddings: «имя:ХЭШ» через запятую"
+  }
+ },
+ "LoRA hashes for Image Saver [Rigstools]": {
+  "ADDITIONAL_HASHES": {
+   "en": "Connect to the additional_hashes input of Image Saver: 'Name:HASH[:weight]' entries separated by commas",
+   "ru": "Подключается ко входу additional_hashes у Image Saver: записи «Имя:ХЭШ[:вес]» через запятую"
+  },
+  "NOT_FOUND": {
+   "en": "LoRA names from the stack that were not found in models/loras (empty when all were found)",
+   "ru": "Имена LoRA из стека, не найденных в models/loras (пусто, если найдены все)"
+  }
+ }
+}

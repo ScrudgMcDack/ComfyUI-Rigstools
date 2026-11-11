@@ -1,0 +1,19 @@
+[project]
+name = "comfyui-rigstools"
+description = "Load images with their generation data (PNG, JPEG, WebP; single file, by index from a folder or the newest) and read it back: ComfyUI prompt and workflow, A1111-style parameters (seed, steps, CFG, size, prompts, model, LoRA stack), LoRA hashes for Image Saver; Save image that collects the parameters from the graph by itself; automatic colour correction without neural networks (white balance, levels, vibrance, reference match, histogram). Based on ComfyUI-Crystools."
+version = "1.0.0"
+license = { file = "LICENSE" }
+readme = "README.md"
+dependencies = []
+keywords = ["comfyui", "metadata", "png info", "exif", "webp", "jpeg", "load image", "batch", "parameters", "a1111", "image saver", "prompt", "workflow", "color correction", "white balance", "histogram", "save image", "civitai"]
+
+[project.urls]
+Repository = "https://github.com/ScrudgMcDack/ComfyUI-Rigstools"
+Documentation = "https://github.com/ScrudgMcDack/ComfyUI-Rigstools#readme"
+"Bug Tracker" = "https://github.com/ScrudgMcDack/ComfyUI-Rigstools/issues"
+
+[tool.comfy]
+PublisherId = "scrudgmcdack"
+DisplayName = "Rigstools"
+Icon = "https://raw.githubusercontent.com/ScrudgMcDack/ComfyUI-Rigstools/main/icon.png"
+includes = []

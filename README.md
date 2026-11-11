@@ -54,6 +54,12 @@ and each is also an output. It replaces the *Load image with metadata → Metada
 chain with one node; the separate nodes stay, so existing workflows keep working and the nodes can be combined freely
 (`METADATA_RAW` → Metadata extractor, `PARAMETERS` → Parameters extractor, `LORA_STACK` → LoRA hashes for Image Saver).
 
+![Load image with parameters](docs/loader.png)
+
+*The picture has no seed, clip skip or model: their fields have an empty circle, and the connected `SEED`, `CLIP` and
+`MODEL_NAME` outputs show ✕ — a substitute comes out of them. `steps` was typed by hand: amber, ↺ returns the value of
+the file.*
+
 - Fields, in a card titled *Parameters from the file*: positive and negative prompt, `seed · steps · cfg · clip`,
   `sampler · scheduler`, `model · width · height`, LoRA. The dot before a label says where the value comes from:
   green — from the file, amber — changed by hand, an empty circle — not in the file; the legend is under the fields.
@@ -158,6 +164,11 @@ picture through the graph and finds the sampler, prompts, seed, steps, CFG, samp
 the loader nodes (LoraLoader, Power Lora Loader, LoRA Manager), clip skip and the upscale / detailer passes. Values our
 loaders read from a file (Parameters extractor, Load image with parameters) are taken from that file.
 
+![Save image](docs/saver.png)
+
+*txt2img: every value is found in the graph — the LoRA from the two loaders, clip skip from CLIP Set Last Layer, the
+size from the empty latent.*
+
 The panel on the node shows what **the next run will write**, in the same fields as Load image with parameters:
 every value with a dot — grey from the graph, blue from a connected input, green from the source file, an empty circle
 not found — and the name of the next file. In that name, values that are determined only at run time — the time, the
@@ -207,6 +218,11 @@ the others are the fallback:
 A connected input counts even when its value is known only at run time. The size is never taken from the source file
 (an upscaled picture has another size). The choice is saved with the workflow; workflows saved before it get *Input*,
 the old behaviour.
+
+![Save image with connected inputs](docs/saver_wired.png)
+
+*img2img: `positive`, `negative`, `seed` and `lora_stack` are wired from the loader (blue dots), steps, CFG, sampler
+and denoise come from the KSampler of this pass. The red LoRA is not in `models/loras`, so ⓘ in the title is amber.*
 
 #### LoRA
 - **Input:** a connected `lora_stack` replaces the whole list. It takes a text of `<lora:name:weight>` tags separated by

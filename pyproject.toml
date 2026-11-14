@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-rigstools"
 description = "Load images with their generation data (PNG, JPEG, WebP; single file, by index from a folder or the newest) and read it back: ComfyUI prompt and workflow, A1111-style parameters (seed, steps, CFG, size, prompts, model, LoRA stack), LoRA hashes for Image Saver; Save image that collects the parameters from the graph by itself; automatic colour correction without neural networks (white balance, levels, vibrance, reference match, histogram). Based on ComfyUI-Crystools."
-version = "1.0.0"
+version = "1.1.0"
 license = { file = "LICENSE" }
 readme = "README.md"
 dependencies = []

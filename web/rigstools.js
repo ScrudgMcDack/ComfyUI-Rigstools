@@ -97,7 +97,8 @@ const STR = {
       + "Order: reference → white balance → levels → vibrance → manual adjustments → mask → strength. The automatic steps "
       + "work in Lab, where lightness is separate from colour, so they do not shift hues. A value of 0 turns a step off.",
     ccAuto: "Automatic steps",
-    ccAutoRows: "white_balance|Removes a colour cast (a yellow or blue tint). Measures the average colour of the near-grey areas of medium lightness and moves it to neutral grey. Saturated colours are moved less and keep their hue. When there are hardly any near-grey areas (a very colourful picture) the step is skipped. A warm or cold mood that is meant to be there is a cast too — keep the value low for such pictures.\n"
+    ccAutoRows: "mode|manual — the strengths below are set by hand and are the same for every picture. auto — the node measures every picture and chooses the strengths of white balance, levels and vibrance and a small exposure correction itself (the three sliders are then greyed out): a warm cast is taken out gently, a cool one is left; a picture with a raised black point is stretched less; a dull one gets more vibrance; a dark one is darkened a little. The rules were fitted to the Auto mode of Easy Color Corrector. levels_clip, protect_skin, the reference and the manual adjustments work in both modes; the chosen values are in the console with Debug on.\n"
+      + "white_balance|Removes a colour cast (a yellow or blue tint). Measures the average colour of the near-grey areas of medium lightness and moves it to neutral grey. Saturated colours are moved less and keep their hue. When there are hardly any near-grey areas (a very colourful picture) the step is skipped. A warm or cold mood that is meant to be there is a cast too — keep the value low for such pictures.\n"
       + "levels|Stretches the lightness: the darkest tones get darker, the lightest lighter — the picture gets more contrast and looks cleaner. Hue and saturation stay. The stretch is at most ×2, so a dark or foggy scene stays dark or foggy; an almost flat picture is skipped.\n"
       + "levels_clip|Percent of the darkest and of the lightest pixels ignored when looking for the black and white points. Protects against single highlights and black dots; more — a stronger stretch, but details in the extreme tones may clip. Works only with levels.\n"
       + "vibrance|Raises the saturation of dull colours more than of already saturated ones (up to +60% at 1): the picture looks livelier without garish spots.\n"
@@ -148,7 +149,8 @@ const STR = {
       + "Порядок: образец → баланс белого → уровни → вибранс → ручные поправки → маска → strength. Автоматические шаги "
       + "работают в пространстве Lab, где яркость отделена от цвета, поэтому оттенки не уезжают. Значение 0 выключает шаг.",
     ccAuto: "Автоматические шаги",
-    ccAutoRows: "white_balance|Убирает цветовой оттенок (желтизну, синеву). Измеряет средний цвет почти серых участков средней яркости и сдвигает его к нейтральному серому. Насыщенные цвета сдвигаются меньше и сохраняют свой оттенок. Если почти серых участков нет (очень яркая картинка), шаг пропускается. Задуманное тёплое или холодное настроение — тоже «оттенок», для таких картинок держите значение низким.\n"
+    ccAutoRows: "mode|manual — силы шагов ниже задаются вручную и одинаковы для всех картинок. auto — нода измеряет каждую картинку и сама выбирает силу баланса белого, уровней и вибранса и небольшую поправку экспозиции (эти три ползунка тогда неактивны): тёплый оттенок убирается мягко, холодный остаётся; картинка с приподнятой точкой чёрного растягивается меньше; блёклой добавляется вибранс; тёмная чуть затемняется. Правила подобраны по режиму Auto у Easy Color Corrector. levels_clip, protect_skin, образец и ручные поправки работают в обоих режимах; выбранные значения видны в консоли при включённом Debug.\n"
+      + "white_balance|Убирает цветовой оттенок (желтизну, синеву). Измеряет средний цвет почти серых участков средней яркости и сдвигает его к нейтральному серому. Насыщенные цвета сдвигаются меньше и сохраняют свой оттенок. Если почти серых участков нет (очень яркая картинка), шаг пропускается. Задуманное тёплое или холодное настроение — тоже «оттенок», для таких картинок держите значение низким.\n"
       + "levels|Растягивает яркость: самые тёмные тона становятся темнее, самые светлые — светлее, картинка становится контрастнее и «чище». Оттенок и насыщенность не меняются. Растяжение не больше чем в 2 раза — тёмная или туманная сцена такой и останется; почти однотонная картинка пропускается.\n"
       + "levels_clip|Сколько процентов самых тёмных и самых светлых пикселей не учитывать при поиске точек чёрного и белого. Защищает от одиночных бликов и чёрных точек; больше — сильнее растяжение, но детали в крайних тонах могут обрезаться. Работает только вместе с levels.\n"
       + "vibrance|Поднимает насыщенность блёклых цветов сильнее, чем уже насыщенных (до +60% при 1): картинка живее, без «кислотных» пятен.\n"
@@ -1342,12 +1344,12 @@ function addSaveCss() {
   .rig-save .rs-head span:last-child{text-transform:none;letter-spacing:0;white-space:nowrap}
   .rig-save .rig-f{cursor:default}
   .rig-save .rig-f > label,.rig-save .rig-t > label{pointer-events:auto}
-  .rig-save .rs-top{display:flex;align-items:center;gap:8px;margin:0 3px 5px}
+  .rig-save .rs-top{display:flex;align-items:center;gap:8px;margin:0 0 5px 3px}
   .rig-save .rs-top .rig-card-head{margin:0;flex:1 1 auto;min-width:0}
-  .rig-save .rs-pref{display:flex;align-items:center;gap:6px;flex:0 0 auto;color:var(--rig-label);font:var(--rig-label-font);font-size:10.5px}
-  .rig-save .rs-seg{display:inline-flex;border:1px solid var(--rig-outline);border-radius:8px;overflow:hidden;background:var(--rig-field)}
-  .rig-save .rs-seg button{all:unset;cursor:pointer;display:inline-flex;align-items:center;padding:0 7px;line-height:17px;
-    color:var(--rig-label);font:var(--rig-label-font);font-size:10.5px;pointer-events:auto}
+  .rig-save .rs-pref{display:flex;align-items:center;gap:6px;flex:0 0 auto;color:var(--rig-label);font:var(--rig-label-font)}
+  .rig-save .rs-seg{display:inline-grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--rig-outline);border-radius:8px;overflow:hidden;background:var(--rig-field)}
+  .rig-save .rs-seg button{all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0 7px;height:22px;line-height:22px;
+    color:var(--rig-label);font:var(--rig-label-font);pointer-events:auto}
   .rig-save .rs-seg button + button{border-left:1px solid var(--rig-outline)}
   .rig-save .rs-seg button .rig-dot{margin-right:4px}
   .rig-save .rs-seg button:hover{color:var(--input-text,#ddd)}
@@ -1754,14 +1756,35 @@ app.registerExtension({
     // dropped and changed output types (MODEL_NAME → *) are updated when the workflow loads; the other links stay.
     if (nodeData.name === "Color correction [Rigstools]") {
       // the settings of the reference are off while no reference picture is connected
+      // and the three automatic strengths are off in auto mode (the node chooses them per picture)
       const syncRef = (node) => {
         const i = node.inputs?.findIndex((x) => x.name === "reference") ?? -1;
         const on = i >= 0 && node.inputs[i].link != null;
-        for (const w of node.widgets ?? []) if (w.name === "reference_strength") w.disabled = !on;
+        const auto = node.widgets?.find((w) => w.name === "mode")?.value === "auto";
+        for (const w of node.widgets ?? []) {
+          if (w.name === "reference_strength") w.disabled = !on;
+          if (["white_balance", "levels", "vibrance"].includes(w.name)) w.disabled = auto;
+        }
         node.setDirtyCanvas?.(true, true);
       };
       const created0 = nodeType.prototype.onNodeCreated;
-      nodeType.prototype.onNodeCreated = function () { const r = created0?.apply(this, arguments); syncRef(this); return r; };
+      nodeType.prototype.onNodeCreated = function () {
+        const r = created0?.apply(this, arguments);
+        const mw = this.widgets?.find((w) => w.name === "mode");
+        if (mw) { const cb = mw.callback; mw.callback = (...a) => { const rr = cb?.apply(mw, a); syncRef(this); return rr; }; }
+        syncRef(this);
+        return r;
+      };
+      // "mode" is the first widget; workflows saved without it (1.0.0) or with it last get their values put in place
+      const configureCC = nodeType.prototype.configure;
+      nodeType.prototype.configure = function (info) {
+        const v = info?.widgets_values, isMode = (x) => x === "manual" || x === "auto";
+        if (Array.isArray(v) && v.length && !isMode(v[0])) {
+          const fixed = isMode(v[v.length - 1]) ? [v[v.length - 1], ...v.slice(0, -1)] : ["manual", ...v];
+          info = { ...info, widgets_values: fixed };
+        }
+        return configureCC.call(this, info);
+      };
       const conf0 = nodeType.prototype.onConfigure;
       nodeType.prototype.onConfigure = function () { const r = conf0?.apply(this, arguments); syncRef(this); return r; };
       const conn0 = nodeType.prototype.onConnectionsChange;

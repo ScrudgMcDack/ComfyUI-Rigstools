@@ -49,5 +49,11 @@ jobs:
           if gh release view "v$VERSION" >/dev/null 2>&1; then
             echo "Release v$VERSION already exists"
           else
-            gh release create "v$VERSION" --title "v$VERSION" --generate-notes --target "$GITHUB_SHA"
+            # the release text is the section of this version in CHANGELOG.md ("## [1.2.1] — …" up to the next "## [")
+            awk -v v="$VERSION" '/^## \[/{on = index($0, "## [" v "]") == 1; next} /^\[[0-9.]+\]: /{on = 0} on' CHANGELOG.md > notes.md || true
+            if [ -s notes.md ] && grep -q '[^[:space:]]' notes.md; then
+              gh release create "v$VERSION" --title "v$VERSION" --notes-file notes.md --target "$GITHUB_SHA"
+            else
+              gh release create "v$VERSION" --title "v$VERSION" --generate-notes --target "$GITHUB_SHA"
+            fi
           fi

@@ -9,12 +9,12 @@
   <a href="https://github.com/ScrudgMcDack/ComfyUI-Rigstools/releases"><img src="https://img.shields.io/github/release-date/ScrudgMcDack/ComfyUI-Rigstools?color=green&logo=github&label=Release%20date" alt="Release date"></a>
 </p>
 
-<p align="center"><b>English</b> · <a href="README.ru.md">Русский</a></p>
+<p align="center"><b>English</b> · <a href="README.ru.md">Русский</a> · <a href="CHANGELOG.md">Changelog</a></p>
 
 Load images with their generation data (PNG, JPEG, WebP) and read it back: the ComfyUI prompt and workflow, and the A1111-style parameters —
 seed, steps, CFG, clip skip, size, prompts, model and LoRA stack — as separate outputs you can wire straight
 into a new generation. A save node that collects the parameters from the graph by itself. Plus automatic colour correction without neural networks — white balance, levels,
-vibrance, matching to a reference, with a histogram. Based on [ComfyUI-Crystools](https://github.com/crystian/ComfyUI-Crystools) by Crystian.
+vibrance, matching to a reference, with a histogram and an auto mode that chooses the strengths for every picture. Based on [ComfyUI-Crystools](https://github.com/crystian/ComfyUI-Crystools) by Crystian.
 
 ![Nodes](docs/nodes.png)
 
@@ -275,8 +275,11 @@ warns; turn on `workflow_json` to keep it in a file.
 Automatic colour correction without neural networks — a replacement for the Auto mode of other colour nodes, with
 every step visible and adjustable. Each picture of a batch is measured on its own.
 
+![Color correction in auto mode](docs/color.png)
+
 | Input / output | Content |
 |---|---|
+| `mode` | `manual` — `white_balance`, `levels` and `vibrance` are set by hand and are the same for every picture. `auto` — the node measures every picture and chooses them itself, plus a small exposure correction (see below) |
 | `strength` | overall strength: 0 — the original, 1 — the full correction |
 | `white_balance` | removes a colour cast: near-neutral areas are moved towards grey, saturated colours keep their hue. An intended warm / cold mood is a cast too — keep it low for such pictures |
 | `levels`, `levels_clip` | stretch the lightness between the darkest and the lightest tones (`levels_clip` % of pixels ignored at each end); hue and saturation stay |
@@ -289,7 +292,20 @@ every step visible and adjustable. Each picture of a batch is measured on its ow
 
 Order: reference → white balance → levels → vibrance → manual adjustments → mask → `strength`.
 
-`reference_strength` is greyed out while no reference is connected. **🛟 Node Help** in the node's context menu explains
+**Auto mode.** Per picture the node measures the colour cast of near-neutral areas, the black point, the mean lightness and
+the mean chroma, and chooses:
+- white balance — only a warm (yellowish) cast is removed, and gently: the larger the cast, the weaker the strength, so
+  it moves by about one Lab unit; a cool cast is left;
+- levels — weaker when the black point is raised (a hazy picture is not stretched hard);
+- vibrance — more for dull pictures, less for already colourful ones;
+- exposure — a dark picture is darkened a little (down to −0.15 stops), a bright one is left.
+
+The rules were fitted to the look of the Auto mode of Easy Color Corrector. `levels_clip`, `protect_skin`, the reference
+and the manual adjustments work in both modes. With Debug on, the measured values and the chosen strengths go to the
+console.
+
+`reference_strength` is greyed out while no reference is connected, `white_balance`, `levels` and `vibrance` — in auto
+mode. **🛟 Node Help** in the node's context menu explains
 every setting.
 
 ## Output marks
@@ -309,6 +325,11 @@ a short title and a coloured line — green: what comes out ("From the parameter
 substitute comes out ("No seed in the parameters — fallback_seed = 42 comes out"), grey: a note. Without Draftsman the
 stock tooltip is shown (English).
 
+## Nodes 2.0
+Rigstools does not support the new Nodes 2.0 look (Vue nodes) yet. Its panels, previews, output marks and the
+Save image block are drawn on the classic LiteGraph canvas, so with Nodes 2.0 turned on they are not shown or do not
+work as intended. Keep Nodes 2.0 off in the ComfyUI settings. Support is planned for the next major release.
+
 ## Installation
 - **ComfyUI-Manager:** Custom Nodes Manager → search for “Rigstools” → Install.
 - **comfy-cli:** `comfy node install comfyui-rigstools`
@@ -321,7 +342,7 @@ In ComfyUI: **Settings → Rigstools → Civitai** (see Save image above) and **
 to the ComfyUI console: Save image, on each save, writes the files, the passes in the order they run, where the Hires
 fields come from, every value with its source, the LoRA and the warnings; Load image with parameters, Parameters
 extractor and Metadata extractor write what was read from the file (defaults and typed values marked, whether the model
-was found); Color correction writes what the automatic steps measured and changed. Loading a picture into the panel,
+was found); Color correction writes what the automatic steps measured and changed (in auto mode, also the strengths it chose). Loading a picture into the panel,
 step by step, goes to the browser console.
 
 Environment variables: `RIGSTOOLS_LOGLEVEL` (Python logging level, default `20` = INFO) and `RIGSTOOLS_INDENT`

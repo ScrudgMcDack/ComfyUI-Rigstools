@@ -10,6 +10,11 @@ Auto steps (each with its own strength 0..1; 0 = off):
   vibrance       — chroma of dull colours is raised more than of saturated ones, skin hues are protected;
   reference      — mean and spread of L, a, b are matched to a reference picture (e.g. the one before upscaling).
 Manual adjustments come after the auto steps: exposure, contrast, saturation, temperature, tint, lift / gamma / gain.
+
+Auto mode: the strengths of white balance, levels and vibrance and a small exposure correction are chosen for every
+picture from what it measures (auto_strengths). The rules were fitted to the Auto mode of Easy Color Corrector on
+25 SDXL generations: a warm cast is taken out gently, a cool one is left, a picture with a raised black point gets
+less stretching, a dull one more vibrance, a dark one is kept dark.
 """
 
 import math
@@ -114,6 +119,33 @@ def levels(lab, strength, low_pct, high_pct, report):
     out[..., 0] = ((lab[..., 0] - lo) * scale + lo_t).clamp(0, 100)
     report.append(f"levels: L {lo:.0f}–{hi:.0f} → {lo_t:.0f}–{lo_t + (hi - lo) * scale:.0f}")
     return out
+
+
+def measure(lab, clip_pct=0.5):
+    """What auto mode looks at: the colour cast of the near-neutral areas, the black point, mean lightness and
+    mean chroma (Lab units)."""
+    s = _sample(lab)
+    chroma = torch.sqrt(s[:, 1] ** 2 + s[:, 2] ** 2)
+    L = s[:, 0]
+    w = ((L > 15) & (L < 95)).float() * torch.clamp(1 - chroma / 25, min=0)
+    cast = _weighted_mean(s[:, 1:3], w) if w.sum() >= 50 else None
+    return {"cast": None if cast is None else (float(cast[0]), float(cast[1])),
+            "black": float(torch.quantile(L, clip_pct / 100)), "lightness": float(L.mean()), "chroma": float(chroma.mean())}
+
+
+def auto_strengths(m):
+    """Strengths for auto mode from measure(): white balance, levels, vibrance and an exposure correction (stops)."""
+    clamp = lambda x, lo, hi: max(lo, min(hi, x))
+    wb = 0.0
+    if m["cast"] is not None:
+        a, b = m["cast"]
+        size = math.hypot(a, b)
+        if b > 0 and size > 0:          # a warm cast: take out about 1 Lab unit of it; a cool cast is left as is
+            wb = clamp(1.0 / size, 0.0, 0.6)
+    return {"white_balance": round(wb, 2),
+            "levels": round(clamp(1.15 - 0.08 * m["black"], 0.4, 1.0), 2),
+            "vibrance": round(clamp(0.28 - 0.009 * m["chroma"], 0.03, 0.35), 2),
+            "exposure": round(clamp(0.004 * m["lightness"] - 0.17, -0.15, 0.0), 3)}
 
 
 def _skin_weight(lab):

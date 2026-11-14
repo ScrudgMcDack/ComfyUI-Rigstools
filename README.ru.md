@@ -18,6 +18,18 @@ seed, steps, CFG, clip skip, размер, промпты, модель и ст�
 
 ![Ноды](docs/nodes.png)
 
+## Установка
+- **ComfyUI-Manager:** Custom Nodes Manager → найти «Rigstools» → Install.
+- **comfy-cli:** `comfy node install comfyui-rigstools`
+- **Вручную:** `git clone https://github.com/ScrudgMcDack/ComfyUI-Rigstools` в папку `ComfyUI/custom_nodes/`.
+
+После установки перезапустите ComfyUI. Дополнительных Python-зависимостей нет.
+
+## Язык
+Берётся из **Comfy.Locale**: `ru` — русский, любой другой — английский. Панели, диалоги, справка, сообщения и (с Draftsman) подсказки
+выходов переключаются сразу, названия настроек — после перезапуска ComfyUI. Названия нод, входов и виджетов, их
+стандартные подсказки и лог в консоли остаются на английском.
+
 ## Ноды
 
 ### Load image with metadata
@@ -322,19 +334,6 @@ denoise берутся из KSampler этого прохода. Красной L
 («В параметрах нет seed — на выход идёт fallback_seed = 42»), серая: примечание. Без Draftsman показывается
 стандартная подсказка (на английском).
 
-## Nodes 2.0
-Новый вид нод Nodes 2.0 (Vue-ноды) Rigstools пока не поддерживает. Панели, превью, отметки на выходах и блок
-Save image рисуются на классическом холсте LiteGraph, поэтому при включённом Nodes 2.0 они не видны или работают
-не так, как задумано. Держите Nodes 2.0 выключенным в настройках ComfyUI. Поддержка запланирована в следующем
-мажорном обновлении.
-
-## Установка
-- **ComfyUI-Manager:** Custom Nodes Manager → найти «Rigstools» → Install.
-- **comfy-cli:** `comfy node install comfyui-rigstools`
-- **Вручную:** `git clone https://github.com/ScrudgMcDack/ComfyUI-Rigstools` в папку `ComfyUI/custom_nodes/`.
-
-После установки перезапустите ComfyUI. Дополнительных Python-зависимостей нет.
-
 ## Настройки
 В ComfyUI: **Настройки → Rigstools → Civitai** (см. Save image выше) и **Настройки → Rigstools → Debug** — подробности пишутся
 в консоль ComfyUI: Save image при каждом сохранении пишет файлы, проходы в порядке выполнения, откуда взяты Hires-поля,
@@ -344,6 +343,12 @@ Save image рисуются на классическом холсте LiteGraph
 
 Переменные окружения: `RIGSTOOLS_LOGLEVEL` (уровень логирования Python, по умолчанию `20` = INFO) и `RIGSTOOLS_INDENT`
 (отступ JSON на выходах, по умолчанию `2`). Старые имена `CRYSTOOLS_*` тоже работают.
+
+## Ограничения
+- **Nodes 2.0** (Vue-ноды), новый вид нод ComfyUI, пока не поддерживается. Панели, превью, отметки на выходах и блок
+  Save image рисуются на классическом холсте LiteGraph, поэтому при включённом Nodes 2.0 они не видны или работают
+  не так, как задумано. Держите Nodes 2.0 выключенным в настройках ComfyUI. Поддержка запланирована в следующем
+  мажорном обновлении.
 
 ## Лицензия
 MIT — см. [LICENSE](LICENSE). Основано на ComfyUI-Crystools (MIT, © Crystian).

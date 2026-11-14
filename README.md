@@ -18,6 +18,18 @@ vibrance, matching to a reference, with a histogram and an auto mode that choose
 
 ![Nodes](docs/nodes.png)
 
+## Installation
+- **ComfyUI-Manager:** Custom Nodes Manager → search for “Rigstools” → Install.
+- **comfy-cli:** `comfy node install comfyui-rigstools`
+- **Manually:** `git clone https://github.com/ScrudgMcDack/ComfyUI-Rigstools` into `ComfyUI/custom_nodes/`.
+
+Restart ComfyUI afterwards. No extra Python dependencies.
+
+## Language
+Follows the ComfyUI **Comfy.Locale** setting: `ru` gives Russian, any other locale falls back to English. The panels,
+dialogs, help, messages and, with Draftsman, the output tooltips switch immediately; setting names switch after a ComfyUI restart. Node
+names, input and widget names, their stock tooltips and the console log stay in English.
+
 ## Nodes
 
 ### Load image with metadata
@@ -325,18 +337,6 @@ a short title and a coloured line — green: what comes out ("From the parameter
 substitute comes out ("No seed in the parameters — fallback_seed = 42 comes out"), grey: a note. Without Draftsman the
 stock tooltip is shown (English).
 
-## Nodes 2.0
-Rigstools does not support the new Nodes 2.0 look (Vue nodes) yet. Its panels, previews, output marks and the
-Save image block are drawn on the classic LiteGraph canvas, so with Nodes 2.0 turned on they are not shown or do not
-work as intended. Keep Nodes 2.0 off in the ComfyUI settings. Support is planned for the next major release.
-
-## Installation
-- **ComfyUI-Manager:** Custom Nodes Manager → search for “Rigstools” → Install.
-- **comfy-cli:** `comfy node install comfyui-rigstools`
-- **Manually:** `git clone https://github.com/ScrudgMcDack/ComfyUI-Rigstools` into `ComfyUI/custom_nodes/`.
-
-Restart ComfyUI afterwards. No extra Python dependencies.
-
 ## Settings
 In ComfyUI: **Settings → Rigstools → Civitai** (see Save image above) and **Settings → Rigstools → Debug** — details go
 to the ComfyUI console: Save image, on each save, writes the files, the passes in the order they run, where the Hires
@@ -347,6 +347,11 @@ step by step, goes to the browser console.
 
 Environment variables: `RIGSTOOLS_LOGLEVEL` (Python logging level, default `20` = INFO) and `RIGSTOOLS_INDENT`
 (JSON indent of the outputs, default `2`). The old `CRYSTOOLS_*` names still work.
+
+## Limitations
+- **Nodes 2.0** (Vue nodes), the new node look of ComfyUI, is not supported yet. The panels, previews, output marks and
+  the Save image block are drawn on the classic LiteGraph canvas, so with Nodes 2.0 turned on they are not shown or do
+  not work as intended. Keep Nodes 2.0 off in the ComfyUI settings. Support is planned for the next major release.
 
 ## License
 MIT — see [LICENSE](LICENSE). Based on ComfyUI-Crystools (MIT, © Crystian).

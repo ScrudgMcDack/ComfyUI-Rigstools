@@ -1,7 +1,5 @@
-# ComfyUI-Rigstools
-
 <p align="center">
-  <img src="icon.png" alt="Rigstools">
+  <img src="docs/banner.png" alt="Rigstools · PicoTeka" width="100%">
 </p>
 
 <p align="center">
@@ -11,10 +9,28 @@
 
 <p align="center"><b>English</b> · <a href="README.ru.md">Русский</a> · <a href="CHANGELOG.md">Changelog</a></p>
 
-Load images with their generation data (PNG, JPEG, WebP) and read it back: the ComfyUI prompt and workflow, and the A1111-style parameters —
-seed, steps, CFG, clip skip, size, prompts, model and LoRA stack — as separate outputs you can wire straight
-into a new generation. A save node that collects the parameters from the graph by itself. Plus automatic colour correction without neural networks — white balance, levels,
-vibrance, matching to a reference, with a histogram and an auto mode that chooses the strengths for every picture. Based on [ComfyUI-Crystools](https://github.com/crystian/ComfyUI-Crystools) by Crystian.
+Rigstools started as my own set of tools for everyday work in ComfyUI. I wanted a picture to carry its generation data
+the right way — so that Civitai recognises the model, the LoRA and the parameters — and I wanted to take that data back
+from a finished picture straight into a new generation. With the usual nodes this meant a chain of extra nodes and
+wires, and the result still wasn't quite what I wanted to work with. So every Rigstools node does the whole job in one
+place: it shows the parameters, lets you change them, and gives each one as its own output.
+
+The nodes grew out of [ComfyUI-Crystools](https://github.com/crystian/ComfyUI-Crystools) by Crystian, which has not
+been updated for a long time, and went far beyond it. The galleries I tried were slow on big folders and misread
+prompts, models and parameters — so version 2.0 brings its own: **PicoTeka**.
+
+## What's inside
+- **PicoTeka** — a fast and simple gallery of your pictures: folders, search, filters, tags, rating, comparison; sends
+  a picture or its parameters straight into the open workflow.
+- **Loaders** — a picture together with its generation data (PNG, JPEG, WebP; one file, a folder by index or the
+  newest): the ComfyUI prompt and workflow and the A1111-style parameters, shown on the node, editable, each as its own
+  output.
+- **Extractors** — the same data from any image in the graph; **Generation parameters** holds parameters without a
+  picture.
+- **Save image** — collects the parameters from the graph by itself and writes them so that Civitai and A1111 read
+  them, with model and LoRA hashes.
+- **Color correction** — without neural networks: white balance, levels, vibrance, matching to a reference, a histogram
+  and an auto mode.
 
 ![Nodes](docs/nodes.png)
 
@@ -23,12 +39,81 @@ vibrance, matching to a reference, with a histogram and an auto mode that choose
 - **comfy-cli:** `comfy node install comfyui-rigstools`
 - **Manually:** `git clone https://github.com/ScrudgMcDack/ComfyUI-Rigstools` into `ComfyUI/custom_nodes/`.
 
-Restart ComfyUI afterwards. No extra Python dependencies.
+Restart ComfyUI afterwards. The only extra Python package is `send2trash` (for deleting to the recycle bin in the
+gallery); ComfyUI-Manager and comfy-cli install it, for a manual install run `pip install -r requirements.txt`.
 
-## Language
-Follows the ComfyUI **Comfy.Locale** setting: `ru` gives Russian, any other locale falls back to English. The panels,
-dialogs, help, messages and, with Draftsman, the output tooltips switch immediately; setting names switch after a ComfyUI restart. Node
-names, input and widget names, their stock tooltips and the console log stay in English.
+## PicoTeka — the gallery
+PicoTeka is a fast and simple gallery to organise your generations. Open it with its button (four coloured squares)
+on the ComfyUI top bar or at `http://<ComfyUI address>/rigstools/gallery` — it opens in a separate browser tab, so
+ComfyUI keeps working.
+
+![PicoTeka](docs/gallery.png)
+
+### Folders and the index
+- The ComfyUI output folder is there from the start; **+ Add folder** adds any other folder, chosen in a folder
+  browser (from this computer only). Subfolders are shown as a tree; Ctrl + click shows several folders at once.
+- Pictures are indexed in the background. After every finished run the gallery looks at the folders at once —
+  wherever the picture was saved — and the open page also looks by itself every 10 seconds, to catch pictures added
+  outside ComfyUI (the interval is in the settings).
+
+### The grid
+- New pictures take their places by the sort by themselves and are highlighted for a moment. The grid does not jump:
+  what you are looking at stays where it is. If a new picture would shift the rows in front of you, it waits (except
+  at the very top of the grid with nothing selected), and a **New pictures: N ↑** bar appears over the grid; a click
+  on it shows them. An arrow ↓ means the new pictures are further down, e.g. when sorted oldest first.
+- Search by prompt and file name; filter by model, LoRA, sampler, tag, rating and date; sort by date, name or rating.
+  Thumbnails show the format, the rating and the tags; the bigger the thumbnails, the more they show.
+- A click picks a picture, Ctrl + click adds it to the selection or takes it out, Shift + click selects a range.
+  `Esc` or a click on the empty space unpicks.
+
+### Card
+The picked picture with all its parameters, in the same view as under our loaders, and the buttons: **Picture to
+workflow**, **Parameters to workflow**, **Open workflow**, **Copy parameters**, **File data** (the raw metadata) and
+**Delete**.
+
+### Viewer
+Double click opens a picture full screen with zoom (wheel, 100%, fit), a minimap and the parameters panel; ← → page
+through the pictures. The mouse and key hints are behind the **?** sign on the bottom bar.
+
+![Viewer](docs/gallery_viewer.png)
+
+### Tags, rating, deleting and moving
+- Tags get their colours automatically; rename, merge or delete them in **Tags → manage**. Rating is 0–5 stars. Both
+  work for several selected pictures at once.
+- Delete sends files to the recycle bin of the system (with the `send2trash` package, installed with the node); tags
+  and rating are kept for 30 days, so a file restored from the bin comes back with them. Move puts files into another gallery folder or a new subfolder.
+- A file moved or renamed outside the gallery is treated as a new picture.
+
+### Comparison
+Select two pictures (Ctrl + click) and press **Compare**: side by side or with a slider. Zoom (wheel, 5–1600%, fit;
+double click — fit / 100%) and position (drag) are shared by both; their names are shown over the pictures with the
+marks **A** and **B**. Under the pictures, a table with every
+parameter on its own row and the differences highlighted (prompts by phrase, LoRA by name and weight); **Hide equal
+parameters** leaves only what differs. The border between the pictures and the table can be dragged.
+
+![Comparison](docs/gallery_compare.png)
+
+### To the open workflow
+As LoRA Manager does: the gallery sends to the ComfyUI tab you used last.
+- **Picture to workflow** puts the picture into *Load image with parameters* or *Load image with metadata*. Pictures
+  from the output folder are used as they are; pictures from other folders are copied to `input/rigstools_gallery/`.
+- **Parameters to workflow** fills the *Generation parameters* node (below). A new send replaces all values, values
+  changed by hand included.
+- **Open workflow** opens the workflow saved in the picture in a new tab.
+
+When the workflow has several suitable nodes, a list shows them with their group names (hovering a line shows the node
+on the canvas); when it has none, the gallery offers to add one.
+
+### Keys
+| Where | Keys |
+|---|---|
+| Grid | arrows, `Home`, `End` — move · `Enter` — viewer · `Esc` — unpick |
+| Selected pictures | `0`–`5` — rating · `T` — tags · `M` — move · `Delete` — delete · `C` — compare |
+| Viewer | ← → — page · `I` — parameters panel · `+` / `−` — zoom · `Ctrl` + `0` — fit · `Esc` — close |
+| Comparison | `+` / `−` — zoom · `Ctrl` + `0` — fit · `Esc` — close |
+
+The index and the thumbnail cache are kept in `<ComfyUI user folder>/rigstools/gallery`; the pictures themselves are
+never changed by the index.
 
 ## Nodes
 
@@ -150,6 +235,14 @@ Input: `parameters` — the `PARAMETERS` output of Metadata extractor.
 `fallback_height`, `fallback_sampler`, `fallback_scheduler`: a value found in the image wins, otherwise the fallback is used.
 Set them on the node or convert them to inputs and connect your own values. Images without parameters
 (e.g. saved by the stock Save Image) no longer stop the workflow — all values come from the fallbacks.
+
+### Generation parameters
+Holds generation parameters without a picture — the gallery fills it with **Parameters to workflow**. The panel is the
+same as under *Load image with parameters*: every value can be changed by hand (an amber dot marks it), and the outputs
+are the same as those of Parameters extractor: `SEED`, `STEPS`, `CFG`, `CLIP`, `WIDTH`, `HEIGHT`, `POSITIVE`,
+`NEGATIVE`, `MODEL_NAME`, `LORA_STACK`, `SAMPLER`, `SCHEDULER`. The values are saved with the workflow.
+
+![Generation parameters](docs/gen_params.png)
 
 ### LoRA hashes for Image Saver
 Turns a LoRA stack (`<lora:name:weight> …`) into the `additional_hashes` string of
@@ -320,7 +413,7 @@ console.
 mode. **🛟 Node Help** in the node's context menu explains
 every setting.
 
-## Output marks
+### Output marks
 All Rigstools nodes show what their outputs will carry:
 - **dimmed** — nothing / only a substitute value (default, fallback, empty string);
 - **↻ with an amber dot** — parameters rebuilt from the ComfyUI prompt;
@@ -338,22 +431,44 @@ substitute comes out ("No seed in the parameters — fallback_seed = 42 comes ou
 stock tooltip is shown (English).
 
 ## Settings
-In ComfyUI: **Settings → Rigstools → Civitai** (see Save image above) and **Settings → Rigstools → Debug** — details go
-to the ComfyUI console: Save image, on each save, writes the files, the passes in the order they run, where the Hires
-fields come from, every value with its source, the LoRA and the warnings; Load image with parameters, Parameters
-extractor and Metadata extractor write what was read from the file (defaults and typed values marked, whether the model
-was found); Color correction writes what the automatic steps measured and changed (in auto mode, also the strengths it chose). Loading a picture into the panel,
-step by step, goes to the browser console.
+All settings are in ComfyUI: **Settings → Rigstools**.
 
-Environment variables: `RIGSTOOLS_LOGLEVEL` (Python logging level, default `20` = INFO) and `RIGSTOOLS_INDENT`
-(JSON indent of the outputs, default `2`). The old `CRYSTOOLS_*` names still work.
+**PicoTeka**
+- **Use the gallery** — on by default. Off: no gallery button and no indexing, the nodes work as before.
+- **Auto refresh** — how often the open gallery looks for pictures added outside ComfyUI runs: 10 s by default;
+  30 s, 60 s or off for big or network folders. After each finished run it looks at once anyway.
+- **Allow deleting and moving files from other computers** — when ComfyUI is open on the network (started with
+  `--listen`). Off by default: files are deleted and moved from this computer only.
+
+**Civitai**
+- **Look models up on Civitai by their hash** — for the "Civitai resources" block of Save image (see above). Off by
+  default.
+
+**Debug**
+- **Write details of the nodes' work to the console** — to the ComfyUI console:
+  - Save image, on each save: the files, the passes in the order they run, where the Hires fields come from, every
+    value with its source, the LoRA and the warnings;
+  - Load image with parameters, Parameters extractor and Metadata extractor: what was read from the file (defaults
+    and typed values marked), whether the model was found;
+  - Color correction: what the automatic steps measured and changed (in auto mode, also the strengths it chose).
+
+  Loading a picture into the panel, step by step, goes to the browser console.
+
+**Language** follows the ComfyUI **Comfy.Locale** setting: `ru` gives Russian, any other locale falls back to English.
+The panels, dialogs, help, messages and, with Draftsman, the output tooltips switch immediately; setting names switch
+after a ComfyUI restart. Node names, input and widget names, their stock tooltips and the console log stay in English.
+
+**Environment variables:** `RIGSTOOLS_LOGLEVEL` — the Python logging level (default `20` = INFO), `RIGSTOOLS_INDENT` —
+the JSON indent of the outputs (default `2`). The old `CRYSTOOLS_*` names still work.
 
 ## Limitations
 - **Nodes 2.0** (Vue nodes), the new node look of ComfyUI, is not supported yet. The panels, previews, output marks and
   the Save image block are drawn on the classic LiteGraph canvas, so with Nodes 2.0 turned on they are not shown or do
-  not work as intended. Keep Nodes 2.0 off in the ComfyUI settings. Support is planned for the next major release.
+  not work as intended. Keep Nodes 2.0 off in the ComfyUI settings. Support is planned for one of the next versions.
 
 ## License
 MIT — see [LICENSE](LICENSE). Based on ComfyUI-Crystools (MIT, © Crystian).
-The icon is the Noto Emoji “alembic” (Apache 2.0), the Settings sidebar icon is Lucide “flask-conical” (ISC) — see
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+- The icon and the banner: the Noto Emoji "alembic" (Apache 2.0).
+- The Settings sidebar icon and the gallery icons: Lucide (ISC); the GitHub mark in the gallery: Simple Icons (CC0).
+
+More in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

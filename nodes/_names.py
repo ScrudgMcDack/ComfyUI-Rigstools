@@ -27,3 +27,6 @@ class CLASSES(Enum):
 
     CSAVE_IMAGE_NAME = 'Save image [Rigstools]'
     CSAVE_IMAGE_DESC = 'Save image'
+
+    CGEN_PARAMS_NAME = 'Generation parameters [Rigstools]'
+    CGEN_PARAMS_DESC = 'Generation parameters'

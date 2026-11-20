@@ -16,10 +16,12 @@ const NODE_TYPES = new Set([
   "Load image with parameters [Rigstools]",
   "Color correction [Rigstools]",
   "Save image [Rigstools]",
+  "Generation parameters [Rigstools]",
 ]);
 const LOADER = "Load image with metadata [Rigstools]";
 const FOLDER = "Load image from folder [Rigstools]";
 const PARAMS = "Load image with parameters [Rigstools]";
+const GEN = "Generation parameters [Rigstools]";
 
 const icon = new Image();
 icon.src = new URL("./alembic.svg", import.meta.url).href;
@@ -366,7 +368,7 @@ function drawCross(ctx, at) {
 /** State of the outputs of any Rigstools node: {OUT: "off" | "rebuilt" | "warn"} and the reason per output.
  *  Loaders know it from the file; the other nodes predict it from the loader upstream or take it from the last run. */
 function outputStates(node) {
-  if (node?._rigInfo && [LOADER, FOLDER, PARAMS].includes(node.type)) {
+  if (node?._rigInfo && [LOADER, FOLDER, PARAMS, GEN].includes(node.type)) {
     const info = node._rigInfo;
     if (info.error) return null;
     const states = {
@@ -473,14 +475,20 @@ const PANEL_STR = {
     noLora: "no LoRA", loading: "…",
     head: "Parameters from the file", lgFile: "from the file", lgEdited: "changed by hand", lgMissing: "not in the file",
     lgPrompt: "LoRA from the prompt", lgLoraMissing: "LoRA not found", lgLoraFound: "LoRA found",
-    loraPrompt: "a <lora:…> tag in the prompt (the file has no Lora stack)" },
+    loraPrompt: "a <lora:…> tag in the prompt (the file has no Lora stack)",
+    headGen: "Generation parameters", lgFileGen: "from the parameters", missingGen: "Not in the parameters — the default value is used",
+    editedGen: "Changed by hand — goes to the output instead of the value from the parameters. ↺ returns it",
+    resetGen: "Return the value from the parameters", emptyGen: "Send parameters here from PicoTeka (Parameters to workflow) or type them" },
   ru: { edited: "Изменено вручную — на выход идёт это значение вместо значения из картинки. ↺ — вернуть",
     reset: "Вернуть значение из картинки", missing: "Нет в картинке — используется значение по умолчанию",
     loraMissing: "Не найдена в models/loras", modelMissing: "Не найден в models/checkpoints — имя передаётся как есть",
     noLora: "нет LoRA", loading: "…",
     head: "Параметры из файла", lgFile: "из файла", lgEdited: "изменено вручную", lgMissing: "нет в файле",
     lgPrompt: "LoRA из промпта", lgLoraMissing: "LoRA не найдена", lgLoraFound: "LoRA найдена",
-    loraPrompt: "тег <lora:…> в промпте (в файле нет Lora stack)" },
+    loraPrompt: "тег <lora:…> в промпте (в файле нет Lora stack)",
+    headGen: "Параметры генерации", lgFileGen: "из параметров", missingGen: "Нет в параметрах — используется значение по умолчанию",
+    editedGen: "Изменено вручную — на выход идёт это значение вместо значения из параметров. ↺ — вернуть",
+    resetGen: "Вернуть значение из параметров", emptyGen: "Передайте сюда параметры из PicoTeka («Параметры в workflow») или введите их" },
 };
 const pt = (k) => {
   const loc = String(app.extensionManager?.setting?.get?.("Comfy.Locale") ?? "en").toLowerCase();
@@ -553,6 +561,7 @@ function addPanelCss() {
   .rig-card{background:rgba(0,0,0,.2);border-radius:8px;padding:5px 5px 6px;box-sizing:border-box;flex:0 0 auto}
   .rig-card .rig-fields,.rig-card .rig-row{gap:4px}
   .rig-card .rig-f{padding:0 5px}.rig-card .rig-f > label{margin-right:4px}
+  .rig-card .rig-empty{color:#888;margin:0 3px 6px;font:var(--rig-label-font);line-height:1.35}
   .rig-card-head{color:var(--rig-slot);font:var(--rig-label-font);text-transform:uppercase;margin:0 3px 5px;
     white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .rig-leg{display:flex;flex-wrap:wrap;gap:3px 12px;font-size:10px;color:#888;margin:6px 3px 0}
@@ -662,9 +671,12 @@ async function diagnose(url) {
   return out;
 }
 
-function paramsPanel(node, inputName) {
+function paramsPanel(node, inputName, mode = "image") {
   addPanelCss();
-  const state = { image: null, values: {} };   // serialized: the hand-typed values of this picture
+  // "text" — Generation parameters: no picture; the parameters text (from the gallery) is kept in the widget
+  const textMode = mode === "text";
+  const ptm = (k) => pt(textMode && PANEL_STR.en[k + "Gen"] ? k + "Gen" : k);
+  const state = textMode ? { parameters: "", source: "", values: {} } : { image: null, values: {} };   // serialized
   let data = null;                              // what the server read from the file
   let fetched = null;
   const root = el("div"); root.className = "rig-panel";
@@ -674,12 +686,16 @@ function paramsPanel(node, inputName) {
   const fieldsBox = el("div"); fieldsBox.className = "rig-fields";
   const card = el("div"); card.className = "rig-card";
   const cardHead = el("div", null, pt("head")); cardHead.className = "rig-card-head";
-  const leg = legend([["file", pt("lgFile")], ["edited", pt("lgEdited")], ["missing", pt("lgMissing")]]);
+  const leg = legend([["file", ptm("lgFile")], ["edited", pt("lgEdited")], ["missing", pt("lgMissing")]]);
   // the LoRA chip kinds, always listed: found (solid), a tag in the prompt (dotted), not found (red)
   loraLegend(leg, [["rig-prev ok", pt("lgLoraFound"), true], ["rig-prev tag", pt("lgPrompt"), true],
                    ["rig-prev bad", pt("lgLoraMissing"), true]]);
   card.append(cardHead, fieldsBox, leg);
-  root.append(imgBox, cap, card);
+  if (textMode) {
+    const empty = el("div"); empty.className = "rig-empty";
+    card.insertBefore(empty, fieldsBox);
+    root.append(card);
+  } else root.append(imgBox, cap, card);
   for (const ev of ["pointerdown", "keydown"]) {
     fieldsBox.addEventListener(ev, (e) => { if (e.target.closest("input,select,textarea")) e.stopPropagation(); });
   }
@@ -696,7 +712,7 @@ function paramsPanel(node, inputName) {
       const w = wrap[k];
       w.classList.toggle("ovr", k in state.values);
       w.classList.toggle("miss", !(k in state.values) && missing.has(k));
-      w.title = k in state.values ? pt("edited") : missing.has(k) ? pt("missing") : "";
+      w.title = k in state.values ? ptm("edited") : missing.has(k) ? ptm("missing") : "";
       setDot(dots[k], k in state.values ? "edited" : missing.has(k) || !data || data.error ? "missing" : "file");
       if (k === "model") {
         const bad = data && !(k in state.values) && !missing.has("model") && !data.model_found;
@@ -715,7 +731,7 @@ function paramsPanel(node, inputName) {
     const same = k === "cfg" && v !== "" && !isNaN(v) ? Number(v) === Number(orig) : String(v) === String(orig);
     if (orig != null && same) delete state.values[k];
     else state.values[k] = v;
-    state.image = node.widgets?.find((w) => w.name === "image")?.value ?? state.image;
+    if (!textMode) state.image = node.widgets?.find((w) => w.name === "image")?.value ?? state.image;
     markAll();
     node.graph?.change?.();
   }
@@ -749,7 +765,7 @@ function paramsPanel(node, inputName) {
       c.addEventListener("focus", c._rigTail); c.addEventListener("blur", c._rigTail);
       new ResizeObserver(() => c._rigTail()).observe(w);
     }
-    const r = el("span", null, "↺"); r.className = "rig-reset"; r.title = pt("reset");
+    const r = el("span", null, "↺"); r.className = "rig-reset"; r.title = ptm("reset");
     r.addEventListener("pointerdown", (e) => { e.preventDefault(); e.stopPropagation();
       delete state.values[k]; c.value = k === "cfg" ? fmtCfg(data?.fields?.[k] ?? "") : data?.fields?.[k] ?? "";
       sizeControl(c); markAll(); node.graph?.change?.(); });
@@ -804,12 +820,18 @@ function paramsPanel(node, inputName) {
       else c.value = k === "cfg" ? fmtCfg(shown(k) ?? "") : shown(k) ?? "";
       sizeControl(c);
     }
+    if (textMode) {
+      cardHead.textContent = state.source ? `${ptm("head")} · ${state.source}` : ptm("head");
+      const empty = card.querySelector(".rig-empty");
+      empty.textContent = state.parameters ? "" : ptm("empty");
+      empty.style.display = state.parameters ? "none" : "";
+    }
     const info = data.info;
     const [w, h] = String(info.resolution || "").split("x");
     const base = w && h ? `${w} × ${h}` : "";
     const ctx = document.createElement("canvas").getContext("2d");
     ctx.font = "10px Arial";
-    cap.textContent = captions(base, info).find((c) => ctx.measureText(c).width <= root.clientWidth - 8) ?? base;
+    if (!textMode) cap.textContent = captions(base, info).find((c) => ctx.measureText(c).width <= root.clientWidth - 8) ?? base;
 
     const ll = el("label"); ll.append(dot(data.loras.length ? "file" : "missing"), document.createTextNode("lora"));
     loraBox.replaceChildren(ll);
@@ -903,22 +925,47 @@ function paramsPanel(node, inputName) {
     });
   }
 
-  const widget = node.addDOMWidget(inputName, "RIGSTOOLS_PARAMS", root, {
+  async function loadText(fit = false) {
+    const text = state.parameters;
+    try {
+      const r = await api.fetchApi("/rigstools/gen_params", { method: "POST", body: JSON.stringify({ parameters: text }) });
+      if (text !== state.parameters) return;
+      data = await r.json();
+    } catch (e) { data = { error: String(e) }; }
+    node._rigInfo = data?.error ? { error: data.error } : {};
+    render();
+    requestAnimationFrame(() => {
+      // new parameters from the gallery: the node takes the height of its content (no empty space under the panel)
+      if (fit && node.computeSize) node.setSize([node.size[0], node.computeSize()[1]]);
+      node.setDirtyCanvas?.(true, true);
+    });
+  }
+
+  const widget = node.addDOMWidget(inputName, textMode ? "RIGSTOOLS_GEN_PARAMS" : "RIGSTOOLS_PARAMS", root, {
     getValue: () => JSON.stringify(state),
     setValue: (v) => {
       try {
         const o = typeof v === "string" ? JSON.parse(v || "{}") : v || {};
-        state.image = o.image ?? null;
+        if (textMode) { state.parameters = o.parameters ?? ""; state.source = o.source ?? ""; }
+        else state.image = o.image ?? null;
         state.values = o.values && typeof o.values === "object" ? { ...o.values } : {};
-      } catch { state.image = null; state.values = {}; }
-      render();
+      } catch { if (!textMode) state.image = null; state.values = {}; }
+      if (textMode) loadText(); else render();
     },
-    getMinHeight: () => (card.offsetHeight || 460) + 250,
+    getMinHeight: () => (card.offsetHeight || (textMode ? 120 : 460)) + (textMode ? 20 : 250),
     hideOnZoom: true,          // zoomed far out the panel is not drawn, as the other DOM widgets
   });
 
+  if (textMode) setTimeout(() => { if (!data) loadText(); });
   node._rigPanel = {
+    /** Generation parameters: new parameters (from the gallery) replace everything, typed values included. */
+    setParameters(text, source) {
+      state.parameters = text || ""; state.source = source || ""; state.values = {};
+      loadText(true);
+      node.graph?.change?.();
+    },
     watch() {
+      if (textMode) return;
       const v = node.widgets?.find((w) => w.name === "image")?.value;
       if (v && v !== fetched) load(v, fetched ? `image changed from ${fetched}` : "first draw");
     },
@@ -954,7 +1001,7 @@ const OUT_FIELD = Object.fromEntries(Object.entries({ positive: "POSITIVE", nega
 
 function valueLine(node, name) {
   const info = node._rigInfo;
-  if ([LOADER, FOLDER, PARAMS].includes(node.type) && info && !info.error) {
+  if ([LOADER, FOLDER, PARAMS, GEN].includes(node.type) && info && !info.error) {
     if (name === "IMAGE") return info.resolution ? t("ln_image").replace("{v}", [info.resolution.replace("x", " × "), info.format].filter(Boolean).join(" · ")) : null;
     if (name === "METADATA_RAW") return t("ln_file").replace("{v}", ["prompt", "workflow", "parameters"].filter((k) => info[k]).join(", ") || "fileinfo");
     if (name === "PARAMETERS" && info.parameters) return t("ln_file").replace("{v}", `«${clip(info.preview)}»`);
@@ -966,7 +1013,7 @@ function valueLine(node, name) {
       if (k) {
         const v = panel.value(k);
         if (v == null || v === "") return null;
-        return t(panel.typed(k) ? "ln_typed" : "ln_image").replace("{v}", clip(v));
+        return t(panel.typed(k) ? "ln_typed" : node.type === GEN ? "ln_params" : "ln_image").replace("{v}", clip(v));
       }
       if (name === "LORA_STACK") { const l = panel.loras(); return l.length ? t("ln_loras").replace("{v}", clip(l.join(", "))) : null; }
     }
@@ -1738,6 +1785,24 @@ app.registerExtension({
         + "answers are kept in <ComfyUI user folder>/rigstools/civitai.json. Off: only that cache and the files next "
         + "to the models (LoRA Manager .metadata.json, .civitai.info of Image Saver / Civitai Helper) are used.",
       type: "boolean", defaultValue: false },
+    { id: "Rigstools.Gallery.Enabled", category: ["Rigstools", "PicoTeka", "Enabled"],
+      name: "PicoTeka: use the gallery",
+      tooltip: "Turns the PicoTeka gallery on or off. When on, a PicoTeka button appears on the top bar, and the pictures "
+        + "of the ComfyUI output folder and of your other connected folders are indexed in the background.",
+      type: "boolean", defaultValue: true, sortOrder: 10,         // the first setting of the PicoTeka group
+      onChange: (on) => setGalleryShown(on !== false) },
+    { id: "Rigstools.Gallery.AutoScan", category: ["Rigstools", "PicoTeka", "AutoScan"],
+      name: "PicoTeka: auto refresh",
+      tooltip: "How often the open gallery page looks for new and changed pictures in the folders — those added outside "
+        + "ComfyUI runs, e.g. copied in Explorer. After each finished run the gallery looks at once anyway. Raise it or "
+        + "turn it off for very big folders or folders on a network drive.",
+      type: "combo", defaultValue: 10,
+      options: [{ value: 0, text: "Off" }, { value: 10, text: "10 s" }, { value: 30, text: "30 s" }, { value: 60, text: "60 s" }] },
+    { id: "Rigstools.Gallery.NetworkFileOps", category: ["Rigstools", "PicoTeka", "NetworkFileOps"],
+      name: "PicoTeka: allow deleting and moving files from other computers",
+      tooltip: "When ComfyUI is open on the network (started with --listen), the gallery deletes and moves files only "
+        + "when it is opened on this computer. On: from any computer that can open ComfyUI.",
+      type: "boolean", defaultValue: false },
     { id: "Rigstools.Debug.Log", category: ["Rigstools", "Debug", "Log"],
       name: "Debug: write details of the nodes' work to the console",
       tooltip: "Into the ComfyUI console (log). Save image, on each save: the files, the passes (samplers) in the order "
@@ -1748,7 +1813,8 @@ app.registerExtension({
       type: "boolean", defaultValue: false },
   ],
   getCustomWidgets() {
-    return { RIGSTOOLS_PARAMS: (node, inputName) => ({ widget: paramsPanel(node, inputName) }) };
+    return { RIGSTOOLS_PARAMS: (node, inputName) => ({ widget: paramsPanel(node, inputName) }),
+      RIGSTOOLS_GEN_PARAMS: (node, inputName) => ({ widget: paramsPanel(node, inputName, "text") }) };
   },
   beforeRegisterNodeDef(nodeType, nodeData) {
     if (!NODE_TYPES.has(nodeData?.name)) return;
@@ -1905,6 +1971,20 @@ app.registerExtension({
       };
       return;
     }
+    if (nodeData.name === GEN) {
+      patchSlots(nodeType.prototype);
+      nodeType.prototype.getStyledOutputTooltip = function (index) {
+        try { return styledLines(this, index); } catch { return null; }
+      };
+      const created1 = nodeType.prototype.onNodeCreated;
+      nodeType.prototype.onNodeCreated = function () {
+        const r = created1?.apply(this, arguments);
+        this._rigInfo = {};
+        this.size = [Math.max(this.size[0], 470), Math.max(this.size[1], 520)];
+        return r;
+      };
+      return;
+    }
     if (![LOADER, FOLDER, PARAMS].includes(nodeData.name)) return;
     patchLoader(nodeType.prototype);
 
@@ -1963,4 +2043,177 @@ app.registerExtension({
       return click?.apply(this, arguments);
     };
   },
+});
+
+// Gallery button on the ComfyUI action bar (like LoRA Manager): opens the gallery page in a new tab
+app.registerExtension({
+  name: "Rigstools.GalleryButton",
+  actionBarButtons: [{
+    icon: "rig-gallery-icon size-4",
+    get tooltip() {
+      const loc = String(app.extensionManager?.setting?.get?.("Comfy.Locale") ?? "en").toLowerCase();
+      return loc.startsWith("ru") ? "PicoTeka — быстрая и простая галерея для организации ваших генераций"
+        : "PicoTeka — a fast and simple gallery to organise your generations";
+    },
+    onClick: () => window.open(new URL("rigstools/gallery", document.baseURI).href, "_blank"),
+  }],
+});
+
+// -------------------------------------------------- gallery -> this tab: a picture, parameters or a workflow
+// The gallery page asks the server, the server sends "rigstools.gallery" to the ComfyUI tab that was active last
+// (each tab reports itself when it gets focus). Pictures go to our loaders, parameters to Generation parameters.
+
+const GAL_STR = {
+  en: { image: "Where to put the picture?", params: "Where to put the parameters?", found: "Matching nodes: {n}",
+    hover: "Hover an item to see the node on the canvas · Esc — cancel", none: "There is no {what} in this workflow.",
+    add: "Add {what}", cancel: "Cancel", sentImage: "Picture {v} → {node}", sentParams: "Parameters of {v} → {node}",
+    opened: "Opened the workflow of {v}", noImage: "The picture is not available" },
+  ru: { image: "Куда вставить картинку?", params: "Куда вставить параметры?", found: "Подходящих нод: {n}",
+    hover: "Наведите на пункт — нода подсветится на холсте · Esc — отмена", none: "В этом workflow нет ноды {what}.",
+    add: "Добавить {what}", cancel: "Отмена", sentImage: "Картинка {v} → {node}", sentParams: "Параметры {v} → {node}",
+    opened: "Открыт workflow картинки {v}", noImage: "Картинка недоступна" },
+};
+const gt = (k, v = {}) => {
+  const loc = String(app.extensionManager?.setting?.get?.("Comfy.Locale") ?? "en").toLowerCase();
+  let s = GAL_STR[loc.startsWith("ru") ? "ru" : "en"][k] ?? GAL_STR.en[k];
+  for (const [a, b] of Object.entries(v)) s = s.split(`{${a}}`).join(b);
+  return s;
+};
+const toast = (severity, detail) => app.extensionManager?.toast?.add?.({ severity, summary: "Rigstools", detail, life: 3500 });
+const nodeLabel = (n) => `${n.title || n.type} #${n.id}`;
+
+function reportActive() {
+  if (!api.clientId || document.hidden) return;
+  api.fetchApi("/rigstools/gallery/api/active", { method: "POST", body: JSON.stringify({ client_id: api.clientId }) }).catch(() => {});
+}
+addEventListener("focus", reportActive);
+document.addEventListener("visibilitychange", reportActive);
+api.addEventListener("status", () => { if (!reportActive.done && api.clientId) { reportActive.done = true; reportActive(); } });
+api.addEventListener("reconnected", reportActive);
+
+function groupOf(node) {
+  for (const g of app.graph?._groups ?? app.graph?.groups ?? []) {
+    const [x, y, w, h] = g._bounding ?? [g.pos[0], g.pos[1], g.size[0], g.size[1]];
+    if (node.pos[0] >= x && node.pos[1] >= y && node.pos[0] < x + w && node.pos[1] < y + h) return g.title;
+  }
+  return "";
+}
+
+/** One matching node: use it. Several: a list to pick from (hover shows the node). None: offer to add one. */
+function chooseNode(types, kind, apply) {
+  const graph = app.graph;
+  const nodes = (graph?._nodes ?? []).filter((n) => types.includes(n.type));
+  if (nodes.length === 1) return apply(nodes[0]);
+  const box = document.createElement("div");
+  box.className = "rig-pick";
+  const close = () => { box.remove(); removeEventListener("keydown", key, true); removeEventListener("pointerdown", outside, true); };
+  const key = (e) => { if (e.key === "Escape") { e.stopPropagation(); close(); } };
+  const outside = (e) => { if (!box.contains(e.target)) close(); };
+  const head = el("div", null, gt(kind)); head.className = "rig-pick-h";
+  box.append(head);
+  if (!nodes.length) {
+    box.append(el("div", null, gt("none", { what: types[0].replace(" [Rigstools]", "") })));
+    for (const type of types) {
+      const b = el("button", null, gt("add", { what: type.replace(" [Rigstools]", "") }));
+      b.onclick = () => {
+        close();
+        const n = LiteGraph.createNode(type);
+        const c = app.canvas, [w, h] = [c.canvas.width / (c.ds.scale * devicePixelRatio), c.canvas.height / (c.ds.scale * devicePixelRatio)];
+        n.pos = [-c.ds.offset[0] + w / 2 - 230, -c.ds.offset[1] + h / 2 - 260];
+        graph.add(n);
+        setTimeout(() => apply(n), 50);
+      };
+      box.append(b);
+    }
+  } else {
+    box.append(el("div", "color:#999;font-size:12px;margin-bottom:8px", gt("found", { n: nodes.length })));
+    for (const n of nodes) {
+      const g = groupOf(n);
+      const item = el("div"); item.className = "rig-pick-i";
+      item.append(el("span", null, nodeLabel(n)), el("span", "color:#9ab", g ? `«${g}»` : ""));
+      item.onmouseenter = () => { app.canvas.selectNode(n); app.canvas.centerOnNode?.(n); app.canvas.setDirty(true, true); };
+      item.onclick = () => { close(); apply(n); };
+      box.append(item);
+    }
+    box.append(el("div", "color:#888;font-size:11.5px;margin-top:8px", gt("hover")));
+  }
+  const cancel = el("button", null, gt("cancel")); cancel.onclick = close;
+  box.append(cancel);
+  document.body.append(box);
+  addEventListener("keydown", key, true);
+  setTimeout(() => addEventListener("pointerdown", outside, true));
+}
+
+let pickCss = false;
+function addPickCss() {
+  if (pickCss) return;
+  pickCss = true;
+  const s = document.createElement("style");
+  // the colours of the gallery page (picox.club palette)
+  s.textContent = `.rig-pick{position:fixed;right:24px;top:110px;width:440px;max-height:70vh;overflow:auto;z-index:2000;background:#11141b;
+    border:1px solid rgba(255,255,255,.08);border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,.6);
+    font:13px ui-sans-serif,system-ui,"Segoe UI",Roboto,Arial,sans-serif;color:#eef0f4;padding:12px;display:flex;flex-direction:column;gap:6px}
+  .rig-pick-h{font-weight:650}
+  .rig-pick-i{border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 10px;display:flex;justify-content:space-between;gap:10px;cursor:pointer}
+  .rig-pick-i:hover{border-color:rgba(76,201,240,.6);background:rgba(76,201,240,.12)}
+  .rig-pick button{all:unset;cursor:pointer;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:6px 10px;text-align:center;font-weight:550}
+  .rig-pick button:hover{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.04)}`;
+  document.head.append(s);
+}
+
+// Settings → Rigstools → PicoTeka → Use the gallery: off hides the button (the server then does not index either);
+// on again starts an indexing run, so the gallery is up to date when it is opened.
+let galleryShown = null;
+function setGalleryShown(on) {
+  document.body.classList.toggle("rig-no-gallery", !on);
+  if (on && galleryShown === false) setTimeout(() => api.fetchApi("/rigstools/gallery/api/scan", { method: "POST" }).catch(() => {}), 1500);
+  galleryShown = on;
+}
+
+// the gallery button: the picox.club mark (four coloured squares), the same picture as the gallery tab icon
+{
+  const s = document.createElement("style");
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 21 21'><rect width='9' height='9' rx='2' fill='%23ff5c7a'/>` +
+    `<rect x='12' width='9' height='9' rx='2' fill='%23ffc857'/><rect y='12' width='9' height='9' rx='2' fill='%234cc9f0'/>` +
+    `<rect x='12' y='12' width='9' height='9' rx='2' fill='%237bdc8c'/></svg>`;
+  // the button itself is drawn as a solid tile (as the LoRA Manager button next to it): dark picox background, rounded
+  // 32 px high, as Run and the other ComfyUI buttons of this bar
+  // order 1: always after the buttons of the other extensions (the LoRA Manager one among them). The bar lists the
+  // buttons in the order the extensions were registered, and that changes from start to start with load timing
+  s.textContent = `.rig-gallery-icon{display:inline-block;width:20px!important;height:20px!important;
+      background:url("data:image/svg+xml,${svg}") center/100% no-repeat}
+    button:has(> .rig-gallery-icon){background:var(--secondary-background,#262729)!important;border:0!important;border-radius:8px!important;
+      padding:0 8px!important;height:32px!important;min-width:38px}
+    button:has(> .rig-gallery-icon):hover{background:var(--secondary-background-hover,#313235)!important}
+    body.rig-no-gallery button:has(> .rig-gallery-icon){display:none!important}
+    [data-testid="action-bar-buttons"] > button:has(> .rig-gallery-icon){order:1}`;
+  document.head.append(s);
+}
+
+api.addEventListener("rigstools.gallery", async (e) => {
+  const m = e.detail || {};
+  addPickCss();
+  if (m.kind === "workflow") {
+    await app.loadGraphData(m.workflow, true, true, String(m.name || "").replace(/\.[^.]+$/, ""));
+    toast("success", gt("opened", { v: m.name }));
+  } else if (m.kind === "image") {
+    if (!m.image) { toast("warn", gt("noImage")); return; }
+    chooseNode([PARAMS, LOADER], "image", (node) => {
+      const w = node.widgets?.find((x) => x.name === "image");
+      if (!w) return;
+      const values = w.options?.values;
+      if (Array.isArray(values) && !values.includes(m.image)) values.push(m.image);
+      w.value = m.image;
+      w.callback?.(m.image);
+      node.setDirtyCanvas?.(true, true);
+      app.graph.change?.();
+      toast("success", gt("sentImage", { v: m.name, node: nodeLabel(node) }));
+    });
+  } else if (m.kind === "params") {
+    chooseNode([GEN], "params", (node) => {
+      node._rigPanel?.setParameters(m.parameters, m.name);
+      node.setDirtyCanvas?.(true, true);
+      toast("success", gt("sentParams", { v: m.name, node: nodeLabel(node) }));
+    });
+  }
 });

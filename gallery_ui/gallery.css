@@ -1,0 +1,408 @@
+/* Rigstools gallery. All colours, sizes and fonts are tokens here, so the look can be changed in one place. */
+:root {
+  /* the picox.club palette: blue-black base, hairlines, the four colours of the mark */
+  --c1: #ff5c7a; --c2: #ffc857; --c3: #4cc9f0; --c4: #7bdc8c;
+  --bg: #0d0f14; --panel: #11141b; --panel-line: rgba(255, 255, 255, .06); --card: rgba(255, 255, 255, .025);
+  --field: #151922; --outline: rgba(255, 255, 255, .08); --outline-hi: rgba(255, 255, 255, .18); --label: #8a8f9c; --text: #eef0f4; --muted: #8a8f9c;
+  --accent: var(--c3); --accent-bg: rgba(76, 201, 240, .12); --accent-line: rgba(76, 201, 240, .45); --danger: var(--c1); --star: var(--c2);
+  --dot-file: var(--c4); --light: #eef0f4; --lora: #b49cff; --amber: #f5a524; --stage: #0a0c10;
+  --radius: 8px; --gap: 10px; --font: 12.5px ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --side-w: 250px; --card-w: 400px; --top-h: 52px; --status-h: 26px;
+}
+* { box-sizing: border-box }
+html, body { height: 100% }
+body { margin: 0; background: var(--bg); color: var(--text); font: var(--font); display: flex; flex-direction: column; overflow: hidden }
+button { font: inherit; color: inherit }
+.muted { color: var(--muted) }
+.sp { flex: 1 }
+
+/* top bar */
+.top { height: var(--top-h); flex: 0 0 auto; display: flex; align-items: center; gap: 10px; padding: 0 14px;
+  background: var(--panel); border-bottom: 1px solid var(--panel-line) }
+.top { background: rgba(13, 15, 20, .85); backdrop-filter: blur(8px); position: relative; z-index: 20 }
+.logo { font-weight: 650; font-size: 15px; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; margin-right: 8px; white-space: nowrap }
+/* the picox.club mark: four squares (they swap now and then, see gallery.js) */
+.mark { position: relative; width: 21px; height: 21px; flex: 0 0 auto }
+.mark i { position: absolute; width: 9px; height: 9px; border-radius: 2px; transition: transform .6s cubic-bezier(.5, 0, .2, 1) }
+.mark i:nth-child(1) { left: 0; top: 0; background: var(--c1) } .mark i:nth-child(2) { left: 12px; top: 0; background: var(--c2) }
+.mark i:nth-child(3) { left: 0; top: 12px; background: var(--c3) } .mark i:nth-child(4) { left: 12px; top: 12px; background: var(--c4) }
+.mark.shake i { transition: transform .09s ease-in-out }
+.inp, .btn, select.inp { height: 30px; border: 1px solid var(--outline); background: var(--field); border-radius: var(--radius);
+  color: var(--text); padding: 0 10px; display: flex; align-items: center; gap: 6px }
+input.inp, select.inp { outline: none } input.inp:focus, select.inp:focus { border-color: var(--accent) }
+/* the search field with a magnifier inside */
+.search { flex: 2 1 300px; min-width: 160px; max-width: 420px; position: relative; display: flex }
+.search input { flex: 1; min-width: 0; padding-left: 30px }
+.search .ic { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none }
+.search:focus-within .ic { color: var(--text) }
+.search input { padding-right: 28px } .search input::-webkit-search-cancel-button { -webkit-appearance: none; display: none }
+.sclear { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); border: 0; background: none; color: var(--muted); cursor: pointer;
+  padding: 3px; border-radius: 5px; display: flex } .sclear:hover { color: var(--text); background: rgba(255, 255, 255, .08) } .sclear[hidden] { display: none }
+.search .sclear .ic { position: static; transform: none; width: 14px; height: 14px; color: inherit }
+/* the sort drop-down: the button as a field, the list as the fields too (rounded, same colour and frame) */
+.dd { position: relative; flex: 0 0 auto }
+.dd-btn { cursor: pointer; padding: 0 8px 0 9px; font: inherit } .dd-btn .ic { color: var(--muted) } .dd-btn:hover .ic { color: var(--text) }
+.dd-btn .dd-v { min-width: 108px; text-align: left } .dd-chev { width: 14px; height: 14px; transition: transform .15s }
+.dd.open .dd-btn { border-color: var(--accent) } .dd.open .dd-chev { transform: rotate(180deg) }
+.dd-menu { position: absolute; left: 0; top: calc(100% + 4px); min-width: 100%; z-index: 30; background: var(--field); border: 1px solid var(--outline);
+  border-radius: var(--radius); padding: 4px; box-shadow: 0 10px 30px rgba(0, 0, 0, .5) } .dd-menu[hidden] { display: none }
+.dd-i { display: flex; align-items: center; gap: 8px; padding: 6px 10px 6px 8px; border-radius: 6px; cursor: pointer; white-space: nowrap }
+.dd-i.hi { background: rgba(255, 255, 255, .06) } .dd-i.on { color: var(--accent) } .dd-i .ic { width: 14px; height: 14px; display: inline-block }
+.btn { background: transparent; cursor: pointer; white-space: nowrap; font-weight: 550 }
+.btn:hover { border-color: var(--outline-hi); background: rgba(255, 255, 255, .04) }
+.btn.pri { background: var(--light); color: var(--bg); border-color: var(--light); font-weight: 650 }   /* as "Notify me" on picox.club */
+.btn.pri:hover { background: #fff }
+.btn[disabled] { opacity: .45; cursor: default } .btn.pri[disabled] { background: transparent; color: var(--muted); border-color: var(--outline); opacity: 1 }
+/* the thumbnail size: a thin slider, as in the ComfyUI settings */
+.range { display: flex; align-items: center; gap: 10px; color: var(--label) }
+.range input[type=range] { -webkit-appearance: none; appearance: none; width: 110px; height: 14px; background: transparent; margin: 0; cursor: pointer }
+.range input[type=range]::-webkit-slider-runnable-track { height: 2px; border-radius: 1px;
+  background: linear-gradient(to right, #8a8a8a var(--fill, 50%), rgba(138, 138, 138, .2) var(--fill, 50%)) }
+.range input[type=range]::-moz-range-track { height: 2px; border-radius: 1px; background: rgba(138, 138, 138, .2) }
+.range input[type=range]::-moz-range-progress { height: 2px; background: #8a8a8a }
+.range input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #8a8a8a; margin-top: -6px; border: 0 }
+.range input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #8a8a8a; border: 0 }
+.range input[type=range]:hover::-webkit-slider-thumb { background: #b5b8c0 } .range input[type=range]:hover::-moz-range-thumb { background: #b5b8c0 }
+
+/* layout */
+.body { flex: 1; display: flex; min-height: 0 }
+.side { width: var(--side-w); flex: 0 0 auto; background: var(--panel); padding: 12px;
+  overflow: auto; display: flex; flex-direction: column; gap: 14px }
+.side { overflow: hidden }
+.side > * { flex: 0 0 auto }
+/* the panel is two halves: the folders and the filters, each with its own scrolling */
+.side > .filters { flex: 1 1 50%; min-height: 0; overflow: auto; display: flex; flex-direction: column; gap: 14px;
+  border-top: 1px solid var(--panel-line); padding-top: 12px; margin: 0 -12px -12px; padding: 12px 12px 12px }
+.filters > * { flex: 0 0 auto }
+/* the folders take what is left of the panel height and scroll; the filters below stay on screen */
+.side > .fold { flex: 1 1 50%; min-height: 0; display: flex; flex-direction: column }
+/* the scrollbar of the tree at the right edge of the panel, as the one of the filters below (the margin undoes the
+   padding of .side, the padding keeps the names where they were) */
+.fold .tree { overflow: auto; min-height: 0; flex: 0 1 auto; margin-right: -12px; padding-right: 12px }
+.tree-add { color: var(--muted); padding: 5px 6px 0; cursor: pointer } .tree-add:hover { color: var(--text) }
+.tree .tn { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+/* the open/close arrow of a folder: a chevron in a 20 px square, easy to hit; it turns down when open */
+.tree .tn { display: inline-flex; align-items: center; min-width: 0 }
+.tw { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; flex: 0 0 auto; font-style: normal;
+  color: var(--muted); margin: -2px 2px -2px -2px; border-radius: 5px; cursor: pointer }
+.tw.none { cursor: inherit } .tw .ic { width: 14px; height: 14px; transition: transform .15s ease } .tw.open .ic { transform: rotate(90deg) }
+.tw:not(.none):hover { color: var(--text); background: rgba(255, 255, 255, .1) }
+/* the edges of the side panels: drag to resize, double click for the default width */
+/* The handles between the panels (as in VS Code): a strip 6 px wide along the whole border — a 1 px line on each side,
+   4 px between them, three dots of 2 px in the middle. Pointed at or dragged, the lines and the dots turn blue (the
+   middle is not filled). The strips take the place of the panels' own border lines. The grab area is the strip plus 4 px
+   of the next panel (right / below), never the scrollbar of the panel before it. */
+.split, .hsplit { position: relative; box-sizing: border-box; background-color: var(--panel); --grip: rgba(255, 255, 255, .38) }
+.split { flex: 0 0 6px; z-index: 6; cursor: col-resize; border-left: 1px solid var(--outline); border-right: 1px solid var(--outline);
+  background-image: radial-gradient(circle at 50% calc(50% - 5px), var(--grip) 1px, transparent 1.3px), radial-gradient(circle at 50% calc(50% + 0px), var(--grip) 1px, transparent 1.3px), radial-gradient(circle at 50% calc(50% + 5px), var(--grip) 1px, transparent 1.3px) }
+.hsplit { flex: 0 0 6px; margin: -8px 0; z-index: 3; cursor: row-resize; background-color: var(--bg); border-top: 1px solid var(--outline);
+  border-bottom: 1px solid var(--outline); background-image: radial-gradient(circle at calc(50% - 5px) 50%, var(--grip) 1px, transparent 1.3px), radial-gradient(circle at calc(50% + 0px) 50%, var(--grip) 1px, transparent 1.3px), radial-gradient(circle at calc(50% + 5px) 50%, var(--grip) 1px, transparent 1.3px) }
+.split::after { content: ""; position: absolute; top: 0; bottom: 0; left: 100%; width: 4px }
+.hsplit::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 4px }
+.split:hover, .split.on, .hsplit:hover, .hsplit.on { border-color: var(--accent); --grip: var(--accent) }
+/* scrollbars: dark, thin */
+/* the thumb never gets shorter than 48 px (about two mouse pointers), however long the list */
+@supports (-moz-appearance: none) { * { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .28) transparent } }
+/* no track (the background shows through), a light thumb and small triangles at the ends (Chromium, so ComfyUI Desktop too; Firefox has no
+   arrows to style) */
+::-webkit-scrollbar { width: 12px; height: 12px } ::-webkit-scrollbar-corner { background: transparent }
+::-webkit-scrollbar-track { background: transparent }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, .24); border-radius: 6px; border: 3px solid transparent; background-clip: padding-box;
+  min-height: 48px; min-width: 48px }
+::-webkit-scrollbar-thumb:hover { background-color: rgba(255, 255, 255, .36) }
+::-webkit-scrollbar-button:single-button { display: block; width: 12px; height: 12px; background-color: transparent;
+  background-repeat: no-repeat; background-position: center; background-size: 6px 6px }
+::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 6'%3E%3Cpath d='M3 1 6 5H0z' fill='%23ffffff' fill-opacity='.45'/%3E%3C/svg%3E") }
+::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 6'%3E%3Cpath d='M3 5 6 1H0z' fill='%23ffffff' fill-opacity='.45'/%3E%3C/svg%3E") }
+::-webkit-scrollbar-button:single-button:horizontal:decrement {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 6'%3E%3Cpath d='M1 3 5 0v6z' fill='%23ffffff' fill-opacity='.45'/%3E%3C/svg%3E") }
+::-webkit-scrollbar-button:single-button:horizontal:increment {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 6 6'%3E%3Cpath d='M5 3 1 0v6z' fill='%23ffffff' fill-opacity='.45'/%3E%3C/svg%3E") }
+::-webkit-scrollbar-button:single-button:hover { background-color: rgba(255, 255, 255, .12) }
+.h { color: var(--muted); font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; margin: 0 3px 6px;
+  display: flex; justify-content: space-between }
+.h a { color: var(--muted); text-transform: none; letter-spacing: 0; cursor: pointer }
+.tree div { padding: 4px 6px; border-radius: 6px; display: flex; justify-content: space-between; gap: 8px; cursor: pointer;
+  white-space: nowrap }
+.tree div span:first-child { overflow: hidden; text-overflow: ellipsis }
+.tree div:hover { background: rgba(255, 255, 255, .04) } .tree .on { background: var(--accent-bg); color: #fff; box-shadow: inset 2px 0 0 var(--accent) }
+.tree .add { color: var(--muted) }
+.chips { display: flex; flex-wrap: wrap; gap: 5px }
+/* badges: a dark tint of the colour as the background, the bright colour as the text, no frame */
+.chip { border: 0; border-radius: 6px; padding: 3px 8px; background: rgba(255, 255, 255, .05); color: #c9cfdb; font-weight: 600; cursor: pointer;
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.chip b { color: var(--muted); font-weight: 400; margin-left: 4px }
+.chip:hover { filter: brightness(1.2) }
+.chip.on { background: rgba(76, 201, 240, .14); color: var(--c3); box-shadow: inset 0 0 0 1px rgba(76, 201, 240, .5) }
+.chip.lora { background: rgba(167, 139, 250, .13); color: var(--lora) } .chip.lora.on { background: rgba(76, 201, 240, .14); color: var(--c3) }
+.more { color: var(--muted); cursor: pointer; margin: 4px 3px 0 }
+.stars { color: var(--star); letter-spacing: 2px; cursor: pointer; font-size: 14px }
+.stars .off { color: #3a3f4b }
+/* dates: no "mm/dd/yyyy" while empty, a word instead; our calendar icon instead of the browser one */
+.dates { display: grid; grid-template-columns: 1fr 1fr; gap: 6px } .date { position: relative; display: flex; min-width: 0 }
+.date input { flex: 1 1 auto; min-width: 0; width: auto; color-scheme: dark; padding: 0 22px 0 6px; cursor: pointer; font-size: 11.5px }
+.date input::-webkit-datetime-edit { padding: 0 } .date input::-webkit-datetime-edit-fields-wrapper { padding: 0 }
+.date input::-webkit-calendar-picker-indicator { position: absolute; right: 0; top: 0; width: 28px; height: 100%; opacity: 0; cursor: pointer; margin: 0; padding: 0 }
+.date.blank input::-webkit-datetime-edit { color: transparent } .date.blank input:focus::-webkit-datetime-edit { color: var(--text) }
+.date .ph { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none }
+.date:not(.blank) .ph, .date.blank input:focus ~ .ph { display: none }
+.date .ic { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--muted); pointer-events: none }
+.date:hover .ic { color: var(--text) }
+.mode { color: var(--muted); margin: 6px 3px 0; cursor: pointer }
+
+/* grid */
+.mainwrap { flex: 1; min-width: 0; position: relative; display: flex }
+.main { flex: 1; min-width: 0; overflow: auto; padding: 12px; position: relative; z-index: 1 }
+canvas.px { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none }
+.grid { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fill, minmax(var(--th), 1fr)) }
+.th { position: relative; aspect-ratio: 1; border-radius: var(--radius); overflow: hidden;
+  border: 2px solid transparent; background: var(--stage); cursor: pointer }
+.th img { width: 100%; height: 100%; object-fit: cover; display: block }
+.cell.sel .th { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(76, 201, 240, .18) }
+/* the current picture: a frame in the four colours of the mark */
+.cell.cur .th { border-color: transparent; background: linear-gradient(var(--stage), var(--stage)) padding-box,
+  linear-gradient(135deg, var(--c1), var(--c2) 35%, var(--c3) 70%, var(--c4)) border-box }
+.fmt { position: absolute; right: 5px; top: 5px; font-size: 10px; font-weight: 700; letter-spacing: .03em; border-radius: 5px;
+  padding: 1px 6px; background: rgba(20, 24, 44, .92); color: #7d9cff }
+.fmt.jpeg, .fmt.jpg { background: rgba(48, 34, 12, .92); color: #f0a93c } .fmt.webp { background: rgba(38, 22, 66, .92); color: #a77bff }
+/* under the thumbnail: the file name, then the resolution (left) and the date of the file (right) */
+.cell { min-width: 0; cursor: pointer }
+/* a new picture, until a moment after it was seen */
+.cell .th { transition: box-shadow .8s } .cell.new .th { box-shadow: 0 0 0 2px var(--accent), 0 0 14px rgba(76, 201, 240, .35) }
+.cap { padding: 6px 2px 0; display: flex; flex-direction: column; gap: 2px }
+.cap b { font-weight: 400; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.cap div { display: flex; justify-content: space-between; gap: 8px; font-size: 11px; color: var(--muted); white-space: nowrap }
+.cap div span:last-child { overflow: hidden; text-overflow: ellipsis }
+.th .st { position: absolute; left: 6px; top: 5px; color: var(--star); font-size: 11px; letter-spacing: 1px; text-shadow: 0 1px 2px #000, 0 0 4px rgba(0, 0, 0, .6) }
+.th .info { position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 7px 6px; background: linear-gradient(transparent, rgba(0, 0, 0, .82));
+  display: flex; flex-direction: column; gap: 3px }
+.th .row1 { display: flex; justify-content: space-between; align-items: center; gap: 4px }
+.th .tags { display: flex; flex-wrap: wrap; gap: 3px }
+.th .line { font-size: 10.5px; color: #ddd; white-space: nowrap; overflow: hidden; text-overflow: ellipsis } .th .line i { font-style: normal; color: #aaa }
+.th .st2 { color: var(--star); font-size: 11px }
+.tag { border-radius: 5px; padding: 1px 6px; font-size: 10.5px; font-weight: 600; white-space: nowrap }
+.chips .tag { font-size: 12px; padding: 3px 8px; border-radius: 6px; cursor: pointer } .chips .tag.on { box-shadow: inset 0 0 0 1px currentColor }
+.sentinel { height: 40px } .empty { color: var(--muted); padding: 40px; text-align: center }
+/* "No pictures match the filters": in the middle of the grid area, in the box of the messages (as "Sent to ComfyUI") */
+.grid > .empty { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 8px 14px; color: #fff;
+  background: #151922; border: 1px solid var(--accent-line); border-radius: 8px; box-shadow: 0 8px 30px rgba(0, 0, 0, .5);
+  white-space: nowrap; z-index: 1 }
+
+/* card */
+.card { width: var(--card-w); flex: 0 0 auto; background: var(--panel);
+  overflow: hidden; display: flex; flex-direction: column }
+.name { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px } .name b { word-break: break-all }
+.rcard { background: var(--card); border-radius: var(--radius); padding: 5px 5px 6px; display: flex; flex-direction: column; gap: 4px }
+.row { display: grid; gap: 4px }
+.f { background: var(--field); border: 1px solid var(--outline); border-radius: var(--radius); height: 24px; display: flex; align-items: center;
+  padding: 0 7px; justify-content: space-between; gap: 6px; white-space: nowrap; overflow: hidden }
+.f label, .t label { color: var(--label) } .f span { overflow: hidden; text-overflow: ellipsis }
+.t { background: var(--field); border: 1px solid var(--outline); border-radius: var(--radius); padding: 4px 7px; white-space: pre-wrap; word-break: break-word }
+.t label { display: block; margin-bottom: 2px }
+.dot { display: inline-block; width: 6px; height: 6px; border-radius: 3px; background: var(--dot-file); margin-right: 4px; vertical-align: 1px }
+.dot.none { background: none; border: 1px solid #6b6f7a }
+.lora { display: inline-block; background: rgba(167, 139, 250, .13); color: var(--lora); font-weight: 600; border-radius: 6px; padding: 1px 7px; margin: 2px 3px 0 0 } .lora i { font-style: normal; color: var(--muted) }
+.note { color: var(--muted); font-size: 11px }
+
+/* status bar */
+.status { height: var(--status-h); flex: 0 0 auto; background: var(--panel); border-top: 1px solid var(--panel-line); display: flex;
+  align-items: center; gap: 16px; padding: 0 14px; color: var(--muted) }
+.bar { width: 140px; height: 5px; background: rgba(255, 255, 255, .08); border-radius: 3px; overflow: hidden } .bar i { display: block; height: 100%; background: var(--c2) }
+/* index state: yellow pulsing = scanning, green steady = up to date, red pulsing = a problem (details in the tooltip) */
+/* the GitHub mark: a white circle with the dark cat (the cat is the background showing through) */
+.gh { display: flex; color: #d6d9e0; border-radius: 50% } .gh:hover { color: #fff }
+.gh svg { width: 18px; height: 18px }
+#st-scan { display: flex; align-items: center; gap: 7px; white-space: nowrap } #st-scan > span { display: flex; align-items: center; gap: 8px }
+#st-scan .bar { display: inline-block } #st-scan.bad { color: #ffb3c0; cursor: help }
+.sdot { width: 7px; height: 7px; border-radius: 50%; flex: 0 0 auto; background: var(--c4); --pulse: rgba(123, 220, 140, .55) }
+.sdot.busy { background: var(--c2); --pulse: rgba(255, 200, 87, .6); animation: rig-pulse 1.6s ease infinite }
+.sdot.bad { background: var(--c1); --pulse: rgba(255, 92, 122, .65); animation: rig-pulse 1.6s ease infinite }
+.sdot.ok { box-shadow: 0 0 0 3px rgba(123, 220, 140, .15) }
+@keyframes rig-pulse { 0% { box-shadow: 0 0 0 0 var(--pulse) } 70% { box-shadow: 0 0 0 7px transparent } 100% { box-shadow: 0 0 0 0 transparent } }
+
+/* card actions, dialogs */
+.acts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px } .acts .btn { justify-content: center }
+/* the card and the viewer panel: name, rating and tags on top and the buttons at the bottom stay put,
+   only the parameters between them scroll */
+.ih { flex: 0 0 auto; padding: 12px 12px 8px; display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid var(--panel-line) }
+.ib { flex: 1 1 auto; min-height: 0; overflow: auto; padding: 8px 12px; display: flex; flex-direction: column; gap: 8px }
+.card > .empty { padding: 12px }
+.acts { flex: 0 0 auto; padding: 10px 12px 12px; border-top: 1px solid var(--panel-line) }
+.cp { float: right; border: 0; background: none; color: var(--muted); cursor: pointer; padding: 0 3px; font: inherit; line-height: 1; border-radius: 4px }
+.cp:hover { color: var(--text); background: rgba(255, 255, 255, .08) }
+/* the note on new pictures: a translucent bar across the whole grid area at its top; it floats over the grid (takes no
+   room, so showing it moves nothing) and stays on top while scrolling. The margins and top undo the padding of .main
+   (a sticky element keeps clear of the padding of its scroll box) */
+.fresh-wrap { position: sticky; top: -12px; height: 0; margin: -12px -12px 12px; z-index: 3; overflow: visible }
+.fresh { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 30px; padding: 0 12px;
+  border: 0; border-bottom: 1px solid var(--accent-line); border-radius: 0; background: rgba(13, 15, 20, .72);
+  backdrop-filter: blur(8px); color: var(--text); font: inherit; font-weight: 550; cursor: pointer }
+.fresh:hover { background: linear-gradient(var(--accent-bg), var(--accent-bg)), rgba(13, 15, 20, .8) }
+.fresh .arr { color: var(--accent); font-size: 15px; line-height: 1 } .fresh[hidden] { display: none }
+.modal { position: fixed; inset: 0; background: rgba(5, 6, 9, .65); backdrop-filter: blur(3px); display: flex; align-items: center; justify-content: center; z-index: 50 }
+.dlg { width: 560px; max-width: 92vw; max-height: 86vh; background: var(--panel); border: 1px solid var(--outline); border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, .6); display: flex; flex-direction: column }
+.dlg.wide { width: 900px } .dlg-h { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--panel-line) }
+.dlg-h .btn { height: 26px } .dlg-b { padding: 12px; display: flex; flex-direction: column; gap: 10px; overflow: auto; min-height: 0 }
+.roots { display: flex; flex-direction: column; gap: 6px } .root { display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  border: 1px solid var(--outline); border-radius: var(--radius); padding: 8px 10px } .root .muted { word-break: break-all }
+.addline { display: flex; gap: 6px } .addline .inp { flex: 1 } .err { color: var(--danger) }
+.seg { display: inline-flex; border: 1px solid var(--outline); border-radius: var(--radius); overflow: hidden; align-self: flex-start }
+.seg span { padding: 0 14px; line-height: 28px; cursor: pointer } .seg span + span { border-left: 1px solid var(--outline) } .seg .on { background: var(--light); color: var(--bg); font-weight: 600 }
+.raw { margin: 0; background: var(--field); border: 1px solid var(--outline); border-radius: var(--radius); padding: 10px; white-space: pre-wrap;
+  word-break: break-word; font: 11.5px/1.45 ui-monospace, Consolas, monospace; max-height: 60vh; overflow: auto }
+
+/* viewer */
+.viewer { position: fixed; inset: 0; background: var(--stage); display: flex; z-index: 40 } .viewer[hidden] { display: none }
+.v-stage { flex: 1; position: relative; overflow: hidden; cursor: grab } .v-stage.drag { cursor: grabbing }
+#v-img { position: absolute; left: 0; top: 0; transform-origin: 0 0; user-select: none }
+.v-top { position: absolute; left: 0; right: 0; top: 0; height: 48px; display: flex; align-items: center; gap: 8px; padding: 0 12px;
+  background: rgba(13, 15, 20, .8); backdrop-filter: blur(8px); border-bottom: 1px solid var(--panel-line); z-index: 2; cursor: default }
+.v-bot { position: absolute; left: 0; right: 0; bottom: 0; height: 34px; display: flex; align-items: center; gap: 14px; padding: 0 14px;
+  background: rgba(13, 15, 20, .8); backdrop-filter: blur(8px); border-top: 1px solid var(--panel-line); color: var(--muted); z-index: 2;
+  cursor: default; white-space: nowrap } .v-bot #v-file { display: flex; gap: 14px; overflow: hidden }
+.v-bot label { display: flex; align-items: center; gap: 4px; cursor: pointer } .v-bot input { accent-color: var(--accent) }
+.v-nav { position: absolute; top: 50%; left: 12px; transform: translateY(-50%); width: 44px; height: 64px; border-radius: 10px; border: 0;
+  background: rgba(13, 15, 20, .55); font-size: 26px; color: var(--text); z-index: 2; cursor: pointer } .v-nav.r { left: auto; right: 12px } .v-nav:hover { background: rgba(13, 15, 20, .85) }
+.v-zoom { position: absolute; right: 14px; bottom: 46px; background: rgba(13, 15, 20, .75); border: 1px solid var(--outline); border-radius: var(--radius);
+  padding: 4px 10px; font-weight: 600; z-index: 2 }
+.v-mini { position: absolute; right: 14px; bottom: 82px; width: 180px; border: 1px solid var(--outline-hi); border-radius: 6px; overflow: hidden; z-index: 2;
+  background: var(--stage); cursor: crosshair } .v-mini[hidden] { display: none } .v-mini img { width: 100%; height: 100%; display: block }
+.v-mini i { position: absolute; border: 2px solid var(--accent); pointer-events: none }
+.v-panel { width: var(--card-w); flex: 0 0 auto; background: var(--panel); overflow: hidden;
+  display: flex; flex-direction: column } .v-panel[hidden] { display: none }
+
+/* rating, tags, toasts */
+.stars.rate span, .stars.big span { cursor: pointer } .stars.rate span.off { color: #3a3f4b } .stars.rate span:hover { color: #fff }
+.stars.big { font-size: 28px; letter-spacing: 6px } .stars.big span:hover, .stars.big span:hover ~ span { color: #3a3f4b } .clear0 { font-size: 12px; letter-spacing: 0; cursor: pointer }
+.tag .x { font-style: normal; opacity: .6; cursor: pointer; margin-left: 2px } .tag .x:hover { opacity: 1 }
+.addtag { color: var(--muted); border-style: dashed } .taginp { height: 24px; width: 160px }
+#v-rate { padding: 0 8px; cursor: default } #v-rate .stars { font-size: 14px }
+.acts { grid-template-columns: 1fr 1fr } .btn.dang { color: var(--danger) }
+.toast { position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%); background: #151922; border: 1px solid var(--accent-line);
+  color: #fff; border-radius: 8px; padding: 8px 14px; z-index: 100; max-width: 70vw; box-shadow: 0 8px 30px rgba(0, 0, 0, .5) }
+.toast.bad { background: #22141a; border-color: rgba(255, 92, 122, .55) }
+.pickfolder { max-height: 40vh; overflow: auto; border: 1px solid var(--outline); border-radius: var(--radius); padding: 4px }
+
+/* compare */
+.compare { position: fixed; inset: 0; background: var(--bg); z-index: 45; display: flex; flex-direction: column; padding: 12px; gap: 10px } .compare[hidden] { display: none }
+.c-top { display: flex; align-items: center; gap: 12px } .c-top label { display: flex; gap: 4px; align-items: center; cursor: pointer }
+.c-stage { position: relative; flex: 0 0 var(--c-stage-h, 55%); min-height: 200px; overflow: hidden; background: var(--stage); border-radius: var(--radius); cursor: grab }
+.c-stage img { position: absolute; left: 0; top: 0; user-select: none }
+.c-handle { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: rgba(255, 255, 255, .9); box-shadow: 0 0 4px rgba(0, 0, 0, .6);
+  cursor: ew-resize; z-index: 2 }
+/* the grip of the slider: an outlined circle with two arrows, the picture shows through */
+.c-handle[hidden] { display: none } .c-handle i { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 34px; height: 34px;
+  border-radius: 50%; border: 2px solid rgba(255, 255, 255, .9); background: rgba(13, 15, 20, .45); backdrop-filter: blur(4px); color: #fff;
+  box-shadow: 0 0 6px rgba(0, 0, 0, .45); display: flex; align-items: center; justify-content: center }
+.c-handle i svg { width: 18px; height: 18px; filter: drop-shadow(0 0 1px rgba(0, 0, 0, .6)) }
+.c-handle:hover i { background: rgba(13, 15, 20, .65) }
+.c-lab { position: absolute; top: 10px; background: rgba(13, 15, 20, .75); border-radius: 8px; padding: 3px 8px 3px 4px; z-index: 2;
+  display: inline-flex; align-items: center; gap: 6px }
+/* the marks A and B of the compared pictures */
+.abm { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 5px;
+  font-size: 11px; font-weight: 700; line-height: 1; flex: 0 0 auto }
+.abm.a { color: var(--c3); background: rgba(76, 201, 240, .16); box-shadow: inset 0 0 0 1px rgba(76, 201, 240, .45) }
+.abm.b { color: var(--c4); background: rgba(123, 220, 140, .14); box-shadow: inset 0 0 0 1px rgba(123, 220, 140, .45) }
+table.cmp th .abm { vertical-align: middle } table.cmp th .cmpsend { margin-left: 8px; vertical-align: middle }
+table.cmp tr:first-child th { white-space: nowrap; vertical-align: middle }   /* the mark and its buttons on one line */
+/* the title of the viewer and of the comparison, right after Close */
+/* the same lettering as the name PicoTeka in the gallery's top bar */
+.v-top .ttl, .c-top .ttl { font-weight: 650; font-size: 15px; letter-spacing: -.01em; white-space: nowrap; color: var(--text); margin-left: 4px;
+  display: inline-flex; align-items: center; height: 30px; line-height: 1; position: relative; top: -1px }
+/* top -1px: the middle of the capitals of the title level with the middle of the button text */
+.c-lab.a { left: 10px } .c-lab.b { right: 10px }
+.c-stage.sbs .c-lab.b { left: calc(50% + 14px); right: auto }
+.c-stage .v-zoom { bottom: 10px }
+.c-table { flex: 1 1 0; min-height: 80px; overflow: auto }
+/* between the pictures and the table: drag to change their heights, double click for the default */
+table.cmp { border-collapse: separate; border-spacing: 0; width: 100%; background: var(--card); border-radius: var(--radius) }
+table.cmp td, table.cmp th { padding: 5px 10px; text-align: left; border-bottom: 1px solid var(--panel-line); vertical-align: top; line-height: 1.45; word-break: break-word }
+table.cmp th { color: var(--muted); font-weight: 400; font-size: 10.5px; position: sticky; top: 0; background: var(--panel) }
+table.cmp td:first-child { color: var(--label); width: 110px } table.cmp tr.d td:not(:first-child) { background: rgba(255, 183, 77, .10) }
+table.cmp tr.d td:first-child { color: #ffb74d } table.cmp mark { background: #3a2a10; color: #f5b04a; font-weight: 600; border-radius: 4px; padding: 0 4px }
+.cmpsend { display: inline-flex; gap: 6px; margin-left: 10px } .cmpsend .btn { height: 22px; font-size: 11px }
+
+/* line icons on the buttons */
+.ic { width: 15px; height: 15px; flex: 0 0 auto; stroke-width: 2 }
+.btn .ic { margin-left: -1px } .btn.x { padding: 0 7px } .btn.x .ic { margin: 0 }
+.cp .ic { width: 13px; height: 13px; display: block }
+#v-del .ic { margin: 0 }
+
+/* close buttons: a red cross; the Rating button: the outline of a yellow star */
+#v-close .ic, #c-close .ic, .dlg-h .btn.x .ic { color: var(--danger) }
+#b-rate .ic { color: var(--star) }
+
+/* the fields of the parameters: positive green, negative amber, LoRA violet, the rest cyan */
+.rcard .t, .rcard .f { --hue: 76, 201, 240; border-color: rgba(var(--hue), .28); background: rgba(var(--hue), .045) }
+.rcard .t label, .rcard .f label { color: rgb(var(--hue)) }
+.rcard .t .dot, .rcard .f .dot { background: rgb(var(--hue)) } .rcard .dot.none { background: none; border-color: rgba(var(--hue), .6) }
+.rcard .t.pos { --hue: 123, 220, 140 } .rcard .t.neg { --hue: 245, 165, 36 } .rcard .t.lor { --hue: 180, 156, 255 }
+.rcard .cp { color: rgba(var(--hue), .8) } .rcard .cp:hover { color: rgb(var(--hue)) }
+#rescan .ic { color: var(--c4) }
+.split:has(+ .v-panel[hidden]) { display: none }
+.raw.err { color: var(--danger) }
+
+/* the thumbnail size, as the zoom of Windows 11 */
+.zoom { display: flex; align-items: center; gap: 4px; flex: 0 0 auto }
+.zl { color: var(--label); margin-right: 4px }
+.zdd .dd-v { min-width: 38px } .zdd .dd-btn { padding: 0 6px 0 9px; gap: 4px } .zdd .dd-menu { min-width: 96px; max-height: 60vh; overflow: auto }
+.zb { width: 28px; height: 28px; border: 0; border-radius: 6px; background: none; color: var(--muted); cursor: pointer; display: flex;
+  align-items: center; justify-content: center; padding: 0 }
+.zb:hover:not(:disabled) { background: rgba(255, 255, 255, .07); color: var(--text) } .zb:active:not(:disabled) { background: rgba(255, 255, 255, .04) }
+.zb:disabled { opacity: .35; cursor: default } .zb .ic { width: 15px; height: 15px }
+.zs { position: relative; width: 120px; height: 28px; cursor: pointer; outline: none; touch-action: none }
+.zs-track { position: absolute; left: 0; right: 0; top: 50%; height: 4px; margin-top: -2px; border-radius: 2px; background: rgba(255, 255, 255, .18) }
+.zs-track i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 2px; background: var(--accent) }
+/* the thumb: a dark ring with a coloured dot; the dot grows on hover and shrinks while pressed */
+.zs-thumb { position: absolute; top: 50%; width: 20px; height: 20px; margin: -10px 0 0 -10px; border-radius: 50%; background: #1b1f29;
+  border: 1px solid rgba(255, 255, 255, .14); box-shadow: 0 1px 3px rgba(0, 0, 0, .5); display: flex; align-items: center; justify-content: center }
+.zs-thumb i { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); transition: transform .12s ease }
+.zs:hover .zs-thumb i, .zs:focus-visible .zs-thumb i { transform: scale(1.2) } .zs.drag .zs-thumb i { transform: scale(.85) }
+.zs:focus-visible .zs-thumb { box-shadow: 0 0 0 2px var(--accent-line) }
+.zs.anim .zs-thumb { transition: left .22s cubic-bezier(.3, 0, .2, 1) } .zs.anim .zs-track i { transition: width .22s cubic-bezier(.3, 0, .2, 1) }
+.v-zoom:empty { display: none }
+.v-top.shrink1 #v-img-wf > span, .v-top.shrink1 #v-par-wf > span, .v-top.shrink2 #v-tags > span, .v-top.shrink2 #v-info > span,
+.v-top.shrink3 #v-title, .v-top.shrink4 .zs, .v-top .ic.alt { display: none }
+.v-top.shrink1 #v-img-wf > .ic:not(.alt), .v-top.shrink1 #v-par-wf > .ic:not(.alt) { display: none }
+.v-top.shrink1 .ic.alt { display: inline-block }
+.v-top .zoom, .c-top .zoom { gap: 2px } .v-top .zs, .c-top .zs { width: 110px }
+.v-top .zdd .dd-v, .c-top .zdd .dd-v { min-width: 44px }
+/* the top line of the comparison: everything on one line, only the hint gives way (its full text in the tooltip) */
+.c-top > * { flex: 0 0 auto; white-space: nowrap } .c-top .seg { flex-shrink: 0 }
+/* Close and the title on the left; the hints, the mode switch and the zoom on the right. The spacer takes the free room;
+   on a narrow window the hints shrink first (with …) */
+.c-top .sp { flex: 1 1 0; min-width: 0 }
+/* the hints: a yellow (?) (the yellow of the mark) and the hints after it; folded to the (?) when there is no room */
+.hint { display: flex; align-items: center; gap: 6px; min-width: 0; flex: 0 1 auto; color: var(--muted) }
+.hint-t { min-width: 0; overflow: hidden; white-space: nowrap } .hint.folded .hint-t, .hint-t [hidden] { display: none }
+.hint-ic { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; padding: 0;
+  border: 0; border-radius: 50%; background: transparent; color: var(--c2); cursor: pointer }
+.hint-ic .ic { width: 17px; height: 17px } .hint-ic:hover { background: rgba(255, 200, 87, .14) }
+.hint-pop { position: fixed; z-index: 60; background: var(--panel); border: 1px solid var(--outline); border-radius: var(--radius);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .5); padding: 8px 12px; color: var(--text); display: flex; flex-direction: column; gap: 4px;
+  white-space: nowrap } .hint-pop[hidden] { display: none }
+/* rating stars as the Rating button icon: filled yellow when given, a grey outline when not; hovering shows the choice */
+.stars.ico { display: inline-flex; align-items: center; gap: 2px; letter-spacing: 0 } .stars.ico .sv { display: flex; cursor: pointer }
+.stars.ico .sv .ic { width: 15px; height: 15px; transition: color .1s, fill .1s }
+.stars.ico .sv.on .ic { color: var(--star); fill: var(--star) } .stars.ico .sv.off .ic { color: #4a4f5c; fill: none }
+.stars.ico:hover .sv .ic { color: var(--star) } .stars.ico .sv:hover ~ .sv .ic { color: #4a4f5c; fill: none }
+.stars.big.ico .sv .ic { width: 30px; height: 30px } .stars.big.ico { gap: 8px }
+.stars.big.ico:hover .sv .ic { fill: var(--star) } .stars.big.ico .sv:hover ~ .sv .ic { fill: none }
+#v-rate .stars.ico .sv .ic { width: 15px; height: 15px }
+/* a thin vertical line between items (instead of a middle dot) */
+.sep { display: inline-block; width: 1px; height: .85em; background: currentColor; opacity: .35; margin: 0 .55em; vertical-align: -.08em }
+/* the zoom slider: a transparent ring around the coloured dot */
+.zs-thumb { background: transparent; border: 1.5px solid rgba(255, 255, 255, .28); box-shadow: none }
+.zs:hover .zs-thumb { border-color: rgba(255, 255, 255, .45) }
+/* the folder browser of the folders dialog */
+.fpick { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--panel-line); padding-top: 10px }
+.fplaces { display: flex; flex-wrap: wrap; gap: 5px } .fplaces .chip { display: inline-flex; align-items: center; gap: 5px } .fplaces .ic { width: 13px; height: 13px }
+.fbar { display: flex; gap: 6px } .fbar .inp { flex: 1; min-width: 0 } .fup { padding: 0 8px } .fup .ic { margin: 0 }
+.fdirs { height: 280px; overflow: auto; border: 1px solid var(--outline); border-radius: var(--radius); padding: 4px; background: var(--field) }
+.fdirs .tn { display: flex; align-items: center; gap: 7px } .fdirs .tn .ic { width: 15px; height: 15px; color: var(--c2); flex: 0 0 auto }
+.fempty { padding: 8px; cursor: default } .fgo { display: flex; justify-content: flex-end; align-items: center; gap: 12px }
+/* rating stars: the ones not given are a yellow outline, as on the Rating button and the thumbnails */
+.stars.ico .sv.off .ic { color: var(--star); fill: none; opacity: .9 } .stars.ico .sv:hover ~ .sv .ic { color: var(--star); fill: none }

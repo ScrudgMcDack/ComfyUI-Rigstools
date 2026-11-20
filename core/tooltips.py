@@ -47,6 +47,9 @@ LORA_STACK = ("LoRA stack as <lora:name:weight> tags: the 'Lora stack' field, ot
 def _value(out, key, label, en, ru, empty, source):
     if empty:
         x_en, x_ru = empty
+    elif source == "gen":
+        x_en = f"the parameters have no {label} — the default value comes out (type your own in the panel)."
+        x_ru = f"в параметрах нет {label} — на выход идёт значение по умолчанию (своё можно ввести в панели)."
     elif source == "panel":
         x_en = f"the image has no {label} — the default value comes out (type your own in the panel)."
         x_ru = f"в картинке нет {label} — на выход идёт значение по умолчанию (своё можно ввести в панели)."
@@ -114,6 +117,9 @@ TIPS = {
                                          ("SAMPLER", "SCHEDULER")]
     + [("LORA_STACK", *LORA_STACK)]
     + [_value(*v, source="fallback") for v in VALUES if v[0] in ("SAMPLER", "SCHEDULER")],
+    "Generation parameters [Rigstools]": [_value(*v, source="gen") for v in VALUES if v[0] not in ("SAMPLER", "SCHEDULER")]
+    + [("LORA_STACK", *LORA_STACK)]
+    + [_value(*v, source="gen") for v in VALUES if v[0] in ("SAMPLER", "SCHEDULER")],
     "Metadata extractor [Rigstools]": [
         ("PROMPT", "ComfyUI API prompt stored in the image (JSON)" + X_EN + "no prompt in the metadata — an empty "
          "JSON comes out.", "Промпт ComfyUI (API-формат), сохранённый в картинке (JSON)" + X_RU + "в метаданных нет "

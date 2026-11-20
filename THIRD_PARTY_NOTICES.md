@@ -5,15 +5,19 @@ Rigstools started as a trimmed fork of ComfyUI-Crystools (https://github.com/cry
 MIT License, Copyright (c) 2023 Crystian. The notice is kept in [LICENSE](LICENSE).
 
 ## Noto Emoji
-The node title icon (`web/alembic.svg`) and the extension icon (`icon.png`) use the “alembic” emoji (U+2697)
+The node title icon (`web/alembic.svg`), the extension icon (`icon.png`) and the README banner (`docs/banner.png`) use the “alembic” emoji (U+2697)
 from Noto Emoji (https://github.com/googlefonts/noto-emoji), Copyright 2013 Google LLC.
 The SVG image resources of Noto Emoji are licensed under the Apache License, Version 2.0;
 the notice and the full license text are in [licenses/APACHE-2.0-NOTO-EMOJI.txt](licenses/APACHE-2.0-NOTO-EMOJI.txt).
-`web/alembic.svg` is the unmodified file `2D/svg/emoji_u2697.svg`; `icon.png` places it on a background made for Rigstools.
+`web/alembic.svg` is the unmodified file `2D/svg/emoji_u2697.svg`; `icon.png` places it on a background made for Rigstools,
+and the README banner (`docs/banner.png`) takes the alembic from `icon.png` and places it on a wider background with the
+names Rigstools and PicoTeka.
 
 ## Lucide
 The Settings sidebar icon of Rigstools is the path data of the `flask-conical` icon from **Lucide**
-(https://lucide.dev), embedded in `web/rigstools.js`.
+(https://lucide.dev), embedded in `web/rigstools.js`. The button icons of the gallery page (star, hash, folder-input,
+trash-2, refresh-cw, arrow-right, info, copy, check, x, workflow; lucide-static 0.460.0) are embedded in
+`gallery_ui/gallery.js`.
 
 Lucide is licensed under the ISC License:
 
@@ -61,3 +65,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+## Simple Icons
+The link to the repository in the status bar of the gallery is the GitHub mark from **Simple Icons**
+(https://simpleicons.org, simple-icons 13.21.0, `icons/github.svg`), embedded in `gallery_ui/index.html`.
+Simple Icons is released under CC0 1.0 Universal (public domain dedication). The GitHub mark is a trademark of
+GitHub, Inc. and is used here only to link to the Rigstools repository on GitHub.

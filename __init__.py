@@ -2,11 +2,11 @@
 @author: scrudgmcdack
 @title: Rigstools
 @nickname: rigstools
-@version: 1.1.0
+@version: 2.0.0
 @project: https://github.com/ScrudgMcDack/ComfyUI-Rigstools
 @description: Load images with their generation data (PNG, JPEG, WebP) and read it back: workflow, prompt and A1111-style parameters
               (seed, steps, CFG, size, prompts, model, LoRA stack); save images with the parameters collected from the graph;
-              colour correction. Based on ComfyUI-Crystools by Crystian.
+              colour correction; a gallery page with search, tags, rating and comparison. Based on ComfyUI-Crystools by Crystian.
 """
 
 from .core import version, logger
@@ -20,6 +20,8 @@ from .nodes.image import CLoadImageMeta, CLoadImageFolder
 from .nodes.image_params import CLoadImageParams
 from .nodes.color import CColorCorrection
 from .nodes.save import CSaveImage
+from .nodes.gen_params import CGenerationParams
+from .nodes import gallery as _gallery  # noqa: F401 — the gallery page and its API
 
 NODE_CLASS_MAPPINGS = {
     CLASSES.CMETADATA_EXTRACTOR_NAME.value: CMetadataExtractor,
@@ -30,6 +32,7 @@ NODE_CLASS_MAPPINGS = {
     CLASSES.CLOAD_IMAGE_PARAMS_NAME.value: CLoadImageParams,
     CLASSES.CCOLOR_CORRECTION_NAME.value: CColorCorrection,
     CLASSES.CSAVE_IMAGE_NAME.value: CSaveImage,
+    CLASSES.CGEN_PARAMS_NAME.value: CGenerationParams,
 }
 
 # output tooltips (English here, Russian in locales/ru/nodeDefs.json) — see core/tooltips.py
@@ -46,6 +49,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     CLASSES.CLOAD_IMAGE_PARAMS_NAME.value: CLASSES.CLOAD_IMAGE_PARAMS_DESC.value,
     CLASSES.CCOLOR_CORRECTION_NAME.value: CLASSES.CCOLOR_CORRECTION_DESC.value,
     CLASSES.CSAVE_IMAGE_NAME.value: CLASSES.CSAVE_IMAGE_DESC.value,
+    CLASSES.CGEN_PARAMS_NAME.value: CLASSES.CGEN_PARAMS_DESC.value,
 }
 
 WEB_DIRECTORY = "./web"  # alembic icon in the node titles, metadata badge of the loaders

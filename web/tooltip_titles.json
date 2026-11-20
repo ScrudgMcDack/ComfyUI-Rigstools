@@ -167,6 +167,56 @@
    "ru": "Планировщик (имя ComfyUI)"
   }
  },
+ "Generation parameters [Rigstools]": {
+  "SEED": {
+   "en": "Seed",
+   "ru": "Сид генерации"
+  },
+  "STEPS": {
+   "en": "Sampling steps",
+   "ru": "Шаги сэмплирования"
+  },
+  "CFG": {
+   "en": "CFG scale",
+   "ru": "CFG"
+  },
+  "CLIP": {
+   "en": "Clip skip — the value for CLIP Set Last Layer.",
+   "ru": "Clip skip — значение для CLIP Set Last Layer."
+  },
+  "WIDTH": {
+   "en": "Image width",
+   "ru": "Ширина картинки"
+  },
+  "HEIGHT": {
+   "en": "Image height",
+   "ru": "Высота картинки"
+  },
+  "POSITIVE": {
+   "en": "Positive prompt exactly as stored in the image (LoRA tags included).",
+   "ru": "Позитивный промпт ровно как в картинке (с тегами LoRA)."
+  },
+  "NEGATIVE": {
+   "en": "Negative prompt exactly as stored in the image.",
+   "ru": "Негативный промпт ровно как в картинке."
+  },
+  "MODEL_NAME": {
+   "en": "Checkpoint: path in models/checkpoints when the file is found, otherwise the name from the image.",
+   "ru": "Чекпоинт: путь в models/checkpoints, если файл найден, иначе имя из картинки."
+  },
+  "LORA_STACK": {
+   "en": "LoRA stack as <lora:name:weight> tags: the 'Lora stack' field, otherwise the LoRA tags of the positive prompt; None when the image has no LoRA",
+   "ru": "Стек LoRA тегами <lora:имя:вес>: поле «Lora stack», иначе теги LoRA из позитивного промпта; None, если в картинке нет LoRA"
+  },
+  "SAMPLER": {
+   "en": "Sampler (ComfyUI name)",
+   "ru": "Сэмплер (имя ComfyUI)"
+  },
+  "SCHEDULER": {
+   "en": "Scheduler (ComfyUI name)",
+   "ru": "Планировщик (имя ComfyUI)"
+  }
+ },
  "Metadata extractor [Rigstools]": {
   "PROMPT": {
    "en": "ComfyUI API prompt stored in the image (JSON)",

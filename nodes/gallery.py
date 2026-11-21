@@ -275,9 +275,9 @@ def register_routes():
     async def delete(request):
         if not _files_allowed(request):
             return web.json_response({"error": "network_files"}, status=403)
-        _, ids = await body_ids(request)
+        body, ids = await body_ids(request)
         try:
-            done, errors = await run(G.delete_files, G.get()[0], ids)
+            done, errors = await run(G.delete_files, G.get()[0], ids, bool(body.get("permanent")))
         except ImportError:
             return web.json_response({"error": "no_send2trash"}, status=500)
         return web.json_response({"done": done, "errors": errors})

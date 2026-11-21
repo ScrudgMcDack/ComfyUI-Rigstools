@@ -250,6 +250,10 @@ canvas.px { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;
   border: 1px solid var(--outline); border-radius: var(--radius); padding: 8px 10px } .root .muted { word-break: break-all }
 .addline { display: flex; gap: 6px } .addline .inp { flex: 1 } .err { color: var(--danger) }
 .seg { display: inline-flex; border: 1px solid var(--outline); border-radius: var(--radius); overflow: hidden; align-self: flex-start }
+/* buttons that turn bold when on (Fit, the mode switches) keep their width: an invisible bold copy of the text holds it */
+.btn[data-w], .seg span[data-w] { flex-direction: column; justify-content: center; align-items: center; gap: 0 }
+.seg span[data-w], .btn > span[data-w] { display: inline-flex; flex-direction: column; align-items: center }
+.btn[data-w]::after, .seg span[data-w]::after, .btn > span[data-w]::after { content: attr(data-w); height: 0; visibility: hidden; overflow: hidden; font-weight: 650 }
 .seg span { padding: 0 14px; line-height: 28px; cursor: pointer } .seg span + span { border-left: 1px solid var(--outline) } .seg .on { background: var(--light); color: var(--bg); font-weight: 600 }
 .raw { margin: 0; background: var(--field); border: 1px solid var(--outline); border-radius: var(--radius); padding: 10px; white-space: pre-wrap;
   word-break: break-word; font: 11.5px/1.45 ui-monospace, Consolas, monospace; max-height: 60vh; overflow: auto }
@@ -281,6 +285,11 @@ canvas.px { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;
 .addtag { color: var(--muted); border-style: dashed } .taginp { height: 24px; width: 160px }
 #v-rate { padding: 0 8px; cursor: default } #v-rate .stars { font-size: 14px }
 .acts { grid-template-columns: 1fr 1fr } .btn.dang { color: var(--danger) }
+/* every Delete button: red text, icon and border; the title of the permanent-delete dialog is red too */
+.btn.dang { border-color: var(--danger) } .btn.dang:hover { background: rgba(255, 92, 122, .10) }
+.dlg-h b.dang { color: var(--danger) }
+/* File data on the card: a green (i), the green of the mark */
+.btn.meta .ic { color: var(--c4) }
 .toast { position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%); background: #151922; border: 1px solid var(--accent-line);
   color: #fff; border-radius: 8px; padding: 8px 14px; z-index: 100; max-width: 70vw; box-shadow: 0 8px 30px rgba(0, 0, 0, .5) }
 .toast.bad { background: #22141a; border-color: rgba(255, 92, 122, .55) }

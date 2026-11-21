@@ -4,6 +4,21 @@
 
 All notable changes to Rigstools. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [2.0.1] — 2026-11-21
+### Added
+- PicoTeka: **Shift + Delete** (or Shift + click on a Delete button) deletes pictures permanently, past the recycle
+  bin, after a warning; Cancel is in focus there, so a stray Enter deletes nothing.
+
+### Changed
+- PicoTeka: the delete dialog has a **Cancel** button and speaks of the system recycle bin (not only Windows); every
+  Delete button has a red border; File data has a green (i).
+
+### Fixed
+- README banner: the names stand symmetric to the alembic; the Comfy Registry and ComfyUI-Manager get a banner
+  of their own (21:9).
+- PicoTeka: Fit, Parameters, Side by side / Slider and the tabs of File data no longer grow wider when turned on, so
+  the buttons next to them do not shift.
+
 ## [2.0.0] — 2026-11-21
 ### Added
 - **PicoTeka** — a fast and simple gallery for the pictures you generate, opened by a button on the ComfyUI top bar
@@ -65,6 +80,7 @@ First public version.
   matching to a reference, manual adjustments, a histogram.
 - Output marks and output tooltips; English and Russian UI; a Debug setting for the console log.
 
+[2.0.1]: https://github.com/ScrudgMcDack/ComfyUI-Rigstools/releases/tag/v2.0.1
 [2.0.0]: https://github.com/ScrudgMcDack/ComfyUI-Rigstools/releases/tag/v2.0.0
 [1.1.0]: https://github.com/ScrudgMcDack/ComfyUI-Rigstools/releases/tag/v1.1.0
 [1.0.0]: https://github.com/ScrudgMcDack/ComfyUI-Rigstools/releases/tag/v1.0.0

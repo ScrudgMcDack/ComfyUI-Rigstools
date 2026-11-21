@@ -21,7 +21,9 @@ const STR = {
     sentWf: "Sent to ComfyUI", no_comfy: "ComfyUI is not open in any browser tab", no_workflow: "The file has no workflow",
     network_files: "Deleting and moving files from another computer is off (Settings → Rigstools → PicoTeka)",
     no_send2trash: "The send2trash package is missing: pip install send2trash", not_root: "Not a gallery folder",
-    delTitle: "Delete pictures", delText: "Move {n} {pics} to the Windows recycle bin? Tags and rating come back if a file is restored within 30 days.",
+    delPermTitle: "Delete permanently?", delPermText: "You are about to permanently delete {n} {pics}. The files are deleted from the disk, bypassing the recycle bin, and cannot be restored; their tags and rating are deleted too. Are you sure?",
+    delPerm: "Delete permanently", deletedPerm: "Deleted permanently: {n}", cancel: "Cancel",
+    delTitle: "Delete pictures", delText: "Move {n} {pics} to the system recycle bin? Tags and rating come back if a file is restored within 30 days.",
     deleted: "Moved to the recycle bin: {n}", moveTitle: "Move pictures", moveText: "Move {n} {pics} to:", newFolder: "new subfolder (optional)",
     moved: "Moved: {n}", rateTitle: "Rating of {n} {pics}", tagsTitle: "Tags of {n} {pics}", tagsAdd: "Add", tagsRemove: "Remove from the pictures",
     manage: "manage", tagsManage: "Tags", rename: "Rename", renamePh: "new name", tagDelete: "Delete the tag",
@@ -48,7 +50,9 @@ const STR = {
     sentWf: "Отправлено в ComfyUI", no_comfy: "ComfyUI не открыт ни в одной вкладке браузера", no_workflow: "В файле нет workflow",
     network_files: "Удаление и перемещение файлов с другого компьютера выключено (Настройки → Rigstools → PicoTeka)",
     no_send2trash: "Нет пакета send2trash: pip install send2trash", not_root: "Это не папка галереи",
-    delTitle: "Удаление картинок", delText: "Переместить {n} {pics} в корзину Windows? Теги и рейтинг вернутся, если файл восстановить в течение 30 дней.",
+    delPermTitle: "Удалить безвозвратно?", delPermText: "Вы собираетесь безвозвратно удалить {n} {pics}. Файлы будут удалены с диска, минуя корзину, — восстановить их будет нельзя; теги и рейтинг тоже удаляются. Вы уверены?",
+    delPerm: "Удалить безвозвратно", deletedPerm: "Удалено безвозвратно: {n}", cancel: "Отмена",
+    delTitle: "Удаление картинок", delText: "Переместить {n} {pics} в корзину ОС? Теги и рейтинг вернутся, если файл восстановить в течение 30 дней.",
     deleted: "Перемещено в корзину: {n}", moveTitle: "Перемещение картинок", moveText: "Переместить {n} {pics} в:", newFolder: "новая подпапка (необязательно)",
     moved: "Перемещено: {n}", rateTitle: "Рейтинг {n} {pics}", tagsTitle: "Теги {n} {pics}", tagsAdd: "Добавить", tagsRemove: "Убрать с картинок",
     manage: "управлять", tagsManage: "Теги", rename: "Переименовать", renamePh: "новое имя", tagDelete: "Удалить тег",
@@ -774,7 +778,7 @@ function infoHtml(it) {
       <button class="btn pri" data-act="params" ${it.has_params ? "" : "disabled"}>${icl("send", t("toWfParams"))}</button>
       <button class="btn" data-act="workflow" ${it.has_workflow ? "" : "disabled"}>${icl("workflow", t("openWf"))}</button>
       <button class="btn" data-act="copy" ${it.has_params ? "" : "disabled"}>${icl("copy", t("copyParams"))}</button>
-      <button class="btn" data-act="meta">${icl("info", t("fileData"))}</button>
+      <button class="btn meta" data-act="meta">${icl("info", t("fileData"))}</button>
       <button class="btn dang" data-act="delete">${icl("trash", t("del"))}</button></div>`;
 }
 // rating stars as the icon of the Rating button: filled when given, an outline when not (the thumbnails keep font stars)
@@ -803,7 +807,7 @@ function wireInfo(box, it) {
   };
   box.querySelector('[data-act="meta"]').onclick = () => openMeta(it);
   for (const kind of ["image", "params", "workflow"]) box.querySelector(`[data-act="${kind}"]`).onclick = () => sendToComfy(it.id, kind);
-  box.querySelector('[data-act="delete"]').onclick = () => deleteDialog([it.id]);
+  box.querySelector('[data-act="delete"]').onclick = (e) => deleteDialog([it.id], e.shiftKey);
 }
 
 /** After a change to pictures: their cells, the card and the open viewer show it. */
@@ -878,20 +882,27 @@ async function tagInput(line, done) {
   };
 }
 
-function deleteDialog(ids) {
+/** Delete: to the recycle bin (Delete), or permanently, past the bin (Shift + Delete, Shift + click on a Delete
+    button) — then the dialog is red, warns that nothing can be restored and has Cancel in focus, so a stray Enter
+    deletes nothing. */
+function deleteDialog(ids, permanent = false) {
   if (!ids.length) return;
-  const body = el("div", "dlg-b", `<div>${esc(t("delText", { n: num(ids.length), pics: picsWord(ids.length) }))}</div>`);
-  const go = el("button", "btn dang", icl("trash", t("del")));
-  const line = el("div", "addline"); line.style.justifyContent = "flex-end"; line.append(go);
+  const n = { n: num(ids.length), pics: picsWord(ids.length) };
+  const body = el("div", "dlg-b", `<div>${esc(t(permanent ? "delPermText" : "delText", n))}</div>`);
+  const cancel = el("button", "btn", t("cancel"));
+  const go = el("button", "btn dang", icl("trash", t(permanent ? "delPerm" : "del")));
+  const line = el("div", "addline"); line.style.justifyContent = "flex-end"; line.append(cancel, go);
   body.append(line);
-  const close = dialog(t("delTitle"), body);
-  go.focus();
+  const close = dialog(t(permanent ? "delPermTitle" : "delTitle"), body);
+  if (permanent) body.closest(".dlg").querySelector(".dlg-h b").classList.add("dang");
+  cancel.onclick = close;
+  (permanent ? cancel : go).focus();
   go.onclick = async () => {
     close();
     let r;
-    try { r = await post("delete", { ids }); } catch (e) { return fail(e); }
+    try { r = await post("delete", { ids, permanent }); } catch (e) { return fail(e); }
     removeItems(r.done);
-    toast(t("deleted", { n: num(r.done.length) }));
+    toast(t(permanent ? "deletedPerm" : "deleted", { n: num(r.done.length) }));
     if (r.errors.length) toast(t("errors", { v: r.errors.map((x) => x[0]).join(", ") }), true);
   };
 }
@@ -1124,7 +1135,7 @@ function metaBody(m) {
   const pre = el("pre", "raw");
   const parts = [["parameters", m.parameters || null], ["prompt", m.prompt], ["workflow", m.workflow]];
   parts.forEach(([name, v], i) => {
-    const b = el("span", i ? "" : "on", name);
+    const b = el("span", i ? "" : "on", name); b.dataset.w = name;
     b.onclick = () => { for (const x of tabs.children) x.classList.toggle("on", x === b); pre.textContent = pretty(v); };
     tabs.append(b);
   });
@@ -1242,8 +1253,8 @@ function step(d) {
 function initViewer() {
   $("v-close").innerHTML = icl("close", t("close"));
   $("v-title").textContent = t("viewTitle");
-  $("v-fit").textContent = t("fit");
-  $("v-info").innerHTML = icl("info", t("info"));
+  $("v-fit").textContent = $("v-fit").dataset.w = t("fit");
+  $("v-info").innerHTML = icl("info", t("info")); $("v-info").querySelector("span").dataset.w = t("info");
   $("v-keep-l").textContent = t("keepZoom");
   const keep = $("v-keep");
   keep.checked = V.keep;
@@ -1294,7 +1305,7 @@ function openCompare() {
   [C.a, C.b] = ids.map((id) => S.items.find((x) => x.id === id));
   $("compare").hidden = false;
   $("c-title").textContent = t("cmpTitle");
-  $("c-side").textContent = t("side"); $("c-slider").textContent = t("slider");
+  $("c-side").textContent = $("c-side").dataset.w = t("side"); $("c-slider").textContent = $("c-slider").dataset.w = t("slider");
   setHint("c-hint", t("cmpHint")); requestAnimationFrame(() => foldHint($("c-hint")));
   $("c-hide-l").textContent = t("hideSame");
   $("c-hide").checked = C.hide;
@@ -1391,7 +1402,7 @@ function cTable() {
 
 function initCompare() {
   $("c-close").innerHTML = icl("close", t("close"));
-  $("c-fit").textContent = t("fit");
+  $("c-fit").textContent = $("c-fit").dataset.w = t("fit");
   $("c-fit").onclick = () => { if (C.w) cFit(); };
   const cz = $("c-zoomctl");
   cz.innerHTML = zoomHtml();
@@ -1457,7 +1468,7 @@ document.addEventListener("keydown", (e) => {
   }
   const ids0 = V.open ? [S.items[V.i]?.id].filter((x) => x != null) : targets();
   if (/^[0-5]$/.test(e.key) && !e.ctrlKey && !e.metaKey) { if (ids0.length) setRating(ids0, +e.key); e.preventDefault(); return; }
-  if (e.key === "Delete") { deleteDialog(ids0); e.preventDefault(); return; }
+  if (e.key === "Delete") { deleteDialog(ids0, e.shiftKey); e.preventDefault(); return; }
   if (e.code === "KeyT") { tagsDialog(ids0); e.preventDefault(); return; }
   if (e.code === "KeyM" && !V.open) { moveDialog(ids0); e.preventDefault(); return; }
   if (e.code === "KeyC" && !V.open && !e.ctrlKey && !e.metaKey) { openCompare(); e.preventDefault(); return; }
@@ -1661,14 +1672,14 @@ async function init() {
   $("main").addEventListener("click", (e) => { if (!e.target.closest(".cell, .fresh")) unpick(); });
   $("main").addEventListener("scroll", () => { if (S.unseen.size || S.held.size) requestAnimationFrame(onGridScroll); }, { passive: true });
   for (const [id, key, fn] of [["b-rate", "rate", () => rateDialog(targets())], ["b-tags", "tags", () => tagsDialog(targets())],
-    ["b-move", "move", () => moveDialog(targets())], ["b-del", "del", () => deleteDialog(targets())], ["b-compare", "compare", openCompare]]) {
+    ["b-move", "move", () => moveDialog(targets())], ["b-del", "del", (e) => deleteDialog(targets(), e?.shiftKey)], ["b-compare", "compare", openCompare]]) {
     $(id).innerHTML = icl({ rate: "star", tags: "hash", move: "move", del: "trash", compare: "swap" }[key], t(key));
     $(id).onclick = fn;
   }
   $("b-compare").disabled = true;
   $("v-rate").onclick = (e) => { const it = S.items[V.i]; const r = starOf(e); if (it && r) setRating([it.id], r === it.rating ? 0 : r); };
   $("v-tags").innerHTML = icl("hash", t("tags")); $("v-tags").onclick = () => tagsDialog([S.items[V.i]?.id].filter((x) => x != null));
-  $("v-del").innerHTML = ic("trash"); $("v-del").title = t("del"); $("v-del").onclick = () => deleteDialog([S.items[V.i]?.id].filter((x) => x != null));
+  $("v-del").innerHTML = ic("trash"); $("v-del").title = t("del"); $("v-del").onclick = (e) => deleteDialog([S.items[V.i]?.id].filter((x) => x != null), e.shiftKey);
   // with names: an arrow; icons only (narrow window): a picture and sliders, so the two buttons differ
   const alt = (name) => ic(name).replace('class="ic"', 'class="ic alt"');
   $("v-img-wf").innerHTML = icl("send", t("toWfImage")) + alt("image"); $("v-img-wf").onclick = () => sendToComfy(S.items[V.i].id, "image");

@@ -2,7 +2,7 @@
 @author: scrudgmcdack
 @title: Rigstools
 @nickname: rigstools
-@version: 2.0.0
+@version: 2.0.1
 @project: https://github.com/ScrudgMcDack/ComfyUI-Rigstools
 @description: Load images with their generation data (PNG, JPEG, WebP) and read it back: workflow, prompt and A1111-style parameters
               (seed, steps, CFG, size, prompts, model, LoRA stack); save images with the parameters collected from the graph;

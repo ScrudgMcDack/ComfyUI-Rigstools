@@ -81,7 +81,8 @@ through the pictures. The mouse and key hints are behind the **?** sign on the b
 - Tags get their colours automatically; rename, merge or delete them in **Tags → manage**. Rating is 0–5 stars. Both
   work for several selected pictures at once.
 - Delete sends files to the recycle bin of the system (with the `send2trash` package, installed with the node); tags
-  and rating are kept for 30 days, so a file restored from the bin comes back with them. Move puts files into another gallery folder or a new subfolder.
+  and rating are kept for 30 days, so a file restored from the bin comes back with them. Shift + Delete (or Shift +
+  click on a Delete button) deletes the files permanently, past the bin, after a warning. Move puts files into another gallery folder or a new subfolder.
 - A file moved or renamed outside the gallery is treated as a new picture.
 
 ### Comparison
@@ -108,7 +109,7 @@ on the canvas); when it has none, the gallery offers to add one.
 | Where | Keys |
 |---|---|
 | Grid | arrows, `Home`, `End` — move · `Enter` — viewer · `Esc` — unpick |
-| Selected pictures | `0`–`5` — rating · `T` — tags · `M` — move · `Delete` — delete · `C` — compare |
+| Selected pictures | `0`–`5` — rating · `T` — tags · `M` — move · `Delete` — delete to the recycle bin · `Shift` + `Delete` — delete permanently (asks first) · `C` — compare |
 | Viewer | ← → — page · `I` — parameters panel · `+` / `−` — zoom · `Ctrl` + `0` — fit · `Esc` — close |
 | Comparison | `+` / `−` — zoom · `Ctrl` + `0` — fit · `Esc` — close |
 

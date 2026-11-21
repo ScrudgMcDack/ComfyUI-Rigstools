@@ -512,9 +512,12 @@ def delete_tag(index, name):
         c.commit()
 
 
-def delete_files(index, ids):
-    """Moves the files to the recycle bin; their tags and rating are kept for TRASH_DAYS. -> (deleted, errors)."""
-    from send2trash import send2trash
+def delete_files(index, ids, permanent=False):
+    """Moves the files to the recycle bin; their tags and rating are kept for TRASH_DAYS. -> (deleted, errors).
+    permanent (Shift + Delete in the gallery): the files are deleted from the disk, past the bin, and their tags and
+    rating go with them."""
+    if not permanent:
+        from send2trash import send2trash
     c = index.db()
     done, errors = [], []
     for i in ids:
@@ -523,13 +526,16 @@ def delete_files(index, ids):
             continue
         try:
             if os.path.exists(r["real_path"]):
-                send2trash(r["real_path"])
+                if permanent:
+                    os.remove(r["real_path"])
+                else:
+                    send2trash(r["real_path"])
         except Exception as e:
             errors.append([r["name"], str(e)])
             continue
         tags = [t[0] for t in c.execute("SELECT name FROM tags JOIN image_tags ON tag_id = id WHERE image_id = ?", (i,))]
         with index.lock:
-            if tags or r["rating"]:
+            if (tags or r["rating"]) and not permanent:
                 c.execute("INSERT OR REPLACE INTO trash VALUES (?, ?, ?, ?)",
                           (r["path"], r["rating"], json.dumps(tags, ensure_ascii=False), time.time()))
             c.execute("DELETE FROM images WHERE id = ?", (i,))

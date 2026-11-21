@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-rigstools"
 description = "Nodes that keep the generation data with the picture: load an image with its prompt, workflow and A1111 parameters as editable outputs, save it with Civitai-ready metadata, correct colours without AI — and PicoTeka, a fast gallery that sends pictures and parameters back to your workflow."
-version = "2.0.0"
+version = "2.0.1"
 license = { file = "LICENSE" }
 readme = "README.md"
 dependencies = ["send2trash"]
@@ -16,4 +16,5 @@ Documentation = "https://github.com/ScrudgMcDack/ComfyUI-Rigstools#readme"
 PublisherId = "scrudgmcdack"
 DisplayName = "Rigstools"
 Icon = "https://raw.githubusercontent.com/ScrudgMcDack/ComfyUI-Rigstools/main/icon.png"
+Banner = "https://raw.githubusercontent.com/ScrudgMcDack/ComfyUI-Rigstools/main/docs/banner_registry.png"
 includes = []

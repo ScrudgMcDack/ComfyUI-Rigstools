@@ -5,13 +5,13 @@ Rigstools started as a trimmed fork of ComfyUI-Crystools (https://github.com/cry
 MIT License, Copyright (c) 2023 Crystian. The notice is kept in [LICENSE](LICENSE).
 
 ## Noto Emoji
-The node title icon (`web/alembic.svg`), the extension icon (`icon.png`) and the README banner (`docs/banner.png`) use the “alembic” emoji (U+2697)
+The node title icon (`web/alembic.svg`), the extension icon (`icon.png`), the README banner (`docs/banner.png`) and the registry banner (`docs/banner_registry.png`) use the “alembic” emoji (U+2697)
 from Noto Emoji (https://github.com/googlefonts/noto-emoji), Copyright 2013 Google LLC.
 The SVG image resources of Noto Emoji are licensed under the Apache License, Version 2.0;
 the notice and the full license text are in [licenses/APACHE-2.0-NOTO-EMOJI.txt](licenses/APACHE-2.0-NOTO-EMOJI.txt).
 `web/alembic.svg` is the unmodified file `2D/svg/emoji_u2697.svg`; `icon.png` places it on a background made for Rigstools,
-and the README banner (`docs/banner.png`) takes the alembic from `icon.png` and places it on a wider background with the
-names Rigstools and PicoTeka.
+and the banners (`docs/banner.png`, `docs/banner_registry.png`) take the alembic from `icon.png` and place it on a wider
+background with the names Rigstools and PicoTeka.
 
 ## Lucide
 The Settings sidebar icon of Rigstools is the path data of the `flask-conical` icon from **Lucide**

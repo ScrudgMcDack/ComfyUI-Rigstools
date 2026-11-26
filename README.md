@@ -40,8 +40,8 @@ prompts, models and parameters — so version 2.0 brings its own: **PicoTeka**.
 - **comfy-cli:** `comfy node install comfyui-rigstools`
 - **Manually:** `git clone https://github.com/ScrudgMcDack/ComfyUI-Rigstools` into `ComfyUI/custom_nodes/`.
 
-Restart ComfyUI afterwards. The only extra Python package is `send2trash` (for deleting to the recycle bin in the
-gallery); ComfyUI-Manager and comfy-cli install it, for a manual install run `pip install -r requirements.txt`.
+Restart ComfyUI afterwards. The extra Python packages are `send2trash` (for deleting to the recycle bin in the
+gallery) and pyoxipng (lossless compression of bif PNGs before posting to Civitai); ComfyUI-Manager and comfy-cli install them, for a manual install run `pip install -r requirements.txt`.
 
 ## PicoTeka — the gallery
 PicoTeka is a fast and simple gallery to organise your generations. Open it with its button (four coloured squares)

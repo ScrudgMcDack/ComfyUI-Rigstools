@@ -3,6 +3,14 @@
     "name": "Искать модели на Civitai по хэшу (Save image)",
     "tooltip": "Для блока «Civitai resources», откуда Civitai берёт веса LoRA. Отправляет на civitai.com SHA-256 файлов моделей, LoRA и embeddings (без ключа API) — Civitai узнаёт, какими моделями вы пользуетесь. Ответы хранятся в <папка пользователя ComfyUI>/rigstools/civitai.json. Выключено — используются только этот кэш и файлы рядом с моделями (.metadata.json от LoRA Manager, .civitai.info от Image Saver / Civitai Helper)."
   },
+  "Rigstools_Civitai_Enabled": {
+    "name": "Разрешить публикацию из PicoTeka на Civitai",
+    "tooltip": "Добавляет возможность отправки картинок из PicoTeka на Civitai."
+  },
+  "Rigstools_Civitai_ApiKey": {
+    "name": "API-ключ (публикация из PicoTeka)",
+    "tooltip": "Нужен, чтобы публиковать картинки из PicoTeka на Civitai. Создайте его на civitai.com: Account settings → API Keys. Ключ не хранится в настройках ComfyUI: он уходит серверу ComfyUI, тот хранит его в <папка пользователя ComfyUI>/rigstools/civitai_key, отправляет только на Civitai и никогда не отдаёт странице. Задать ключ можно только с этого компьютера. Если задана переменная окружения CIVITAI_API_KEY, используется она."
+  },
   "Rigstools_Debug_Log": {
     "name": "Отладка: писать в консоль подробности работы нод",
     "tooltip": "В консоль (лог) ComfyUI. Save image при каждом сохранении: файлы, проходы (сэмплеры) в порядке выполнения, откуда взяты Hires-поля, все значения с источником, LoRA и предупреждения. Load image with parameters, Parameters extractor, Metadata extractor: что прочитано из файла, какие значения взяты по умолчанию или введены вручную, найдена ли модель. Color correction: что измерили и изменили автоматические шаги. Загрузка картинки в панель по шагам — в консоль браузера (F12)."

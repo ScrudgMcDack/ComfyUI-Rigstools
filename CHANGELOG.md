@@ -4,6 +4,38 @@
 
 All notable changes to Rigstools. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [2.1.0] — 2026-11-26
+### Added
+- PicoTeka: **To Civitai** — one Civitai post of the selected pictures, in the order they were selected (drag to
+  reorder, ✕ to take out; the first is the cover): title, description, a draft by default (or published at once), with
+  or without the ComfyUI workflow in the uploaded copy; warnings on the thumbnails, progress on them, the post link.
+  The window can be hidden to a progress bar on the status bar while the pictures go up. Posted pictures get a
+  **CIVITAI** chip (grey — in an unpublished draft, blue — published on civitai.com, red — a post rated R, X or XXX
+  (adult content) is available on civitai.red, and the link goes there too) that lists their posts (the picture or the
+  whole post can be deleted on Civitai from there; what is deleted on the site is forgotten), and the Civitai rating
+  (PG…XXX) once Civitai has checked them. Tools and Techniques of the pictures (ComfyUI; workflow, txt2img, img2img by
+  default, the choice is kept) are set on Civitai right after the post is made. Civitai finds the models and LoRA in
+  the pictures' data itself. Pictures over 10 MB (the limit of Civitai's MCP) go, the first that fits: PNG compressed
+  harder without loss (oxipng, a new dependency), WebP without loss, JPEG; the thumbnails say which. From this
+  computer only; off until Settings → Rigstools → Civitai → **Allow posting from PicoTeka to Civitai** is on (off,
+  nothing is sent to Civitai).
+- PicoTeka → To Civitai. Big pictures (10 MB+) are processed one by one as soon as the form opens. While a picture is
+  compressed, its thumbnail shows an animation: a yellow ring squeezes a blue circle. After processing, the thumbnails
+  show the format each picture will be posted to Civitai in. The send button “waits” until everything is ready. A
+  status line at the bottom of the window shows the preparation, “your turn”, the steps of sending and the post link
+  with a reminder about moderation.
+- Settings → Rigstools → Civitai → **API key**: a write-only field — the key is checked on Civitai and kept by the
+  ComfyUI server, never in the ComfyUI settings and never sent back to a page; the `CIVITAI_API_KEY` environment
+  variable wins.
+
+### Changed
+- PicoTeka: the card has **To Civitai** (or, with posting off, a wide **File data**) in place of **Delete** (deleting stays on the top bar, in the viewer and on the
+  Delete key). On a narrow window the buttons of the top bar and of the comparison drop their names, as the
+  viewer's do (Compare keeps the count as a small number at its icon); Fit has an icon.
+- PicoTeka: tags are set and taken off in a drop-down list with search, opened with the “**+ tag**” chip (in the
+  viewer, on the top bar and with the T hotkey). Several tags can be chosen at once; “–” means the tag is on some of
+  the selected pictures only (“k of n” on the right). A new tag is made right from the search.
+
 ## [2.0.1] — 2026-11-21
 ### Added
 - PicoTeka: **Shift + Delete** (or Shift + click on a Delete button) deletes pictures permanently, past the recycle
@@ -80,6 +112,7 @@ First public version.
   matching to a reference, manual adjustments, a histogram.
 - Output marks and output tooltips; English and Russian UI; a Debug setting for the console log.
 
+[2.1.0]: https://github.com/ScrudgMcDack/ComfyUI-Rigstools/releases/tag/v2.1.0
 [2.0.1]: https://github.com/ScrudgMcDack/ComfyUI-Rigstools/releases/tag/v2.0.1
 [2.0.0]: https://github.com/ScrudgMcDack/ComfyUI-Rigstools/releases/tag/v2.0.0
 [1.1.0]: https://github.com/ScrudgMcDack/ComfyUI-Rigstools/releases/tag/v1.1.0

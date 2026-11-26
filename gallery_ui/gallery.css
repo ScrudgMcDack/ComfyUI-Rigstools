@@ -94,9 +94,12 @@ input.inp, select.inp { outline: none } input.inp:focus, select.inp:focus { bord
    of the next panel (right / below), never the scrollbar of the panel before it. */
 .split, .hsplit { position: relative; box-sizing: border-box; background-color: var(--panel); --grip: rgba(255, 255, 255, .38) }
 .split { flex: 0 0 6px; z-index: 6; cursor: col-resize; border-left: 1px solid var(--outline); border-right: 1px solid var(--outline);
-  background-image: radial-gradient(circle at 50% calc(50% - 5px), var(--grip) 1px, transparent 1.3px), radial-gradient(circle at 50% calc(50% + 0px), var(--grip) 1px, transparent 1.3px), radial-gradient(circle at 50% calc(50% + 5px), var(--grip) 1px, transparent 1.3px) }
+  background-image: radial-gradient(circle at 50% calc(50% - 5px), var(--grip) 1px, transparent 1.3px), radial-gradient(circle at 50% calc(50% + 0px),
+    var(--grip) 1px, transparent 1.3px), radial-gradient(circle at 50% calc(50% + 5px), var(--grip) 1px, transparent 1.3px) }
 .hsplit { flex: 0 0 6px; margin: -8px 0; z-index: 3; cursor: row-resize; background-color: var(--bg); border-top: 1px solid var(--outline);
-  border-bottom: 1px solid var(--outline); background-image: radial-gradient(circle at calc(50% - 5px) 50%, var(--grip) 1px, transparent 1.3px), radial-gradient(circle at calc(50% + 0px) 50%, var(--grip) 1px, transparent 1.3px), radial-gradient(circle at calc(50% + 5px) 50%, var(--grip) 1px, transparent 1.3px) }
+  border-bottom: 1px solid var(--outline); background-image: radial-gradient(circle at calc(50% - 5px) 50%, var(--grip) 1px, transparent 1.3px),
+    radial-gradient(circle at calc(50% + 0px) 50%, var(--grip) 1px, transparent 1.3px),
+    radial-gradient(circle at calc(50% + 5px) 50%, var(--grip) 1px, transparent 1.3px) }
 .split::after { content: ""; position: absolute; top: 0; bottom: 0; left: 100%; width: 4px }
 .hsplit::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 4px }
 .split:hover, .split.on, .hsplit:hover, .hsplit.on { border-color: var(--accent); --grip: var(--accent) }
@@ -415,3 +418,147 @@ table.cmp tr.d td:first-child { color: #ffb74d } table.cmp mark { background: #3
 .fempty { padding: 8px; cursor: default } .fgo { display: flex; justify-content: flex-end; align-items: center; gap: 12px }
 /* rating stars: the ones not given are a yellow outline, as on the Rating button and the thumbnails */
 .stars.ico .sv.off .ic { color: var(--star); fill: none; opacity: .9 } .stars.ico .sv:hover ~ .sv .ic { color: var(--star); fill: none }
+
+/* to Civitai */
+.btn.civ .ic, #b-civ .ic, #v-civ .ic, .btn.civ-send .ic { color: var(--c3) }
+.top.tshrink1 .zl, .top.tshrink2 #b-civ > span, .top.tshrink2 #b-move > span, .top.tshrink3 #b-tags > span,
+.top.tshrink3 #b-rate > span, .top.tshrink4 #b-del > span, .top.tshrink4 #rescan > span, .top.tshrink5 #b-compare > span, .top.tshrink6 #zoom .zs { display: none }
+/* the count of the selected at the Compare icon, when the button has no name */
+#b-compare { position: relative } #b-compare .cnt { display: none }
+.top.tshrink5 #b-compare .cnt { display: block; position: absolute; top: -6px; right: -6px; min-width: 14px; height: 14px; padding: 0 3px;
+  border-radius: 7px; background: var(--accent); color: var(--bg); box-shadow: 0 0 0 2px var(--bg); font-size: 10px; font-weight: 650; line-height: 14px; font-style: normal; text-align: center }
+/* the viewer: Fit keeps only its icon together with Tags and Parameters */
+.v-top.shrink2 #v-fit > span, .v-top.shrink5 #v-close > span { display: none }
+/* the comparison bar on a narrow window */
+.seg span { display: inline-flex; align-items: center; gap: 6px } .seg .ic { width: 15px; height: 15px }
+.seg em { font-style: normal; display: inline-flex; flex-direction: column; align-items: center }
+.seg em::after { content: attr(data-w); height: 0; visibility: hidden; overflow: hidden; font-weight: 650 }
+.c-top.cshrink1 #c-fit > span, .c-top.cshrink1 .seg em, .c-top.cshrink2 #c-title, .c-top.cshrink3 .zs { display: none }
+.c-top.cshrink1 .seg span { padding: 0 9px }
+.acts .btn.wide { grid-column: span 2 }
+.civ-thumbs { display: flex; gap: 10px; overflow-x: auto; padding: 4px 7px 6px; margin: 0 -7px }
+.ct { position: relative; flex: 0 0 auto; border-radius: 6px; cursor: grab; outline: 2px solid transparent; outline-offset: 1px }
+.ct[draggable="false"] { cursor: default } .ct.drag { opacity: .4 } .ct:active { cursor: grabbing }
+.ct img { height: 186px; object-fit: cover; border-radius: 6px; display: block; background: var(--bg) }
+.ct-cover { position: absolute; left: 5px; bottom: 5px; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 5px;
+  background: rgba(13, 15, 20, .85); color: var(--light) }
+.ct-x { position: absolute; right: 4px; top: 4px; width: 22px; height: 22px; padding: 0; border: 0; border-radius: 6px; display: none;
+  align-items: center; justify-content: center; background: rgba(13, 15, 20, .85); color: var(--danger); cursor: pointer }
+.ct-x .ic { width: 14px; height: 14px } .ct:hover .ct-x { display: flex }
+.ct-warn { position: absolute; left: 5px; top: 5px; display: flex; gap: 4px }
+/* the place in the post: 1, 2, 3… in the bottom right corner, white on a translucent white plate */
+.ct-n { position: absolute; right: 5px; bottom: 5px; font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 5px;
+  background: rgba(255, 255, 255, .22); color: #fff; text-shadow: 0 1px 2px rgba(0, 0, 0, .55); backdrop-filter: blur(2px) }
+/* dragging: a bright bar where the picture goes */
+.ct.before::before, .ct.after::after { content: ""; position: absolute; top: -2px; bottom: -2px; width: 3px; border-radius: 2px;
+  background: var(--c2); box-shadow: 0 0 8px var(--c2) }       /* the yellow of the logo */
+.ct.before::before { left: -6px } .ct.after::after { right: -6px }
+.civ-drag { margin-bottom: -4px }
+.ct-w, .ct-j { font-size: 10px; font-weight: 700; line-height: 16px; min-width: 16px; text-align: center; padding: 0 4px; border-radius: 5px; cursor: help }
+.ct-w { background: #f5b300; color: #1a1a1a } .ct-w.bad { background: var(--danger); color: #fff }
+.ct-warn .ct-f { position: static; cursor: help; display: inline-flex; align-items: center; gap: 3px }
+.ct-f svg { width: 10px; height: 10px; flex: none }   /* the format: as the format marks of the grid */
+.ct-st { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; border-radius: 6px; background: rgba(13, 15, 20, .45) }
+.ct-st svg { width: 32px; height: 32px; filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .6)) }
+@keyframes rig-spin { to { transform: rotate(360deg) } }
+/* a big picture being checked / compressed: the ring squeezes the circle a little three times, the circle stays
+   squeezed, then comes back (the delay is set inline: a redraw goes on where it was) */
+.csq .ring { animation: rig-sq-ring 3.6s ease-in-out var(--d, 0s) infinite }
+.csq .dot { animation: rig-sq-dot 3.6s ease-in-out var(--d, 0s) infinite }
+@keyframes rig-sq-ring { 0% { r: 9.5px } 13% { r: 6.5px } 27% { r: 9.5px } 46% { r: 5.8px } 60% { r: 9.5px } 79% { r: 5.1px } 93%, 100% { r: 9.5px } }
+@keyframes rig-sq-dot { 0%, 10% { r: 5px } 13%, 43% { r: 4.3px } 46%, 76% { r: 3.6px } 79%, 90% { r: 2.9px } 100% { r: 5px } }
+/* uploading: two open rings turning opposite ways (the delay is set inline: they go on where they were) */
+.cspin { overflow: visible; flex: none } .cspin.sm { width: 16px; height: 16px }
+.cspin .o { transform-origin: 12px 12px; animation: rig-spin .8s linear infinite }
+.cspin .i { transform-origin: 12px 12px; animation: rig-spin 1.1s linear infinite reverse }
+/* done: the ring draws itself, then the short stroke of the check, then the long one (once) */
+.cok.anim .ring, .cok.anim .s1, .cok.anim .s2 { stroke-dasharray: 1; stroke-dashoffset: 1; animation: rig-draw .45s ease-out forwards }
+.cok.anim .s1 { animation-duration: .14s; animation-timing-function: ease-in; animation-delay: .45s }
+.cok.anim .s2 { animation-duration: .25s; animation-delay: .59s }
+@keyframes rig-draw { to { stroke-dashoffset: 0 } }
+/* failed: the ring with the cross comes up, then the cross turns once, as a wheel */
+.cerr.anim { animation: rig-pop .2s ease-out }
+.cerr.anim .x { transform-box: fill-box; transform-origin: center; animation: rig-flip .65s ease-in-out .2s }
+@keyframes rig-pop { from { opacity: 0; transform: scale(.6) } }
+@keyframes rig-flip { to { transform: rotate(360deg) } }
+/* the glow: what is at work (the spinner, the compression) glows all the time, as the three dots; the check and the
+   cross flash when they come and keep a faint halo */
+.ct-st .cspin, .ct-st .csq { filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .6)) drop-shadow(0 0 4px rgba(255, 200, 87, .75)) }
+.ct-st .cok { filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .6)) drop-shadow(0 0 2px rgba(60, 207, 110, .35)) }
+.ct-st .cerr { filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .6)) drop-shadow(0 0 2px rgba(255, 92, 122, .35)) }
+.ct-st .cok.anim { animation: rig-glow-ok 1.4s ease-out .5s both }
+.ct-st .cerr.anim { animation: rig-pop .2s ease-out, rig-glow-err 1.4s ease-out .5s both }
+.civ-state .cspin { filter: drop-shadow(0 0 3px rgba(255, 200, 87, .8)) }
+.civ-state .cok { filter: drop-shadow(0 0 1px rgba(60, 207, 110, .3)) } .civ-state .cok.anim { animation: rig-glow-ok-sm 1.4s ease-out .5s both }
+@keyframes rig-glow-ok { 0% { filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .6)) drop-shadow(0 0 0 rgba(60, 207, 110, 0)) }
+  35% { filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .6)) drop-shadow(0 0 7px rgba(60, 207, 110, 1)) }
+  100% { filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .6)) drop-shadow(0 0 2px rgba(60, 207, 110, .35)) } }
+@keyframes rig-glow-err { 0% { filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .6)) drop-shadow(0 0 0 rgba(255, 92, 122, 0)) }
+  35% { filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .6)) drop-shadow(0 0 7px rgba(255, 92, 122, 1)) }
+  100% { filter: drop-shadow(0 1px 3px rgba(0, 0, 0, .6)) drop-shadow(0 0 2px rgba(255, 92, 122, .35)) } }
+@keyframes rig-glow-ok-sm { 0% { filter: drop-shadow(0 0 0 rgba(60, 207, 110, 0)) } 35% { filter: drop-shadow(0 0 5px rgba(60, 207, 110, 1)) }
+  100% { filter: drop-shadow(0 0 1px rgba(60, 207, 110, .3)) } }
+.modal.min { display: none }
+/* the mark of a picture on Civitai: next to the format; grey — drafts only, blue — published */
+/* published: CIVIT white, AI blue; a draft: all grey, as faded — CIVIT lighter, AI darker */
+.civm { font-size: 10px; font-weight: 700; letter-spacing: .03em; border-radius: 5px; padding: 1px 6px; cursor: pointer;
+  background: rgba(52, 55, 63, .92); color: #b4b8c1; white-space: nowrap }
+.civm b { font-weight: 700; color: #6c717c }
+.civm.pub { background: rgba(14, 40, 72, .92); color: #fff } .civm.pub b { color: #4dabf7 }
+.civm.pub.red { background: rgba(72, 14, 26, .92) } .civm.pub.red b { color: #ff5c7a }      /* civitai.red */
+.civr.l0 { background: rgba(52, 55, 63, .92); color: #b4b8c1 }                               /* not rated yet */
+.dlg-h b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; margin-right: 12px }
+.civm:hover { filter: brightness(1.25) }
+/* the state of a post in the list of posts: grey — draft, blue — published (CIVITAI itself is its own mark) */
+.civst { font-size: 10px; font-weight: 700; letter-spacing: .03em; border-radius: 5px; padding: 1px 6px; white-space: nowrap;
+  background: rgba(60, 64, 74, .92); color: #b9bec9 }
+.civst.pub { background: rgba(14, 40, 72, .92); color: #4dabf7 }
+.civw { display: inline-flex; gap: 3px; cursor: pointer; vertical-align: 1px }
+.th .civw { position: absolute; right: 5px; top: 24px }
+/* the Civitai rating: PG, PG-13 — calm; R — amber; X, XXX — red */
+.civr { font-size: 10px; font-weight: 700; border-radius: 5px; padding: 1px 5px; white-space: nowrap; cursor: help }
+.civr.l1, .civr.l2 { background: rgba(26, 52, 36, .92); color: #7bdc8c } .civr.l4 { background: rgba(48, 34, 12, .92); color: #f5a524 }
+.civr.l8, .civr.l16, .civr.l32 { background: rgba(60, 16, 24, .92); color: #ff5c7a }
+.civ-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap } .civ-l { color: var(--label); min-width: 84px }
+.civ-row .chips { flex: 1 } .civ-row .taginp { width: 200px }
+.chip.civ-c { cursor: pointer; background: rgba(255, 255, 255, .05); color: var(--muted); border-radius: 6px; padding: 3px 8px; font-size: 12px }
+.chip.civ-c.on { background: var(--accent-bg); color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent-line); cursor: default;
+  display: inline-flex; align-items: center; gap: 4px }
+.chip.civ-c .x { display: inline-flex; color: var(--danger); cursor: pointer } .chip.civ-c .x .ic { width: 12px; height: 12px }
+.chip.civ-c .x:hover { filter: brightness(1.3) }
+/* the "+ tool" / "+ technique" list: the gallery drop-down, fixed so the window body does not cut it */
+.civ-dd { display: inline-flex } .civ-dd .addtag { border: 0; font: inherit; font-size: 12px }
+.dd-menu.civ-menu { position: fixed; z-index: 60; min-width: 220px; display: flex; flex-direction: column; gap: 4px }
+.dd-menu.civ-menu[hidden] { display: none }
+.tag-menu { min-width: 260px } .tag-menu .dd-i .cnt { margin-left: auto; padding-left: 12px; color: var(--muted); font-size: 11px }
+.tag-menu .dd-i .mixed { display: inline-flex; width: 14px; justify-content: center } .tag-menu .dd-i.new { color: var(--c4) }
+.civ-menu .civ-find { margin: 2px 2px 4px; height: 30px } .civ-list { overflow: auto; min-height: 0 } .civ-none { padding: 6px 10px }
+.dlg-b.civ.locked .civ-row { pointer-events: none; opacity: .6 }
+.civ-posts { display: flex; flex-direction: column; gap: 8px } .civ-post { display: flex; align-items: center; gap: 10px }
+.civ-post a { color: var(--accent) } .civ-post .sp { flex: 1 } .civ-post > * { white-space: nowrap }
+.civ-post { flex-wrap: wrap; row-gap: 6px } .civ-meta { display: inline-flex; align-items: center; gap: 10px }
+.civ-acts { display: inline-flex; gap: 6px } .civ-warn { color: #f5b300 }
+.civ-acts .btn { height: 28px; padding: 0 10px } .civ-acts .full, .civ-acts .short { display: inline-flex; align-items: center; gap: 6px }
+.civ-acts .short { gap: 2px } .civ-acts .short .ic:nth-child(2) { width: 11px; height: 11px; opacity: .8 } .civ-acts .short { display: none }
+/* the posts window: as wide as its content — the whole header and one line a post; narrower screens: the buttons keep
+   only their icons (what → trash), then the state and rating go to a second line */
+.dlg.civ-posts-dlg { width: auto; max-width: 92vw }   /* the name in the header: whole when it fits, with … on a narrow screen */
+.civ-posts-dlg .civ-post { flex-wrap: nowrap; gap: 12px }
+@media (max-width: 900px) { .civ-acts .full { display: none } .civ-acts .short { display: inline-flex } }
+@media (max-width: 640px) { .civ-posts-dlg .civ-post { flex-wrap: wrap } .civ-meta { order: 10; flex-basis: 100% } }
+.civline { display: flex; align-items: center; gap: 6px; margin: 2px 0 6px; white-space: nowrap; flex-wrap: wrap } .civline-r { margin-left: 12px }
+.civ-post .civ-del:disabled { opacity: .35; cursor: default } .civ-post .civ-del .ic { width: 14px; height: 14px }
+/* the post being sent, on the status bar: a click brings its window back */
+.civbar { display: flex; align-items: center; gap: 8px; background: transparent; border: 0; color: var(--text); cursor: pointer; font: inherit; padding: 0 }
+.civbar .bar i { background: var(--c3) } .civbar:hover span:first-child { text-decoration: underline }
+.dlg-b.civ textarea.inp { outline: none; resize: vertical; min-height: 60px; font: inherit; padding: 6px 8px }
+.civ-chk { display: flex; align-items: center; gap: 6px; cursor: pointer; width: fit-content }
+.civ-state:empty { display: none } .civ-state { display: flex; align-items: center; gap: 6px; min-height: 18px }
+.civ-state .cok { width: 16px; height: 16px; flex: none } .civ-state .note { color: var(--muted) } .civ-mod { margin-left: 8px }
+/* your turn: three blue dots in turn growing brighter, with a glow, and fading smaller */
+.cdots { display: inline-flex; gap: 4px; align-items: center; height: 8px; flex: none }
+.cdots i { width: 6px; height: 6px; border-radius: 50%; background: var(--c3); animation: rig-dot 1.2s ease-in-out infinite }
+.cdots i:nth-child(2) { animation-delay: .2s } .cdots i:nth-child(3) { animation-delay: .4s }
+@keyframes rig-dot { 0%, 100% { opacity: .3; transform: scale(.5); box-shadow: 0 0 0 rgba(76, 201, 240, 0) }
+  40% { opacity: 1; transform: scale(1); box-shadow: 0 0 5px rgba(76, 201, 240, .9) } }
+.civ-state.ok { color: var(--c4) } .civ-state.ok a { color: var(--accent); margin-left: 4px }

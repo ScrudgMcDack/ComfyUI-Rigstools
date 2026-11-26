@@ -21,7 +21,8 @@ prompts, models and parameters — so version 2.0 brings its own: **PicoTeka**.
 
 ## What's inside
 - **PicoTeka** — a fast and simple gallery of your pictures: folders, search, filters, tags, rating, comparison; sends
-  a picture or its parameters straight into the open workflow.
+  a picture or its parameters straight into the open workflow, and the selected pictures as a post to Civitai, the
+  popular AI art site.
 - **Loaders** — a picture together with its generation data (PNG, JPEG, WebP; one file, a folder by index or the
   newest): the ComfyUI prompt and workflow and the A1111-style parameters, shown on the node, editable, each as its own
   output.
@@ -69,7 +70,7 @@ ComfyUI keeps working.
 ### Card
 The picked picture with all its parameters, in the same view as under our loaders, and the buttons: **Picture to
 workflow**, **Parameters to workflow**, **Open workflow**, **Copy parameters**, **File data** (the raw metadata) and
-**Delete**.
+**To Civitai** (below). Deleting is on the top bar, in the viewer and on the `Delete` key.
 
 ### Viewer
 Double click opens a picture full screen with zoom (wheel, 100%, fit), a minimap and the parameters panel; ← → page
@@ -78,6 +79,14 @@ through the pictures. The mouse and key hints are behind the **?** sign on the b
 ![Viewer](docs/gallery_viewer.png)
 
 ### Tags, rating, deleting and moving
+- Tags are set and taken off in a drop-down list with search: it opens with the **+ tag** chip on the card, the
+  **Tags** button in the viewer and on the top bar, and the T key. Several tags can be chosen at once; “–” means the
+  tag is on some of the selected pictures only (the counter says “k of n”). A new tag can be made right from the
+  search.
+- Tags are set and taken off in a drop-down list with search: it opens with the **+ tag** chip on the card, the
+  **Tags** button in the viewer and on the top bar, and the T key. Several tags can be chosen at once; “–” means the
+  tag is on some of the selected pictures only (the counter says “k of n”). A new tag can be made right from the
+  search.
 - Tags get their colours automatically; rename, merge or delete them in **Tags → manage**. Rating is 0–5 stars. Both
   work for several selected pictures at once.
 - Delete sends files to the recycle bin of the system (with the `send2trash` package, installed with the node); tags
@@ -104,6 +113,56 @@ As LoRA Manager does: the gallery sends to the ComfyUI tab you used last.
 
 When the workflow has several suitable nodes, a list shows them with their group names (hovering a line shows the node
 on the canvas); when it has none, the gallery offers to add one.
+
+### To Civitai
+**To Civitai** (on the card, in the viewer and on the top bar — for the selected pictures) makes one Civitai post of
+the selected pictures, in the order they were selected. One post — one go — takes at most 20 pictures, with a title
+and a description.
+- In the form the pictures can be sorted by dragging and taken out (✕); the first picture in order becomes the cover
+  of the post. Each thumbnail shows the format the picture will be sent to the site in (see below). A yellow **!**
+  marks a picture without generation data (Civitai will not find its model, LoRA, embedding), a red **10+** marks a
+  picture that will not fit into 10 MB even after compression.
+- The pictures are uploaded one by one; each thumbnail shows its state: a yellow spinner — uploading, a green check —
+  uploaded, a red cross — the upload failed. The status line at the bottom of the window shows the current step and,
+  at the end, the post link. The upload cannot be cancelled (Civitai has no way to delete an uploaded picture that is
+  not in a post yet). Closing the window hides it to a progress bar on the status bar — a click brings it back, and
+  when the post is made the window comes back by itself and waits for you.
+- A posted picture gets a **CIVITAI** chip next to its format, on the thumbnail and on the card: grey while its post
+  is a draft, blue once the post is published, and red when the post is rated R, X or XXX (Civitai shows such posts on
+  civitai.red, and the links to them go there too). A click on the chip lists the posts the picture was added to
+  and/or published in (number with a link, state, date). From that list you can delete from Civitai this very picture
+  or the whole post with all its pictures (your files on the disk stay); the last picture of a post takes the post
+  with it. Deleting waits until Civitai has checked the pictures. A post or a picture deleted on the Civitai site is
+  forgotten when PicoTeka next asks about it, and the chip goes. It is not a tag and cannot be removed by hand.
+- Once Civitai has checked the picture, its age rating (PG, PG-13, R, X, XXX) is shown next to the chip; the tooltip
+  says what it means. PicoTeka asks Civitai when you pick a picture with the chip (at most every 5 minutes a post) and
+  when you click the chip; the state of the post (draft / published) is updated at the same time.
+- **Tools** and **Techniques** of the pictures, as on the Civitai site: ComfyUI and workflow, txt2img, img2img to
+  start with; change them in the window (any tool of the Civitai list can be added) and the window keeps your choice
+  for the next posts. They are set on all the pictures of the post right after it is made, a draft too — only what a
+  picture does not have yet.
+- **Publish the post now** is off by default: the post is created as a draft — look it over and publish it on Civitai
+  yourself when you want. Both checkboxes are remembered.
+- **Keep the workflow data in the file** is on by default. When off, the ComfyUI workflow and prompt are taken out of
+  the uploaded copy, the generation parameters stay. The files on your disk never change.
+- No model needs to be attached to the post: Civitai finds the model, the LoRA and the parameters in the pictures'
+  data itself (written by the Save image node), so a post may hold pictures of different models.
+- Civitai's MCP takes pictures up to 10 MB. For a bigger PNG, PicoTeka tries several ways in turn until one fits:
+  1. **PNG → PNG**: the same PNG compressed harder, but without loss (oxipng, installed with the node) — all the
+     metadata stays;
+  2. **PNG → WEBP**: WebP without loss — stronger compression, the picture is the same pixel for pixel; the parameters
+     and the ComfyUI workflow go into EXIF (the workflow where ComfyUI itself puts it in a WebP);
+  3. **PNG → JPEG**: quality 95 — the strongest compression, with loss; the parameters stay in EXIF, the workflow does
+     not.
+
+  Big pictures are compressed one by one as soon as the form opens. A compressed picture has two arrows inwards before
+  its format. Without “Keep the workflow data in the file” the ComfyUI workflow and prompt are cut out of the copy
+  first (the picture itself is not touched), which often is enough. The file on your disk never changes.
+- New pictures pass Civitai's moderation, which rates and censors them, so others may see your post a bit later.
+- Sending pictures is off by default. Turn it on in **Settings → Rigstools → Civitai → Allow posting from PicoTeka to
+  Civitai** (below). You will need a Civitai API key; for safety it works from this computer only. The pictures go
+  through the Civitai MCP server (`mcp.civitai.com`), sent by the ComfyUI server; the key is kept by the ComfyUI
+  server, not in its settings, and never reaches the page.
 
 ### Keys
 | Where | Keys |
@@ -444,6 +503,16 @@ All settings are in ComfyUI: **Settings → Rigstools**.
 **Civitai**
 - **Look models up on Civitai by their hash** — for the "Civitai resources" block of Save image (see above). Off by
   default.
+- **Allow posting from PicoTeka to Civitai** — off by default. When off: there are no To Civitai buttons, and nothing
+  is sent to Civitai, not even requests to check the API key.
+- **API key** — for posting from PicoTeka. Create it at civitai.com: Account settings → API Keys → Add API key, paste
+  it into the field and press Enter: the key is checked on Civitai, and the mark before the field shows: **Key
+  accepted** (green), **Key rejected** (red), **Key not set** or **Key not checked** (yellow — e.g. no connection, or
+  posting to Civitai is not allowed); the account name is in its tooltip. The field only takes the key: it is not kept
+  in the ComfyUI settings (which every page opening ComfyUI receives) but by the ComfyUI server, in `<ComfyUI user
+  folder>/rigstools/civitai_key`, and is never shown or sent back; the trash button removes it. It can be set from
+  this computer only. When the `CIVITAI_API_KEY` environment variable is set by hand, it takes priority and is used to
+  talk to Civitai.
 
 **Debug**
 - **Write details of the nodes' work to the console** — to the ComfyUI console:

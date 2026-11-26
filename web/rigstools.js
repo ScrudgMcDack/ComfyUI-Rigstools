@@ -99,11 +99,20 @@ const STR = {
       + "Order: reference → white balance → levels → vibrance → manual adjustments → mask → strength. The automatic steps "
       + "work in Lab, where lightness is separate from colour, so they do not shift hues. A value of 0 turns a step off.",
     ccAuto: "Automatic steps",
-    ccAutoRows: "mode|manual — the strengths below are set by hand and are the same for every picture. auto — the node measures every picture and chooses the strengths of white balance, levels and vibrance and a small exposure correction itself (the three sliders are then greyed out): a warm cast is taken out gently, a cool one is left; a picture with a raised black point is stretched less; a dull one gets more vibrance; a dark one is darkened a little. The rules were fitted to the Auto mode of Easy Color Corrector. levels_clip, protect_skin, the reference and the manual adjustments work in both modes; the chosen values are in the console with Debug on.\n"
-      + "white_balance|Removes a colour cast (a yellow or blue tint). Measures the average colour of the near-grey areas of medium lightness and moves it to neutral grey. Saturated colours are moved less and keep their hue. When there are hardly any near-grey areas (a very colourful picture) the step is skipped. A warm or cold mood that is meant to be there is a cast too — keep the value low for such pictures.\n"
-      + "levels|Stretches the lightness: the darkest tones get darker, the lightest lighter — the picture gets more contrast and looks cleaner. Hue and saturation stay. The stretch is at most ×2, so a dark or foggy scene stays dark or foggy; an almost flat picture is skipped.\n"
-      + "levels_clip|Percent of the darkest and of the lightest pixels ignored when looking for the black and white points. Protects against single highlights and black dots; more — a stronger stretch, but details in the extreme tones may clip. Works only with levels.\n"
-      + "vibrance|Raises the saturation of dull colours more than of already saturated ones (up to +60% at 1): the picture looks livelier without garish spots.\n"
+    ccAutoRows: "mode|manual — the strengths below are set by hand and are the same for every picture. auto — the node measures every picture and chooses the "
+      + "strengths of white balance, levels and vibrance and a small exposure correction itself (the three sliders are then greyed out): a warm cast is "
+      + "taken out gently, a cool one is left; a picture with a raised black point is stretched less; a dull one gets more vibrance; a dark one is "
+      + "darkened a little. The rules were fitted to the Auto mode of Easy Color Corrector. levels_clip, protect_skin, the reference and the manual "
+      + "adjustments work in both modes; the chosen values are in the console with Debug on.\n"
+      + "white_balance|Removes a colour cast (a yellow or blue tint). Measures the average colour of the near-grey areas of medium lightness and moves "
+        + "it to neutral grey. Saturated colours are moved less and keep their hue. When there are hardly any near-grey areas (a very colourful picture) "
+        + "the step is skipped. A warm or cold mood that is meant to be there is a cast too — keep the value low for such pictures.\n"
+      + "levels|Stretches the lightness: the darkest tones get darker, the lightest lighter — the picture gets more contrast and looks cleaner. Hue "
+        + "and saturation stay. The stretch is at most ×2, so a dark or foggy scene stays dark or foggy; an almost flat picture is skipped.\n"
+      + "levels_clip|Percent of the darkest and of the lightest pixels ignored when looking for the black and white points. Protects against single "
+        + "highlights and black dots; more — a stronger stretch, but details in the extreme tones may clip. Works only with levels.\n"
+      + "vibrance|Raises the saturation of dull colours more than of already saturated ones (up to +60% at 1): the picture looks livelier without "
+        + "garish spots.\n"
       + "protect_skin|Vibrance hardly touches skin hues (orange–red of moderate saturation), so skin does not glow.",
     ccManual: "Manual adjustments (after the automatic steps)",
     ccManualRows: "exposure|Exposure in stops, in linear light: +1 — twice as bright, −1 — half. Highlights may burn out to white.\n"
@@ -115,12 +124,15 @@ const STR = {
       + "gamma|Mid-tones: + lighter, − darker; the black and the white points stay.\n"
       + "gain|Highlights: + brighter, − duller. The shadows hardly change.",
     ccOther: "Strength, reference, mask, outputs",
-    ccOtherRows: "strength|Overall strength: mixes the result with the original. 0 — the original, 1 — the full correction, 0.5 — half way. Applied last, to everything at once.\n"
-      + "reference|Optional picture whose colours to match: the mean and spread of lightness and colour are brought to it (Reinhard colour transfer, the spread changes at most ×2). E.g. the picture before an upscale that shifted the colours. Done first.\n"
+    ccOtherRows: "strength|Overall strength: mixes the result with the original. 0 — the original, 1 — the full correction, 0.5 — half way. Applied last, to "
+      + "everything at once.\n"
+      + "reference|Optional picture whose colours to match: the mean and spread of lightness and colour are brought to it (Reinhard colour transfer, "
+        + "the spread changes at most ×2). E.g. the picture before an upscale that shifted the colours. Done first.\n"
       + "reference_strength|How much the colours are matched to the reference; without a reference connected it does nothing.\n"
       + "mask|Optional: correct only where the mask is white; grey values of the mask give a smooth transition.\n"
       + "IMAGE|The corrected picture; an alpha channel is kept.\n"
-      + "HISTOGRAM|RGB histograms of the result (filled), the original as an outline — shows what the correction moved. Connect to Preview Image. Details of what was measured: Settings → Rigstools → Debug, in the console.",
+      + "HISTOGRAM|RGB histograms of the result (filled), the original as an outline — shows what the correction moved. Connect to Preview Image. "
+        + "Details of what was measured: Settings → Rigstools → Debug, in the console.",
     openWf: "Open workflow", copied: "Copied", close: "Close", loading: "Loading…",
     rebuiltNote: "The file has no parameters — rebuilt from the ComfyUI prompt (values that cannot be determined are left out):",
     nothing: "The file has no parameters and no ComfyUI prompt.", short: "Only the beginning is shown — the file is outside the ComfyUI folders.",
@@ -151,10 +163,19 @@ const STR = {
       + "Порядок: образец → баланс белого → уровни → вибранс → ручные поправки → маска → strength. Автоматические шаги "
       + "работают в пространстве Lab, где яркость отделена от цвета, поэтому оттенки не уезжают. Значение 0 выключает шаг.",
     ccAuto: "Автоматические шаги",
-    ccAutoRows: "mode|manual — силы шагов ниже задаются вручную и одинаковы для всех картинок. auto — нода измеряет каждую картинку и сама выбирает силу баланса белого, уровней и вибранса и небольшую поправку экспозиции (эти три ползунка тогда неактивны): тёплый оттенок убирается мягко, холодный остаётся; картинка с приподнятой точкой чёрного растягивается меньше; блёклой добавляется вибранс; тёмная чуть затемняется. Правила подобраны по режиму Auto у Easy Color Corrector. levels_clip, protect_skin, образец и ручные поправки работают в обоих режимах; выбранные значения видны в консоли при включённом Debug.\n"
-      + "white_balance|Убирает цветовой оттенок (желтизну, синеву). Измеряет средний цвет почти серых участков средней яркости и сдвигает его к нейтральному серому. Насыщенные цвета сдвигаются меньше и сохраняют свой оттенок. Если почти серых участков нет (очень яркая картинка), шаг пропускается. Задуманное тёплое или холодное настроение — тоже «оттенок», для таких картинок держите значение низким.\n"
-      + "levels|Растягивает яркость: самые тёмные тона становятся темнее, самые светлые — светлее, картинка становится контрастнее и «чище». Оттенок и насыщенность не меняются. Растяжение не больше чем в 2 раза — тёмная или туманная сцена такой и останется; почти однотонная картинка пропускается.\n"
-      + "levels_clip|Сколько процентов самых тёмных и самых светлых пикселей не учитывать при поиске точек чёрного и белого. Защищает от одиночных бликов и чёрных точек; больше — сильнее растяжение, но детали в крайних тонах могут обрезаться. Работает только вместе с levels.\n"
+    ccAutoRows: "mode|manual — силы шагов ниже задаются вручную и одинаковы для всех картинок. auto — нода измеряет каждую картинку и сама выбирает силу баланса "
+      + "белого, уровней и вибранса и небольшую поправку экспозиции (эти три ползунка тогда неактивны): тёплый оттенок убирается мягко, холодный "
+      + "остаётся; картинка с приподнятой точкой чёрного растягивается меньше; блёклой добавляется вибранс; тёмная чуть затемняется. Правила подобраны "
+      + "по режиму Auto у Easy Color Corrector. levels_clip, protect_skin, образец и ручные поправки работают в обоих режимах; выбранные значения видны "
+      + "в консоли при включённом Debug.\n"
+      + "white_balance|Убирает цветовой оттенок (желтизну, синеву). Измеряет средний цвет почти серых участков средней яркости и сдвигает его к "
+        + "нейтральному серому. Насыщенные цвета сдвигаются меньше и сохраняют свой оттенок. Если почти серых участков нет (очень яркая картинка), шаг "
+        + "пропускается. Задуманное тёплое или холодное настроение — тоже «оттенок», для таких картинок держите значение низким.\n"
+      + "levels|Растягивает яркость: самые тёмные тона становятся темнее, самые светлые — светлее, картинка становится контрастнее и «чище». Оттенок и "
+        + "насыщенность не меняются. Растяжение не больше чем в 2 раза — тёмная или туманная сцена такой и останется; почти однотонная картинка "
+        + "пропускается.\n"
+      + "levels_clip|Сколько процентов самых тёмных и самых светлых пикселей не учитывать при поиске точек чёрного и белого. Защищает от одиночных "
+        + "бликов и чёрных точек; больше — сильнее растяжение, но детали в крайних тонах могут обрезаться. Работает только вместе с levels.\n"
       + "vibrance|Поднимает насыщенность блёклых цветов сильнее, чем уже насыщенных (до +60% при 1): картинка живее, без «кислотных» пятен.\n"
       + "protect_skin|Вибранс почти не трогает оттенки кожи (оранжево-красные умеренной насыщенности), чтобы кожа не «горела».",
     ccManual: "Ручные поправки (после автоматических шагов)",
@@ -167,12 +188,15 @@ const STR = {
       + "gamma|Средние тона: + светлее, − темнее; точки чёрного и белого остаются на месте.\n"
       + "gain|Света: + ярче, − тусклее. Тени почти не меняются.",
     ccOther: "Сила, образец, маска, выходы",
-    ccOtherRows: "strength|Общая сила: смешивает результат с оригиналом. 0 — оригинал, 1 — полная коррекция, 0.5 — наполовину. Применяется последней, ко всему сразу.\n"
-      + "reference|Необязательная картинка-образец: среднее и разброс яркости и цвета подгоняются под неё (перенос цвета Рейнхарда, разброс меняется не больше чем в 2 раза). Например, картинка до апскейла, если апскейл сдвинул цвета. Выполняется первым.\n"
+    ccOtherRows: "strength|Общая сила: смешивает результат с оригиналом. 0 — оригинал, 1 — полная коррекция, 0.5 — наполовину. Применяется последней, ко всему "
+      + "сразу.\n"
+      + "reference|Необязательная картинка-образец: среднее и разброс яркости и цвета подгоняются под неё (перенос цвета Рейнхарда, разброс меняется "
+        + "не больше чем в 2 раза). Например, картинка до апскейла, если апскейл сдвинул цвета. Выполняется первым.\n"
       + "reference_strength|Насколько сильно подгонять цвета под образец; без подключённого образца ни на что не влияет.\n"
       + "mask|Необязательная маска: коррекция только там, где она белая; серые значения дают плавный переход.\n"
       + "IMAGE|Исправленная картинка; альфа-канал сохраняется.\n"
-      + "HISTOGRAM|Гистограммы RGB результата (заливка) и оригинала (контур) — видно, что сдвинула коррекция. Подключается к Preview Image. Что именно измерено — в консоли при включённой настройке Rigstools → Debug.",
+      + "HISTOGRAM|Гистограммы RGB результата (заливка) и оригинала (контур) — видно, что сдвинула коррекция. Подключается к Preview Image. Что именно "
+        + "измерено — в консоли при включённой настройке Rigstools → Debug.",
     openWf: "Открыть workflow", copied: "Скопировано", close: "Закрыть", loading: "Загрузка…",
     rebuiltNote: "В файле нет parameters — они восстановлены из промпта ComfyUI (то, что нельзя определить надёжно, пропущено):",
     nothing: "В файле нет ни parameters, ни промпта ComfyUI.", short: "Показано только начало — файл лежит вне папок ComfyUI.",
@@ -1283,7 +1307,8 @@ const SAVE_STR = {
     noCivitaiId: "No Civitai ID: {v} — Civitai finds it by the hash, a LoRA without its weight. Settings → Rigstools → Civitai looks the IDs up by the hash",
     noCivitaiIdOnline: "Not on Civitai or no answer yet: {v} — found by the hash, a LoRA without its weight",
     src_cache: "cache", "src_.metadata.json": "LoRA Manager", "src_.civitai.info": ".civitai.info", src_civitai: "Civitai",
-    dlgTitle: "What goes into the file", dlgParams: "Parameters (A1111)", dlgPreview: "Preview", dlgPending: "“…” — model, LoRA and embedding hashes will be calculated when the image is saved",
+    dlgTitle: "What goes into the file", dlgParams: "Parameters (A1111)", dlgPreview: "Preview",
+    dlgPending: "“…” — model, LoRA and embedding hashes will be calculated when the image is saved",
     dlgBlocks: "Written into the file",
     b_parameters: "parameters (A1111) — read by A1111, Forge, Civitai and our loaders",
     b_workflow: "workflow (ComfyUI) — dropping the picture onto ComfyUI opens the workflow",
@@ -1353,7 +1378,8 @@ const SAVE_STR = {
     noCivitaiId: "Нет ID Civitai: {v} — Civitai найдёт по хэшу, LoRA без веса. Искать ID по хэшу: Настройки → Rigstools → Civitai",
     noCivitaiIdOnline: "Нет на Civitai или ещё нет ответа: {v} — найдётся по хэшу, LoRA без веса",
     src_cache: "кэш", "src_.metadata.json": "LoRA Manager", "src_.civitai.info": ".civitai.info", src_civitai: "Civitai",
-    dlgTitle: "Что записывается в файл", dlgParams: "Параметры (A1111)", dlgPreview: "Предпросмотр", dlgPending: "“…” — хэши моделей, LoRA и embedding будут вычислены во время сохранения изображения",
+    dlgTitle: "Что записывается в файл", dlgParams: "Параметры (A1111)", dlgPreview: "Предпросмотр",
+    dlgPending: "“…” — хэши моделей, LoRA и embedding будут вычислены во время сохранения изображения",
     dlgBlocks: "Записывается в файл",
     b_parameters: "parameters (A1111) — их читают A1111, Forge, Civitai и наши загрузчики",
     b_workflow: "workflow (ComfyUI) — картинка, брошенная в ComfyUI, открывает workflow",
@@ -1639,7 +1665,8 @@ function openSaveDialog(node) {
   const back = el("div", "position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10000;display:flex;align-items:center;justify-content:center");
   back.id = "rigstools-info";
   const box = el("div", "width:min(720px,92vw);max-height:84vh;display:flex;flex-direction:column;background:var(--comfy-menu-bg,#2b2b2b);"
-    + "color:var(--fg-color,#ddd);border:1px solid var(--border-color,#444);border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.6);font:13px Arial,sans-serif");
+    + "color:var(--fg-color,#ddd);border:1px solid var(--border-color,#444);border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.6);font:13px "
+      + "Arial,sans-serif");
   back.appendChild(box);
   const close = () => { back.remove(); document.removeEventListener("keydown", onKey, true); };
   const onKey = (e) => { if (e.key === "Escape") { e.stopPropagation(); close(); } };
@@ -1706,7 +1733,8 @@ function openHelp(title, fill) {
   const back = el("div", "position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:10000;display:flex;align-items:center;justify-content:center");
   back.id = "rigstools-info";
   const box = el("div", "width:min(760px,92vw);max-height:84vh;display:flex;flex-direction:column;background:var(--comfy-menu-bg,#2b2b2b);"
-    + "color:var(--fg-color,#ddd);border:1px solid var(--border-color,#444);border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.6);font:13px Arial,sans-serif");
+    + "color:var(--fg-color,#ddd);border:1px solid var(--border-color,#444);border-radius:10px;box-shadow:0 10px 40px rgba(0,0,0,.6);font:13px "
+      + "Arial,sans-serif");
   back.appendChild(box);
   const close = () => { back.remove(); document.removeEventListener("keydown", onKey, true); };
   const onKey = (e) => { if (e.key === "Escape") { e.stopPropagation(); close(); } };
@@ -1775,9 +1803,110 @@ function saveValueLine(node, name) {
   return null;
 }
 
+
+/** Settings → Rigstools → Civitai → API key: a write-only field. The key goes to the ComfyUI server (POST
+    /rigstools/gallery/api/civitai/key, this computer only) and is never shown or sent back; the setting itself stays
+    empty. Before the field: what Civitai said about the key (a green check — accepted, a red cross — rejected, a
+    yellow triangle — not set or not checked); after it: a trash button that removes the key. The look copies
+    ComfyUI's own text settings. */
+function civitaiKeyField(name, setter, value) {
+  const ru = String(app.extensionManager?.setting?.get?.("Comfy.Locale") ?? "en").toLowerCase().startsWith("ru");
+  const T = ru ? {
+    ph: "вставьте ключ, Enter", ok: "Ключ принят:", bad: "Ключ отвергнут:", none: "Ключ не задан:",
+    unchecked: "Ключ не проверен:", checking: "Проверка…", env: "переменная CIVITAI_API_KEY",
+    local: "только на компьютере с ComfyUI", del: "Удалить ключ", fail: "Не удалось сохранить",
+    user: "Аккаунт Civitai: {v}", bad_key: "Civitai не принял ключ", not_onboarded: "Завершите настройку аккаунта на civitai.com",
+    network: "Нет связи с Civitai", civitai: "Civitai вернул ошибку",
+    disabled: "Публикация на Civitai выключена — ключ сохраняется без проверки",
+  } : {
+    ph: "paste the key, Enter", ok: "Key accepted:", bad: "Key rejected:", none: "Key not set:",
+    unchecked: "Key not checked:", checking: "Checking…", env: "the CIVITAI_API_KEY variable",
+    local: "on the ComfyUI computer only", del: "Remove the key", fail: "Could not save",
+    user: "Civitai account: {v}", bad_key: "Civitai did not accept the key", not_onboarded: "Finish setting up your account on civitai.com",
+    network: "No connection to Civitai", civitai: "Civitai returned an error",
+    disabled: "Posting to Civitai is off — the key is kept without a check",
+  };
+  const SVG = (body) => `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none">${body}</svg>`;
+  const ICON = {
+    ok: SVG('<circle cx="12" cy="12" r="10" fill="#22a55a"/><path d="m7.5 12.5 3 3 6-6.5" stroke="#fff"/>'),
+    bad: SVG('<circle cx="12" cy="12" r="10" fill="#e5484d"/><path d="m8.5 8.5 7 7M15.5 8.5l-7 7" stroke="#fff"/>'),
+    warn: SVG('<path d="M10.3 3.9 2.2 18a2 2 0 0 0 1.7 3h16.2a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" fill="#f5b300"/><path d="M12 9v4M12 17h.01" stroke="#1a1a1a"/>'),
+  };
+  const DOTS = "••••••••••••";
+  const API = "/rigstools/gallery/api/civitai/key";
+  const box = document.createElement("div");
+  box.className = "flex items-center justify-end gap-2";
+  const note = document.createElement("span");
+  note.className = "flex items-center gap-2 text-sm text-muted-foreground";
+  const inp = document.createElement("input");
+  // typed or pasted, the key is seen; on leaving the field (or Enter) it goes to the server and only dots stay
+  inp.type = "text"; inp.name = "rigstools-civitai-key"; inp.autocomplete = "off"; inp.spellcheck = false; inp.style.width = "21rem";
+  inp.className = "flex h-10 min-w-0 appearance-none rounded-lg border-none bg-secondary px-4 py-2 text-sm text-foreground "
+    + "placeholder:text-muted-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none "
+    + "disabled:pointer-events-none disabled:opacity-50";
+  const env = document.createElement("span");
+  env.className = "text-sm text-muted-foreground"; env.textContent = T.env;
+  const del = document.createElement("button");
+  del.type = "button"; del.title = T.del;
+  del.className = "flex h-10 w-10 items-center justify-center rounded-lg border-none bg-secondary text-muted-foreground "
+    + "hover:bg-accent";
+  del.onmouseenter = () => { del.style.color = "#e5484d"; };     // red on hover, as the Delete buttons of PicoTeka
+  del.onmouseleave = () => { del.style.color = ""; };
+  del.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" '
+    + 'stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>'
+    + '<path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>';
+  box.append(note, inp, env, del);
+  const vis = (el, on) => { el.style.display = on ? "" : "none"; };   // not .hidden: the "flex" class would win
+  const status = (check, tip) => {
+    const icon = check === "ok" ? ICON.ok : check === "bad" ? ICON.bad : check ? ICON.warn : "";
+    note.innerHTML = icon + `<span>${check ? T[check] : T.checking}</span>`;
+    note.title = tip || "";
+  };
+  const show = (st) => {
+    status(st.check, st.user ? T.user.replace("{v}", st.user) : st.error ? (T[st.error] ?? T.civitai) : "");
+    vis(inp, st.source !== "env"); vis(env, st.source === "env");
+    vis(del, st.source === "file" && st.local);
+    inp.disabled = !st.local;
+    inp.placeholder = st.set ? DOTS : st.local ? T.ph : T.local;
+  };
+  const send = async (key) => {
+    status(null);
+    try {
+      const r = await (await fetch(API, { method: "POST", body: JSON.stringify({ key }) })).json();
+      inp.value = "";
+      show(r);
+    } catch { note.textContent = T.fail; }
+  };
+  inp.onkeydown = (e) => { if (e.key === "Enter" && inp.value.trim()) inp.blur(); };   // blur → change → send
+  inp.onchange = () => { if (inp.value.trim()) send(inp.value.trim()); };
+  del.onclick = () => send("");
+  status(null); vis(env, false); vis(del, false);
+  const load = () => fetch(API).then((r) => r.json()).then(async (st) => {
+    // a key kept in the ComfyUI settings by the first version of this field: moved to the server, the setting emptied
+    if (value && st.local) { const old = String(value); value = ""; setter(""); await send(old); } else show(st);
+  }).catch(() => {});
+  load();
+  // Allow posting turned on or off: the check runs (or does not) again
+  const again = () => { if (!box.isConnected) return window.removeEventListener("rigstools-civitai", again); status(null); load(); };
+  window.addEventListener("rigstools-civitai", again);
+  return box;
+}
+
 app.registerExtension({
   name: "Rigstools.NodeIcon",
   settings: [
+    { id: "Rigstools.Civitai.Enabled", category: ["Rigstools", "Civitai", "Enabled"],
+      name: "Allow posting from PicoTeka to Civitai",
+      tooltip: "Adds the option to send pictures from PicoTeka to Civitai.",
+      type: "boolean", defaultValue: false,          // listed in this order: Allow posting, the key, Lookup
+      onChange: () => setTimeout(() => window.dispatchEvent(new Event("rigstools-civitai")), 400) },
+    { id: "Rigstools.Civitai.ApiKey", category: ["Rigstools", "Civitai", "ApiKey"],
+      name: "API key (posting from PicoTeka)",
+      tooltip: "Needed to post pictures from PicoTeka to Civitai. Create it at civitai.com: Account settings → API Keys. "
+        + "The key is not kept in the ComfyUI settings: it goes to the ComfyUI server, which keeps it in <ComfyUI user "
+        + "folder>/rigstools/civitai_key, sends it to Civitai only and never gives it back to a page. It can be set "
+        + "from this computer only. The CIVITAI_API_KEY environment variable, when set, is used instead.",
+      type: civitaiKeyField, defaultValue: "" },
     { id: "Rigstools.Civitai.Lookup", category: ["Rigstools", "Civitai", "Lookup"],
       name: "Look models up on Civitai by their hash (Save image)",
       tooltip: "For the \"Civitai resources\" block, where Civitai takes the LoRA weights from. Sends the SHA-256 of the "

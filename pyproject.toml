@@ -1,10 +1,16 @@
 [project]
 name = "comfyui-rigstools"
 description = "Nodes that keep the generation data with the picture: load an image with its prompt, workflow and A1111 parameters as editable outputs, save it with Civitai-ready metadata, correct colours without AI — and PicoTeka, a fast gallery that sends pictures and parameters back to your workflow."
-version = "2.0.1"
+version = "2.1.0"
 license = { file = "LICENSE" }
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "License :: OSI Approved :: MIT License",
+]
 readme = "README.md"
-dependencies = ["send2trash"]
+dependencies = ["send2trash", "pyoxipng"]
 keywords = ["comfyui", "metadata", "png info", "exif", "webp", "jpeg", "load image", "batch", "parameters", "a1111", "image saver", "prompt", "workflow", "color correction", "white balance", "histogram", "save image", "civitai", "gallery", "image browser", "compare", "picoteka", "lora", "tags", "rating"]
 
 [project.urls]

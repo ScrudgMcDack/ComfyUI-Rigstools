@@ -11,6 +11,7 @@ from pathlib import Path
 
 from ..core import logger
 from ..core import gallery as G
+from ..core import civitai_post as C
 from ..core.image_meta import read_metadata
 from ..core.prompt_graph import parameters_from_prompt
 from ..core.settings import setting_on, setting_value, gallery_enabled
@@ -292,6 +293,198 @@ def register_routes():
         except ValueError as e:
             return web.json_response({"error": str(e)}, status=400)
         return web.json_response({"done": done, "errors": errors})
+
+    # ---- to Civitai: from this computer only; the key stays on the server
+    @routes.get("/rigstools/gallery/api/civitai/status")
+    async def civitai_status(request):
+        return web.json_response({"enabled": C.enabled(), "key": bool(C.api_key()), "local": _local(request)})
+
+    @routes.get("/rigstools/gallery/api/civitai/key")
+    async def civitai_key(request):
+        """Is there a key, where from, and what Civitai said about it (asked once per key; never the key itself)."""
+        return web.json_response({**C.key_state(), **(await run(C.check_key)), "local": _local(request)})
+
+    @routes.post("/rigstools/gallery/api/civitai/key")
+    async def civitai_key_save(request):
+        """{key} from the settings field ("" removes it) -> the state and the account name, or the error code."""
+        if not _local(request):
+            return web.json_response({"error": "not_local"}, status=403)
+        body = await request.json()
+        check = await run(C.save_key, str(body.get("key") or ""))
+        return web.json_response({**C.key_state(), **check, "local": True})
+
+    async def civitai_paths(ids):
+        """[(id, path)] of the gallery ids, in their order; None when one of them is gone."""
+        index = G.get()[0]
+        marks = ",".join("?" * len(ids))
+        rows = await run(lambda: index.db().execute(f"SELECT id, real_path FROM images WHERE id IN ({marks})",
+                                                    ids).fetchall())
+        paths = {r["id"]: r["real_path"] for r in rows}
+        items = [(i, paths[i]) for i in ids if i in paths and os.path.exists(paths[i])]
+        return items if len(items) == len(ids) else None
+
+    def civitai_tag(index, post_id):
+        """Sets the Tools and Techniques chosen in the post window on the pictures of a post that have a Civitai id and
+        do not have them yet (what a picture already has stays). -> False when some failed (tried again later)."""
+        ok = True
+        for cid, want in G.civitai_untagged(index, post_id):
+            try:
+                C.tag_image(cid, want.get("tools") or [], want.get("techniques") or [])
+                G.civitai_tagged(index, post_id, cid)
+            except C.CivitaiError as e:
+                ok = False
+                G.civitai_tagged(index, post_id, cid, ok=False)
+                logger.warning(f"PicoTeka → Civitai: Tools / Techniques of image {cid} not set ({e.code}): {e.detail}")
+        return ok
+
+    def civitai_published(index, post_id, found):
+        """A published post whose answer had no picture ids: they come from the public API [(uuid, id, rating)]."""
+        G.civitai_update_post(index, post_id, True)
+        G.civitai_set_images(index, post_id, found)
+        civitai_tag(index, post_id)
+
+    def civitai_sync(index, post_id):
+        """What Civitai says now about a post and its pictures: deleted, published, the ratings, the check of each
+        picture; then the Tools and Techniques still to set."""
+        info = C.post_info(post_id)
+        if info and info.get("gone"):                  # deleted on the Civitai site: the pictures forget it
+            G.civitai_forget_post(index, post_id)
+            return
+        if info:
+            G.civitai_update_post(index, post_id, info["published"], info["published_at"], info["nsfw"])
+        rows = G.civitai_post_rows(index, post_id)
+        if info and info["published"] and any(not r["civitai_image_id"] for r in rows):
+            G.civitai_set_images(index, post_id, C.post_images(post_id))
+            rows = G.civitai_post_rows(index, post_id)
+        for r in rows:
+            if not r["civitai_image_id"]:
+                continue
+            ii = C.image_info(r["civitai_image_id"])
+            if ii.get("gone"):                          # this picture was deleted on the site
+                G.civitai_forget_image(index, post_id, r["civitai_image_id"])
+            else:
+                G.civitai_image_state(index, post_id, r["civitai_image_id"], ii["nsfw"], ii["ingestion"])
+        civitai_tag(index, post_id)
+
+    @routes.post("/rigstools/gallery/api/civitai/delete_image")
+    async def civitai_delete_image(request):
+        """{post, image (gallery id)} -> that picture is deleted from the post on Civitai; the last one of a post: the
+        post is deleted (Civitai keeps an empty post). -> {ids}: the gallery pictures whose marks changed."""
+        if not _local(request):
+            return web.json_response({"error": "not_local"}, status=403)
+        if not C.enabled():
+            return web.json_response({"error": "disabled"}, status=403)
+        body = await request.json()
+        index, post_id, iid = G.get()[0], int(body.get("post") or 0), int(body.get("image") or 0)
+        rows = await run(G.civitai_post_rows, index, post_id)
+        row = next((r for r in rows if r["image_id"] == iid), None)
+        if not row or not row["civitai_image_id"]:
+            return web.json_response({"error": "no_id"}, status=400)
+        try:
+            if len(rows) == 1:
+                await run(C.delete_post, post_id)
+                return web.json_response({"ids": await run(G.civitai_forget_post, index, post_id), "post": True})
+            await run(C.delete_image, row["civitai_image_id"])
+        except C.CivitaiError as e:
+            return web.json_response({"error": e.code, "detail": e.detail[:300]}, status=502)
+        return web.json_response({"ids": await run(G.civitai_forget_image, index, post_id, row["civitai_image_id"])})
+
+    @routes.post("/rigstools/gallery/api/civitai/delete")
+    async def civitai_delete(request):
+        """{post} -> the post is deleted on Civitai and forgotten here; -> {ids}: the gallery pictures that were in it."""
+        if not _local(request):
+            return web.json_response({"error": "not_local"}, status=403)
+        if not C.enabled():
+            return web.json_response({"error": "disabled"}, status=403)
+        post_id = int((await request.json()).get("post") or 0)
+        try:
+            await run(C.delete_post, post_id)
+        except C.CivitaiError as e:
+            return web.json_response({"error": e.code, "detail": e.detail[:300]}, status=502)
+        return web.json_response({"ids": await run(G.civitai_forget_post, G.get()[0], post_id)})
+
+    @routes.get("/rigstools/gallery/api/civitai/lists")
+    async def civitai_lists(request):
+        """The Tools and Techniques Civitai knows (for the post window)."""
+        try:
+            return web.json_response(await run(C.tool_lists))
+        except C.CivitaiError as e:
+            return web.json_response({"error": e.code, "tools": [], "techniques": []})
+
+    @routes.post("/rigstools/gallery/api/civitai/post")
+    async def civitai_post(request):
+        """{ids (in the post's order), title, detail, publish, keep_workflow, tools, techniques (Civitai ids)} -> {job}."""
+        if not _local(request):
+            return web.json_response({"error": "not_local"}, status=403)
+        if not C.enabled():
+            return web.json_response({"error": "disabled"}, status=403)
+        if C.running():
+            return web.json_response({"error": "busy", "job": C.running()}, status=409)
+        body, ids = await body_ids(request)
+        if not ids or len(ids) > C.MAX_PICTURES:
+            return web.json_response({"error": "count"}, status=400)
+        if not C.api_key():
+            return web.json_response({"error": "no_key"}, status=400)
+        items = await civitai_paths(ids)
+        if not items:
+            return web.json_response({"error": "gone"}, status=404)
+        index = G.get()[0]
+        want = {"tools": [int(x) for x in body.get("tools") or []],
+                "techniques": [int(x) for x in body.get("techniques") or []]}
+        job = C.start(items, str(body.get("title") or ""), str(body.get("detail") or ""), bool(body.get("publish")),
+                      body.get("keep_workflow", True) is not False,
+                      on_done=lambda post, url, images, published: G.civitai_add(index, post, url, images, published, want),
+                      tools=want["tools"], techniques=want["techniques"],
+                      on_published=lambda post, found: civitai_published(index, post, found),
+                      on_ids=lambda post: civitai_tag(index, post))
+        return web.json_response({"job": job})
+
+    @routes.get("/rigstools/gallery/api/civitai/job/{id}")
+    async def civitai_job(request):
+        j = C.job(request.match_info["id"])
+        return web.json_response(j) if j else web.json_response({"error": "gone"}, status=404)
+
+    @routes.get("/rigstools/gallery/api/civitai/running")
+    async def civitai_running(request):
+        return web.json_response({"job": C.running()})
+
+    @routes.post("/rigstools/gallery/api/civitai/precheck")
+    async def civitai_precheck(request):
+        """{ids, keep_workflow} -> {id: as is | png | webp | jpeg | too_big} for the pictures over the Civitai limit; the
+        compressed copies stay in memory for the sending (the window asks for one picture at a time)."""
+        body, ids = await body_ids(request)
+        items = await civitai_paths(ids) or []
+        keep = body.get("keep_workflow", True) is not False
+        out = {}
+        for i, path in items:
+            if os.path.getsize(path) > C.LIMIT:
+                out[i] = await run(C.precheck, path, keep)
+        return web.json_response(out)
+
+    @routes.post("/rigstools/gallery/api/civitai/forget")
+    async def civitai_forget(request):
+        """{ids}: the post window closed without sending — the copies compressed for it are not needed."""
+        _, ids = await body_ids(request)
+        items = await civitai_paths(ids) or []
+        C.forget([path for _, path in items])
+        return web.json_response({"ok": True})
+
+    @routes.get("/rigstools/gallery/api/civitai/posts/{id}")
+    async def civitai_posts(request):
+        """The Civitai posts of a picture and its mark. With posting on, Civitai is asked again about them (see
+        civitai_sync) — at most every 5 minutes a post, every 30 s with force=1 (a click on the mark)."""
+        index, iid = G.get()[0], int(request.match_info["id"])
+        every = 30 if request.query.get("force") else 300
+        if C.enabled() and C.api_key():
+            for post_id in await run(G.civitai_post_ids, index, iid):
+                if not C.due(post_id, every):
+                    continue
+                try:
+                    await run(civitai_sync, index, post_id)
+                except C.CivitaiError:
+                    continue
+        posts = await run(G.civitai_posts, index, iid)
+        return web.json_response({"posts": posts, "mark": await run(G.civitai_mark, index, iid)})
 
     # ---- to the open workflow: the gallery page -> this server -> the last active ComfyUI tab (as LoRA Manager)
     active = {"sid": None}

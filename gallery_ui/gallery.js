@@ -8,12 +8,19 @@ const STR = {
     model: "Model", lora: "LoRA", sampler: "Sampler", tag: "Tags", rating: "Rating", date: "Date", clear: "clear",
     andUp: "and up", more: "{n} more", less: "less", tagAll: "all selected", tagAny: "any of them",
     sort_date: "Newest first", sort_date_asc: "Oldest first", sort_name: "Name", sort_rating: "Rating",
-    indexed: "Indexed: {n} pictures", scanning: "Scanning {root}", scanDone: "Up to date", scanError: "Scan failed", unreadable: "Unreadable files: {n}", rootMissing: "Folder not found: {root}", github: "Rigstools on GitHub", badFile: "not a picture or a damaged file", shown: "Shown {n} of {total}",
+    indexed: "Indexed: {n} pictures", scanning: "Scanning {root}", scanDone: "Up to date", scanError: "Scan failed", unreadable: "Unreadable files: {n}",
+    rootMissing: "Folder not found: {root}", github: "Rigstools on GitHub", badFile: "not a picture or a damaged file", shown: "Shown {n} of {total}",
     empty: "No pictures match the filters", nothing: "Select a picture", noParams: "No generation data in the file",
     rebuilt: "Parameters rebuilt from the ComfyUI prompt", missing: "not in the file",
     allFolders: "All folders", foldersTitle: "Gallery folders", pathPh: "Full path, e.g. D:\\AI\\outputs", add: "Add", remove: "Remove",
-    builtin: "ComfyUI output folder", notFolder: "There is no such folder", local_only: "Folders can be changed from this computer only", close: "Close", fresh: "New pictures: {n}", copyParams: "Copy parameters",
-    copied: "Copied", addFolderH: "Add a folder", addThis: "Add this folder", upFolder: "Up", homeFolder: "Home", outputFolder: "ComfyUI output", inGallery: "in the gallery", noSubfolders: "No subfolders", noAccess: "No access to this folder", insideRoot: "already in the gallery: inside «{v}»", inside_root: "This folder is inside a gallery folder", holds_root: "This folder holds a gallery folder", holdsRoot: "holds the gallery folder «{v}» — remove that one first", foldersTip: "Ctrl + click: show several folders at once", loading: "Loading…", metaFailed: "Could not read the file data", dateFrom: "from", dateTo: "to", copyPrompt: "Copy the prompt", copyFailed: "Could not copy", fileData: "File data", noData: "nothing", fit: "Fit", full: "100%", info: "Parameters",
+    builtin: "ComfyUI output folder", notFolder: "There is no such folder", local_only: "Folders can be changed from this computer only", close: "Close",
+    fresh: "New pictures: {n}", copyParams: "Copy parameters",
+    copied: "Copied", addFolderH: "Add a folder", addThis: "Add this folder", upFolder: "Up", homeFolder: "Home", outputFolder: "ComfyUI output",
+    inGallery: "in the gallery", noSubfolders: "No subfolders", noAccess: "No access to this folder", insideRoot: "already in the gallery: inside «{v}»",
+    inside_root: "This folder is inside a gallery folder", holds_root: "This folder holds a gallery folder",
+    holdsRoot: "holds the gallery folder «{v}» — remove that one first", foldersTip: "Ctrl + click: show several folders at once", loading: "Loading…",
+    metaFailed: "Could not read the file data", dateFrom: "from", dateTo: "to", copyPrompt: "Copy the prompt", copyFailed: "Could not copy",
+    fileData: "File data", noData: "nothing", fit: "Fit", full: "100%", info: "Parameters",
     keepZoom: "Keep zoom when paging", of: "{i} of {n}", hintFit: "← → paging | wheel — zoom in / out | double click — fit / 100%",
     hintZoom: "drag — move | double click — fit / 100%", gone: "The file is gone",
     rate: "Rating", tags: "Tags", move: "Move", del: "Delete", compare: "Compare", addTag: "+ tag", tagPh: "tag name, Enter",
@@ -21,15 +28,77 @@ const STR = {
     sentWf: "Sent to ComfyUI", no_comfy: "ComfyUI is not open in any browser tab", no_workflow: "The file has no workflow",
     network_files: "Deleting and moving files from another computer is off (Settings → Rigstools → PicoTeka)",
     no_send2trash: "The send2trash package is missing: pip install send2trash", not_root: "Not a gallery folder",
-    delPermTitle: "Delete permanently?", delPermText: "You are about to permanently delete {n} {pics}. The files are deleted from the disk, bypassing the recycle bin, and cannot be restored; their tags and rating are deleted too. Are you sure?",
+    delPermTitle: "Delete permanently?",
+    delPermText: "You are about to permanently delete {n} {pics}. The files are deleted from the disk, bypassing the recycle bin, and cannot be restored; their "
+      + "tags and rating are deleted too. Are you sure?",
     delPerm: "Delete permanently", deletedPerm: "Deleted permanently: {n}", cancel: "Cancel",
     delTitle: "Delete pictures", delText: "Move {n} {pics} to the system recycle bin? Tags and rating come back if a file is restored within 30 days.",
     deleted: "Moved to the recycle bin: {n}", moveTitle: "Move pictures", moveText: "Move {n} {pics} to:", newFolder: "new subfolder (optional)",
-    moved: "Moved: {n}", rateTitle: "Rating of {n} {pics}", tagsTitle: "Tags of {n} {pics}", tagsAdd: "Add", tagsRemove: "Remove from the pictures",
+    moved: "Moved: {n}", rateTitle: "Rating of {n} {pics}", tagsTitle: "Tags of {n} {pics}", tagFind: "Search or a new tag", tagNew: "New tag «{v}»",
+    tagNone: "No tags yet — type a name", tagsAdd: "Add", tagsRemove: "Remove from the pictures",
     manage: "manage", tagsManage: "Tags", rename: "Rename", renamePh: "new name", tagDelete: "Delete the tag",
     pics1: "picture", pics2: "pictures", pics5: "pictures", errors: "Not done: {v}",
     cmpTitle: "Comparison", viewTitle: "Viewer", side: "Side by side", slider: "Slider", hideSame: "Hide equal parameters", param: "Parameter",
-    cmpHint: "wheel — zoom in / out | drag — move | double click — fit / 100% | zoom and position are shared by both pictures", needTwo: "Select two pictures (Ctrl + click)",
+    civDraftBtn: "Create a draft", civPublishBtn: "Publish", civCover: "cover",
+    civSizeNote: "Civitai's MCP takes pictures up to 10 MB, so PicoTeka may compress a picture and change its format.",
+    civPreparing: "Preparing the pictures for sending: {i} of {n}",
+    civReady: "The pictures are ready. Your turn: put them in order, add a title and a description — and press “Publish”.",
+    civSqueezing: "Compressing to fit 10 MB…",
+    civFmtAsIs: "Goes as it is", civFmtPng: "Over 10 MB: the same PNG compressed harder, without loss — everything stays",
+    civFmtWebp: "Over 10 MB even as a compressed PNG: goes as WebP without loss — the picture, the parameters and the workflow stay",
+    civFmtJpeg: "Over 10 MB even as WebP: goes as JPEG — with loss, without the ComfyUI workflow; the parameters stay", civRemove: "Remove from the post",
+    civNoParams: "No generation data in the file: Civitai will not find the model and LoRA",
+    civTooBigOne: "Over 10 MB even as a JPEG: Civitai will not take it — remove it from the post",
+    civDrag: "Drag the pictures to change their order; the first one is the cover of the post",
+    civBar: "Civitai: {i} of {n}", civBarTip: "Uploading to Civitai — click to show", civBusy: "A post is being sent to Civitai",
+    civPostsTitle: "On Civitai", civPost: "Post {v}", civPostWord: "Post",
+    civNotRatedTip: "The age rating is not known yet: Civitai is still checking the picture",
+    civMarkRed: "On Civitai.red (R, X and XXX live there) — click for the posts", civPublished: "published", civDraftSt: "draft",
+    civMarkPub: "On Civitai.com (PG and PG-13 live there) — click for the posts", civMarkDraft: "On Civitai, in a draft — click for the posts",
+    civKeyRejected: "the key is rejected", busy: "A post is already being sent to Civitai",
+    civGone: "The post is no longer on Civitai — the mark is removed", civDelPost: "Delete the post",
+    civDelImg: "Delete this picture from the post", civDelImgBtn: "Delete the picture",
+    civDelImgLast: "Delete the picture — it is the only one in the post, so the post is deleted too",
+    civDelImgTitle: "Delete the picture on Civitai?", civImgDeleted: "The picture is deleted from post {v} on Civitai",
+    civDelImgText: "This picture will be deleted from post {v} on Civitai, its likes and comments too. This cannot be undone. The other pictures of the post and "
+      + "the files on your disk will stay untouched.",
+    civDelLast: "It is the only picture of post {v}, and Civitai does not delete an empty post by itself — so the post is deleted too.",
+    civPending: "Civitai is still checking the pictures of this post — they can be deleted once the check is over",
+    civNoId: "The Civitai number of this picture is not known yet — only the whole post can be deleted", civDelTitle: "Delete the post on Civitai?",
+    civDeleted: "Post {v} deleted on Civitai",
+    civDelText: "Post {v} and its pictures will be deleted on Civitai, its likes and comments too. This cannot be undone. The files on your disk will stay "
+      + "untouched.",
+    civTools: "Tools", civTech: "Techniques", civAddTool: "+ tool", civAddTech: "+ technique", civFind: "Search", civNothing: "Nothing found",
+    civTagging: "Setting Tools and Techniques…",
+    civTagFailed: "Tools and Techniques could not be set. PicoTeka tries again at the next check (when you pick the picture or click its CIVITAI mark) — or set "
+      + "them by hand on Civitai.",
+    civPostedOn: "Posted on:", civAgeRating: "Age rating:",
+    civNoLists: "The Civitai lists of Tools and Techniques could not be read: the post goes without them",
+    civRating: "Civitai rating {v}: {d}", civRatingPost: "Civitai rating of the post {v}: {d}. It is the highest of its pictures — this one may be lower",
+    nsfw1: "safe for work, nothing explicit", nsfw2: "revealing clothing, violence or light gore",
+    nsfw4: "adult themes and situations, partial nudity, graphic violence or death",
+    nsfw8: "graphic nudity, adult objects or settings", nsfw16: "overtly sexual or disturbing graphic content", nsfw32: "blocked by Civitai",
+    civ: "To Civitai", civTitle: "Post to Civitai", civLocal: "Posting to Civitai works from this computer only",
+    civTitlePh: "Title (optional)", civDetailPh: "Description (optional)", civPublish: "Publish the post now",
+    civPublishTip: "Off: the post is created as a draft — look it over on Civitai and publish it there",
+    civKeepWf: "Keep the workflow data in the file",
+    civKeepWfTip: "Off: the ComfyUI workflow and prompt are taken out of the uploaded copy; the generation parameters stay. The file on the disk does not change",
+    civSend: "Send", civNote: "Civitai identifies the models, LoRA and embeddings by the hashes in the metadata saved in the files.",
+    civModeration: "New pictures pass Civitai's moderation, so others may see the post a bit later.",
+    civChecking: "Connecting to Civitai…", civUploading: "Uploading: {i} of {n}", civPosting: "Creating the post…", civAs: "Account: {v}",
+    civDone: "The post is published:", civDraft: "The draft is created — publish it on Civitai:", civOpen: "Open the post",
+    civMax: "At most {n} pictures in one post",
+    civNoKeyTitle: "Civitai API key", civNoKey: "To post to Civitai, PicoTeka needs your Civitai API key.",
+    civKeyWhere: "Create one at civitai.com: Account settings → API Keys → Add API key.",
+    civKeyPut: "Then paste it in ComfyUI: Settings → Rigstools → Civitai → API key — or set the CIVITAI_API_KEY environment variable before starting ComfyUI "
+      + "(it is used first). The key stays on this computer and goes to Civitai only.",
+    civKeyOpen: "Open civitai.com", no_key: "No Civitai API key", bad_key: "Civitai did not accept the API key — check it in Settings → Rigstools → Civitai",
+    not_onboarded: "Finish setting up your account on civitai.com first", network: "Civitai cannot be reached — check the connection",
+    too_big: "A picture is over 10 MB even after compression", civitai: "Civitai returned an error",
+    not_local: "Posting to Civitai works from this computer only",
+    count: "Too many pictures for one post", disabled: "Posting to Civitai is off: Settings → Rigstools → Civitai",
+    cmpHint: "wheel — zoom in / out | drag — move | double click — fit / 100% | zoom and position are shared by both pictures",
+    needTwo: "Select two pictures (Ctrl + click)",
   },
   ru: {
     title: "PicoTeka", search: "Поиск по промптам и именам файлов", size: "Размер", rescan: "Пересканировать",
@@ -37,12 +106,20 @@ const STR = {
     model: "Модель", lora: "LoRA", sampler: "Сэмплер", tag: "Теги", rating: "Рейтинг", date: "Дата", clear: "сбросить",
     andUp: "и выше", more: "ещё {n}", less: "свернуть", tagAll: "все выбранные", tagAny: "любой из них",
     sort_date: "Сначала новые", sort_date_asc: "Сначала старые", sort_name: "По имени", sort_rating: "По рейтингу",
-    indexed: "Индекс: {n} {pics}", scanning: "Сканирование: {root}", scanDone: "Индекс актуален", scanError: "Ошибка сканирования", unreadable: "Не прочитано файлов: {n}", rootMissing: "Папка не найдена: {root}", github: "Rigstools на GitHub", badFile: "не картинка или файл повреждён", shown: "Показано {n} из {total}",
+    indexed: "Индекс: {n} {pics}", scanning: "Сканирование: {root}", scanDone: "Индекс актуален", scanError: "Ошибка сканирования",
+    unreadable: "Не прочитано файлов: {n}", rootMissing: "Папка не найдена: {root}", github: "Rigstools на GitHub", badFile: "не картинка или файл повреждён",
+    shown: "Показано {n} из {total}",
     empty: "Нет картинок под эти фильтры", nothing: "Выберите картинку", noParams: "В файле нет данных генерации",
     rebuilt: "Параметры восстановлены из промпта ComfyUI", missing: "нет в файле",
     allFolders: "Все папки", foldersTitle: "Папки галереи", pathPh: "Полный путь, например D:\\AI\\outputs", add: "Добавить", remove: "Убрать",
-    builtin: "папка output ComfyUI", notFolder: "Такой папки нет", local_only: "Папки можно менять только с этого компьютера", close: "Закрыть", fresh: "Новых картинок: {n}", copyParams: "Копировать параметры",
-    copied: "Скопировано", addFolderH: "Добавить папку", addThis: "Добавить эту папку", upFolder: "Вверх", homeFolder: "Домашняя папка", outputFolder: "output ComfyUI", inGallery: "уже в галерее", noSubfolders: "Подпапок нет", noAccess: "Нет доступа к этой папке", insideRoot: "уже в галерее: внутри «{v}»", inside_root: "Эта папка внутри папки галереи", holds_root: "Эта папка содержит папку галереи", holdsRoot: "содержит папку галереи «{v}» — сначала уберите её", foldersTip: "Ctrl + щелчок — показать сразу несколько папок", loading: "Загрузка…", metaFailed: "Не удалось прочитать данные файла", dateFrom: "с", dateTo: "по", copyPrompt: "Скопировать промпт", copyFailed: "Не удалось скопировать", fileData: "Данные файла", noData: "нет", fit: "Вписать", full: "100%", info: "Параметры",
+    builtin: "папка output ComfyUI", notFolder: "Такой папки нет", local_only: "Папки можно менять только с этого компьютера", close: "Закрыть",
+    fresh: "Новых картинок: {n}", copyParams: "Копировать параметры",
+    copied: "Скопировано", addFolderH: "Добавить папку", addThis: "Добавить эту папку", upFolder: "Вверх", homeFolder: "Домашняя папка",
+    outputFolder: "output ComfyUI", inGallery: "уже в галерее", noSubfolders: "Подпапок нет", noAccess: "Нет доступа к этой папке",
+    insideRoot: "уже в галерее: внутри «{v}»", inside_root: "Эта папка внутри папки галереи", holds_root: "Эта папка содержит папку галереи",
+    holdsRoot: "содержит папку галереи «{v}» — сначала уберите её", foldersTip: "Ctrl + щелчок — показать сразу несколько папок", loading: "Загрузка…",
+    metaFailed: "Не удалось прочитать данные файла", dateFrom: "с", dateTo: "по", copyPrompt: "Скопировать промпт", copyFailed: "Не удалось скопировать",
+    fileData: "Данные файла", noData: "нет", fit: "Вписать", full: "100%", info: "Параметры",
     keepZoom: "Сохранять масштаб при листании", of: "{i} из {n}", hintFit: "← → листать | колесо — приблизить / отдалить | двойной клик — вписать / 100%",
     hintZoom: "перетаскивание — сдвиг | двойной клик — вписать / 100%", gone: "Файла больше нет",
     rate: "Рейтинг", tags: "Теги", move: "Переместить", del: "Удалить", compare: "Сравнить", addTag: "+ тег", tagPh: "имя тега, Enter",
@@ -50,15 +127,76 @@ const STR = {
     sentWf: "Отправлено в ComfyUI", no_comfy: "ComfyUI не открыт ни в одной вкладке браузера", no_workflow: "В файле нет workflow",
     network_files: "Удаление и перемещение файлов с другого компьютера выключено (Настройки → Rigstools → PicoTeka)",
     no_send2trash: "Нет пакета send2trash: pip install send2trash", not_root: "Это не папка галереи",
-    delPermTitle: "Удалить безвозвратно?", delPermText: "Вы собираетесь безвозвратно удалить {n} {pics}. Файлы будут удалены с диска, минуя корзину, — восстановить их будет нельзя; теги и рейтинг тоже удаляются. Вы уверены?",
+    delPermTitle: "Удалить безвозвратно?",
+    delPermText: "Вы собираетесь безвозвратно удалить {n} {pics}. Файлы будут удалены с диска, минуя корзину, — восстановить их будет нельзя; теги и рейтинг тоже "
+      + "удаляются. Вы уверены?",
     delPerm: "Удалить безвозвратно", deletedPerm: "Удалено безвозвратно: {n}", cancel: "Отмена",
     delTitle: "Удаление картинок", delText: "Переместить {n} {pics} в корзину ОС? Теги и рейтинг вернутся, если файл восстановить в течение 30 дней.",
     deleted: "Перемещено в корзину: {n}", moveTitle: "Перемещение картинок", moveText: "Переместить {n} {pics} в:", newFolder: "новая подпапка (необязательно)",
-    moved: "Перемещено: {n}", rateTitle: "Рейтинг {n} {pics}", tagsTitle: "Теги {n} {pics}", tagsAdd: "Добавить", tagsRemove: "Убрать с картинок",
+    moved: "Перемещено: {n}", rateTitle: "Рейтинг {n} {pics}", tagsTitle: "Теги {n} {pics}", tagFind: "Поиск или новый тег", tagNew: "Новый тег «{v}»",
+    tagNone: "Тегов пока нет — введите название", tagsAdd: "Добавить", tagsRemove: "Убрать с картинок",
     manage: "управлять", tagsManage: "Теги", rename: "Переименовать", renamePh: "новое имя", tagDelete: "Удалить тег",
     pics1: "картинку", pics2: "картинки", pics5: "картинок", errors: "Не выполнено: {v}",
     cmpTitle: "Сравнение", viewTitle: "Просмотр", side: "Рядом", slider: "Шторка", hideSame: "Скрыть одинаковые параметры", param: "Параметр",
-    cmpHint: "колесо — приблизить / отдалить | перетаскивание — сдвиг | двойной клик — вписать / 100% | масштаб и положение общие для обеих картинок", needTwo: "Выберите две картинки (Ctrl + клик)",
+    civDraftBtn: "Создать черновик", civPublishBtn: "Опубликовать", civCover: "обложка",
+    civSizeNote: "Из-за ограничения MCP Civitai в 10 МБ PicoTeka может применить сжатие и поменять формат картинки.",
+    civPreparing: "Готовлю картинки к отправке: {i} из {n}",
+    civReady: "Картинки готовы. Ваша очередь: расставьте их по порядку, добавьте заголовок и описание — и нажмите «Опубликовать».",
+    civSqueezing: "Сжимаю, чтобы уложиться в 10 МБ…",
+    civFmtAsIs: "Уходит как есть", civFmtPng: "Больше 10 МБ: тот же PNG, сжатый сильнее без потерь — всё сохраняется",
+    civFmtWebp: "Больше 10 МБ даже в сжатом PNG: уходит в WebP без потерь — картинка, параметры и workflow сохраняются",
+    civFmtJpeg: "Больше 10 МБ даже в WebP: уходит в JPEG — с потерями и без workflow ComfyUI; параметры сохраняются", civRemove: "Убрать из поста",
+    civNoParams: "В файле нет параметров генерации: Civitai не найдёт модель и LoRA",
+    civTooBigOne: "Больше 10 МБ даже в JPEG: Civitai её не примет — уберите её из поста",
+    civDrag: "Перетащите картинки, чтобы изменить их порядок; первая — обложка поста",
+    civBar: "Civitai: {i} из {n}", civBarTip: "Загрузка на Civitai — щёлкните, чтобы показать", civBusy: "Идёт отправка поста на Civitai",
+    civPostsTitle: "На Civitai", civPost: "Пост {v}", civPostWord: "Пост",
+    civNotRatedTip: "Возрастной рейтинг ещё не определён: Civitai ещё проверяет картинку",
+    civMarkRed: "На Civitai.red (там R, X и XXX) — щёлкните, чтобы увидеть посты", civPublished: "опубликован", civDraftSt: "черновик",
+    civMarkPub: "На Civitai.com (там PG и PG-13) — щёлкните, чтобы увидеть посты", civMarkDraft: "На Civitai, в черновике — щёлкните, чтобы увидеть посты",
+    civKeyRejected: "ключ отвергнут", busy: "Уже идёт отправка поста на Civitai",
+    civGone: "Поста больше нет на Civitai — отметка снята", civDelPost: "Удалить пост",
+    civDelImg: "Удалить эту картинку из поста", civDelImgBtn: "Удалить картинку",
+    civDelImgLast: "Удалить картинку — она единственная в посте, поэтому удаляется и сам пост",
+    civDelImgTitle: "Удалить картинку на Civitai?", civImgDeleted: "Картинка удалена из поста {v} на Civitai",
+    civDelImgText: "Эта картинка будет удалена из поста {v} на Civitai, вместе с её лайками и комментариями. Отменить это нельзя. Прочие картинки поста и файлы на "
+      + "вашем диске останутся нетронутыми.",
+    civDelLast: "Это единственная картинка поста {v}, а пустой пост Civitai сам не удаляет — поэтому удаляется и сам пост.",
+    civPending: "Civitai ещё проверяет картинки этого поста — удалить их можно после проверки",
+    civNoId: "Номер этой картинки на Civitai пока неизвестен — удалить можно только весь пост", civDelTitle: "Удалить пост на Civitai?",
+    civDeleted: "Пост {v} удалён на Civitai",
+    civDelText: "Пост {v} и его картинки будут удалены на Civitai, вместе с лайками и комментариями. Отменить это нельзя. Файлы на вашем диске останутся "
+      + "нетронутыми.",
+    civTools: "Tools", civTech: "Techniques", civAddTool: "+ инструмент", civAddTech: "+ техника", civFind: "Поиск", civNothing: "Ничего не найдено",
+    civTagging: "Проставляю Tools и Techniques…",
+    civTagFailed: "Tools и Techniques проставить не удалось. PicoTeka попробует ещё раз при следующей проверке (когда вы выберете картинку или щёлкнете по её "
+      + "отметке CIVITAI) — или поправьте их вручную на Civitai.",
+    civPostedOn: "Размещено на:", civAgeRating: "Возрастной рейтинг:",
+    civNoLists: "Не удалось прочитать у Civitai списки Tools и Techniques: пост уйдёт без них",
+    civRating: "Рейтинг Civitai {v}: {d}", civRatingPost: "Рейтинг поста на Civitai {v}: {d}. Это наивысший рейтинг его картинок — у этой может быть ниже",
+    nsfw1: "безопасно для всех, ничего откровенного", nsfw2: "откровенная одежда, насилие или немного крови",
+    nsfw4: "взрослые темы и ситуации, частичная нагота, жестокость или смерть",
+    nsfw8: "явная нагота, предметы или обстановка для взрослых", nsfw16: "откровенно сексуальное или шокирующее содержание", nsfw32: "заблокировано Civitai",
+    civ: "На Civitai", civTitle: "Публикация на Civitai", civLocal: "Публикация на Civitai — только с этого компьютера",
+    civTitlePh: "Заголовок (необязательно)", civDetailPh: "Описание (необязательно)", civPublish: "Опубликовать пост сразу",
+    civPublishTip: "Выключено: пост создаётся черновиком — проверьте его на Civitai и опубликуйте там",
+    civKeepWf: "Оставить данные workflow в файле",
+    civKeepWfTip: "Выключено: из отправляемой копии убираются workflow и промпт ComfyUI, параметры генерации остаются. Файл на диске не меняется",
+    civSend: "Отправить", civNote: "Модели, LoRA и эмбеддинги Civitai определяет по хэшам из метаданных, сохранённых в файлах.",
+    civModeration: "Новые картинки проходят модерацию Civitai, поэтому другие могут увидеть пост немного позднее.",
+    civChecking: "Подключение к Civitai…", civUploading: "Загрузка: {i} из {n}", civPosting: "Создание поста…", civAs: "Аккаунт: {v}",
+    civDone: "Пост опубликован:", civDraft: "Черновик создан — опубликуйте его на Civitai:", civOpen: "Открыть пост",
+    civMax: "Не больше {n} картинок в одном посте",
+    civNoKeyTitle: "API-ключ Civitai", civNoKey: "Чтобы публиковать на Civitai, PicoTeka нужен ваш API-ключ Civitai.",
+    civKeyWhere: "Создайте его на civitai.com: Account settings → API Keys → Add API key.",
+    civKeyPut: "Затем вставьте его в ComfyUI: Настройки → Rigstools → Civitai → API-ключ — или задайте переменную окружения CIVITAI_API_KEY до запуска ComfyUI "
+      + "(у неё приоритет). Ключ остаётся на этом компьютере и уходит только на Civitai.",
+    civKeyOpen: "Открыть civitai.com", no_key: "Нет API-ключа Civitai", bad_key: "Civitai не принял API-ключ — проверьте его в Настройки → Rigstools → Civitai",
+    not_onboarded: "Сначала завершите настройку аккаунта на civitai.com", network: "Civitai недоступен — проверьте подключение",
+    too_big: "Картинка больше 10 МБ даже после сжатия", civitai: "Civitai вернул ошибку", not_local: "Публикация на Civitai — только с этого компьютера",
+    count: "Слишком много картинок для одного поста", disabled: "Публикация на Civitai выключена: Настройки → Rigstools → Civitai",
+    cmpHint: "колесо — приблизить / отдалить | перетаскивание — сдвиг | двойной клик — вписать / 100% | масштаб и положение общие для обеих картинок",
+    needTwo: "Выберите две картинки (Ctrl + клик)",
   },
 };
 let LANG = "en";
@@ -71,13 +209,21 @@ const $ = (id) => document.getElementById(id);
 // SVG stays sharp at any screen scale, where the emoji and font symbols did not.
 const ICONS = {
   image: `<rect width="18" height="18" x="3" y="3" rx="2" ry="2" /> <circle cx="9" cy="9" r="2" /> <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />`,
-  sliders: `<line x1="21" x2="14" y1="4" y2="4" /> <line x1="10" x2="3" y1="4" y2="4" /> <line x1="21" x2="12" y1="12" y2="12" /> <line x1="8" x2="3" y1="12" y2="12" /> <line x1="21" x2="16" y1="20" y2="20" /> <line x1="12" x2="3" y1="20" y2="20" /> <line x1="14" x2="14" y1="2" y2="6" /> <line x1="8" x2="8" y1="10" y2="14" /> <line x1="16" x2="16" y1="18" y2="22" />`,
+  sliders: `<line x1="21" x2="14" y1="4" y2="4" /> <line x1="10" x2="3" y1="4" y2="4" /> <line x1="21" x2="12" y1="12" y2="12" />
+    <line x1="8" x2="3" y1="12" y2="12" /> <line x1="21" x2="16" y1="20" y2="20" /> <line x1="12" x2="3" y1="20" y2="20" />
+    <line x1="14" x2="14" y1="2" y2="6" /> <line x1="8" x2="8" y1="10" y2="14" /> <line x1="16" x2="16" y1="18" y2="22" />`,
   help: `<circle cx="12" cy="12" r="10" /> <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" /> <path d="M12 17h.01" />`,
-  star: `<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />`,
-  hash: `<line x1="4" x2="20" y1="9" y2="9" /> <line x1="4" x2="20" y1="15" y2="15" /> <line x1="10" x2="8" y1="3" y2="21" /> <line x1="16" x2="14" y1="3" y2="21" />`,
-  move: `<path d="M2 9V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1" /> <path d="M2 13h10" /> <path d="m9 16 3-3-3-3" />`,
-  trash: `<path d="M3 6h18" /> <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /> <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /> <line x1="10" x2="10" y1="11" y2="17" /> <line x1="14" x2="14" y1="11" y2="17" />`,
-  rescan: `<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /> <path d="M21 3v5h-5" /> <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /> <path d="M8 16H3v5" />`,
+  star: `<path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0
+    0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122
+    0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />`,
+  hash: `<line x1="4" x2="20" y1="9" y2="9" /> <line x1="4" x2="20" y1="15" y2="15" /> <line x1="10" x2="8" y1="3" y2="21" />
+    <line x1="16" x2="14" y1="3" y2="21" />`,
+  move: `<path d="M2 9V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-1" />
+    <path d="M2 13h10" /> <path d="m9 16 3-3-3-3" />`,
+  trash: `<path d="M3 6h18" /> <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /> <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+    <line x1="10" x2="10" y1="11" y2="17" /> <line x1="14" x2="14" y1="11" y2="17" />`,
+  rescan: `<path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /> <path d="M21 3v5h-5" />
+    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /> <path d="M8 16H3v5" />`,
   send: `<path d="M5 12h14" /> <path d="m12 5 7 7-7 7" />`,
   info: `<circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" />`,
   copy: `<rect width="14" height="14" x="8" y="8" rx="2" ry="2" /> <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />`,
@@ -91,12 +237,25 @@ const ICONS = {
   minus: `<path d="M5 12h14" />`,
   plus: `<path d="M5 12h14" /> <path d="M12 5v14" />`,
   folder: `<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />`,
-  folderplus: `<path d="M12 10v6" /> <path d="M9 13h6" /> <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />`,
+  folderplus: `<path d="M12 10v6" /> <path d="M9 13h6" />
+    <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />`,
   up: `<path d="m5 12 7-7 7 7" /> <path d="M12 19V5" />`,
-  home: `<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /> <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />`,
-  drive: `<line x1="22" x2="2" y1="12" y2="12" /> <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /> <line x1="6" x2="6.01" y1="16" y2="16" /> <line x1="10" x2="10.01" y1="16" y2="16" />`,
+  home: `<path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
+    <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />`,
+  drive: `<line x1="22" x2="2" y1="12" y2="12" />
+    <path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
+    <line x1="6" x2="6.01" y1="16" y2="16" /> <line x1="10" x2="10.01" y1="16" y2="16" />`,
   chevright: `<path d="m9 18 6-6-6-6" />`,
+  imgminus: `<path d="M21 9v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7" /> <line x1="16" x2="22" y1="5" y2="5" /> <circle cx="9" cy="9" r="2" />
+    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />`,
+  images: `<path d="M18 22H4a2 2 0 0 1-2-2V6" /> <path d="m22 13-1.296-1.296a2.41 2.41 0 0 0-3.408 0L11 18" /> <circle cx="12" cy="8" r="2" />
+    <rect width="16" height="16" x="6" y="2" rx="2" />`,
   swap: `<path d="M4 9h16l-4-4"/><path d="M20 15H4l4 4"/>`,
+  scan: `<path d="M3 7V5a2 2 0 0 1 2-2h2" /> <path d="M17 3h2a2 2 0 0 1 2 2v2" /> <path d="M21 17v2a2 2 0 0 1-2 2h-2" /> <path d="M7 21H5a2 2 0 0 1-2-2v-2" />`,
+  // Side by side: two pictures; Slider: one picture split by the line (Lucide square-split-horizontal)
+  pair: `<rect x="2" y="5" width="9" height="14" rx="2" /> <rect x="13" y="5" width="9" height="14" rx="2" />`,
+  split: `<path d="M8 19H5c-1 0-2-1-2-2V7c0-1 1-2 2-2h3" /> <path d="M16 5h3c1 0 2 1 2 2v10c0 1-1 2-2 2h-3" /> <path d="M12 4v16" />`,
+  upload: `<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /> <polyline points="17 8 12 3 7 8" /> <line x1="12" x2="12" y1="3" y2="15" />`,
 };
 const ic = (name) => `<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
   stroke-linejoin="round" aria-hidden="true">${ICONS[name]}</svg>`;
@@ -491,7 +650,7 @@ const thumbUrl = (it, s) => `${API}/thumb/${it.id}?s=${s}&v=${Math.round((it.mti
 function thumb(it) {
   const size = S.size, cell = el("div", "cell"), d = el("div", "th");
   cell.dataset.id = it.id;
-  let h = `<img loading="lazy" src="${thumbUrl(it, thumbPx())}" alt=""><span class="fmt ${esc(String(it.fmt).toLowerCase())}">${esc(it.fmt)}</span>`;
+  let h = `<img loading="lazy" src="${thumbUrl(it, thumbPx())}" alt=""><span class="fmt ${esc(String(it.fmt).toLowerCase())}">${esc(it.fmt)}</span>${civMark(it)}`;
   const r = it.rating || 0, tags = it.tags || [];
   // stars in the top left corner (the format is in the top right), the tags and the lines at the bottom
   if (r) h += `<span class="st">${size < 130 ? "★".repeat(r) : starsText(r)}</span>`;
@@ -514,6 +673,7 @@ function thumb(it) {
   if (S.cur === it.id) cell.classList.add("cur");
   cell.onclick = (e) => pick(it.id, e);
   cell.ondblclick = () => openViewer(it.id);
+  wireCivMark(cell, it);
   return cell;
 }
 
@@ -655,7 +815,7 @@ function apply(items, total, force = false) {
   if (S.cur != null && !ids.has(S.cur)) { if (shown.length) { pick(shown[0].id); S.picked = false; } else showCard(null); }
   else if (curChanged) showCard(shown.find((x) => x.id === S.cur));
   $("b-compare").disabled = S.sel.size !== 2;
-  $("b-compare").innerHTML = icl("swap", t("compare") + (S.sel.size ? ` (${S.sel.size})` : ""));
+  cmpButton();
   if (V.open) {
     const i = shown.findIndex((x) => x.id === viewed);
     if (i < 0) closeViewer(); else { V.i = i; $("v-pos").textContent = t("of", { i: num(V.i + 1), n: num(S.total) }); }
@@ -723,7 +883,7 @@ function unpick() {
   S.cur = null; S.sel.clear(); S.picked = false; S.cleared = true;
   for (const d of $("grid").querySelectorAll(".cell.cur, .cell.sel")) d.classList.remove("cur", "sel");
   $("b-compare").disabled = true;
-  $("b-compare").innerHTML = icl("swap", t("compare"));
+  cmpButton();
   showCard(null);
   if (S.held.size && atFreeTop()) sync(0, true);
 }
@@ -750,7 +910,7 @@ function pick(id, e) {
   S.picked = true; S.cleared = false;
   S.cur = id;
   $("b-compare").disabled = S.sel.size !== 2;
-  $("b-compare").innerHTML = icl("swap", t("compare") + (S.sel.size ? ` (${S.sel.size})` : ""));
+  cmpButton();
   for (const d of $("grid").children) { d.classList.toggle("cur", +d.dataset.id === id); d.classList.toggle("sel", S.sel.has(+d.dataset.id)); }
   showCard(S.items.find((x) => x.id === id));
 }
@@ -758,6 +918,10 @@ function pick(id, e) {
 // ---- card ------------------------------------------------------------------------------------------------------
 const fsize = (b) => b > 1048576 ? `${(b / 1048576).toFixed(1)} ${LANG === "ru" ? "МБ" : "MB"}` : `${Math.round(b / 1024)} ${LANG === "ru" ? "КБ" : "KB"}`;
 const fileLine = (it) => [`${it.width}×${it.height}`, esc(it.fmt), fsize(it.size), it.folder ? esc(it.folder) : null].filter(Boolean).join(SEP);
+// the card: "Posted on: CIVITAI   Age rating: R" — a line of its own
+const civLine = (it) => it.civitai ? `<div class="civline"><span class="muted">${esc(t("civPostedOn"))}</span>
+  <span class="civw">${civBadge(it)}</span>
+  <span class="muted civline-r">${esc(t("civAgeRating"))}</span>${nsfwChip(it.civitai_nsfw, it.civitai_nsfw_post) || nsfwUnknown()}</div>` : "";
 
 // the name, rating, tags and parameters of a picture — the card and the viewer panel show the same block
 function infoHtml(it) {
@@ -765,7 +929,7 @@ function infoHtml(it) {
   const f = (label, v) => `<div class="f" title="${esc(v ?? t("missing"))}"><label>${dot(v)}${label}</label><span>${esc(v ?? "—")}</span></div>`;
   const tx = (label, v, cls = "") => `<div class="t ${cls}"><label>${dot(v)}${label}${v ? `<button class="cp" data-copy="${label}" title="${t("copyPrompt")}">${ic("copy")}</button>` : ""}</label>${esc(v || "—")}</div>`;
   const loras = (it.loras || []).map(([n, w]) => `<span class="lora">${esc(n)} <i>×${w}</i></span>`).join("") || "—";
-  return `<div class="ih"><div class="name"><div><b>${esc(it.name)}</b><div class="muted">${fileLine(it)}</div></div>${starsHtml(it.rating || 0)}</div>
+  return `<div class="ih"><div class="name"><div><b>${esc(it.name)}</b><div class="muted">${fileLine(it)}</div></div>${starsHtml(it.rating || 0)}</div>${civLine(it)}
     <div class="chips tagline">${(it.tags || []).map((x) => tagHtml(x, ' <i class="x">✕</i>')).join("")}<span class="chip addtag">${t("addTag")}</span></div></div>
     <div class="ib">${it.has_params ? `<div class="rcard">${tx("positive", it.positive, "pos")}${tx("negative", it.negative, "neg")}
       <div class="row" style="grid-template-columns:1.8fr 1fr">${f("seed", it.seed)}${f("steps", it.steps)}</div>
@@ -778,8 +942,8 @@ function infoHtml(it) {
       <button class="btn pri" data-act="params" ${it.has_params ? "" : "disabled"}>${icl("send", t("toWfParams"))}</button>
       <button class="btn" data-act="workflow" ${it.has_workflow ? "" : "disabled"}>${icl("workflow", t("openWf"))}</button>
       <button class="btn" data-act="copy" ${it.has_params ? "" : "disabled"}>${icl("copy", t("copyParams"))}</button>
-      <button class="btn meta" data-act="meta">${icl("info", t("fileData"))}</button>
-      <button class="btn dang" data-act="delete">${icl("trash", t("del"))}</button></div>`;
+      <button class="btn meta${CIV.enabled ? "" : " wide"}" data-act="meta">${icl("info", t("fileData"))}</button>
+      ${CIV.enabled ? `<button class="btn civ" data-act="civitai" ${CIV.local ? "" : `disabled title="${esc(t("civLocal"))}"`}>${icl("upload", t("civ"))}</button>` : ""}</div>`;
 }
 // rating stars as the icon of the Rating button: filled when given, an outline when not (the thumbnails keep font stars)
 const starRow = (r, cls = "") => [1, 2, 3, 4, 5].map((i) => `<span data-r="${i}" class="sv ${i <= r ? "on" : "off"} ${cls}">${ic("star")}</span>`).join("");
@@ -787,12 +951,13 @@ const starsHtml = (r) => `<div class="stars rate ico">${starRow(r)}</div>`;
 const starOf = (e) => +(e.target.closest("[data-r]")?.dataset.r || 0);
 
 function wireInfo(box, it) {
+  wireCivMark(box, it);
   box.querySelector(".rate").onclick = (e) => { const r = starOf(e); if (r) setRating([it.id], r === it.rating ? 0 : r); };
   const line = box.querySelector(".tagline");
   line.onclick = (e) => {
     const x = e.target.closest(".x");
     if (x) editTags([it.id], [], [x.closest(".tag").dataset.tag]);
-    else if (e.target.closest(".addtag")) tagInput(line, (name) => editTags([it.id], [name], []));
+    else if (e.target.closest(".addtag")) tagPicker(e.target.closest(".addtag"), [it.id]);
   };
   box.querySelector('[data-act="copy"]').onclick = async (e) => {
     const btn = e.currentTarget;
@@ -807,7 +972,8 @@ function wireInfo(box, it) {
   };
   box.querySelector('[data-act="meta"]').onclick = () => openMeta(it);
   for (const kind of ["image", "params", "workflow"]) box.querySelector(`[data-act="${kind}"]`).onclick = () => sendToComfy(it.id, kind);
-  box.querySelector('[data-act="delete"]').onclick = (e) => deleteDialog([it.id], e.shiftKey);
+  const civ = box.querySelector('[data-act="civitai"]');
+  if (civ) civ.onclick = () => civitaiDialog([it.id]);
 }
 
 /** After a change to pictures: their cells, the card and the open viewer show it. */
@@ -831,6 +997,7 @@ function showCard(it) {
   if (!it) { c.innerHTML = `<div class="empty">${t("nothing")}</div>`; return; }
   c.innerHTML = infoHtml(it);
   wireInfo(c, it);
+  if (it.civitai && CIV.enabled) civRefresh(it);     // published since? rated? (the server asks Civitai at most every 5 min)
 }
 
 // ---- editing: rating, tags, deleting, moving, sending to ComfyUI ---------------------------------------------------
@@ -865,21 +1032,60 @@ async function editTags(ids, add, remove) {
   loadFacets();
 }
 
-/** An input in place of the "+ tag" chip; Enter adds, Esc cancels. The known tags are offered as you type. */
-async function tagInput(line, done) {
-  if (line.querySelector("input")) return;
-  S.allTags ??= await get("tags");
-  const list = el("datalist"); list.id = "tag-list-" + Math.random().toString(36).slice(2);
-  list.append(...S.allTags.map(([n]) => new Option(n)));
-  const inp = el("input", "inp taginp"); inp.placeholder = t("tagPh"); inp.setAttribute("list", list.id);
-  line.querySelector(".addtag").replaceWith(inp);
-  line.append(list);
-  inp.focus();
-  inp.onkeydown = (e) => {
-    e.stopPropagation();
-    if (e.key === "Enter" && inp.value.trim()) done(inp.value.trim());
-    if (e.key === "Escape") refreshItems([S.cur]);
+/** The tags of pictures: a list drawn as the other drop-downs of the gallery, opened under the "+ tag" chip of the
+    card, the Tags button of the viewer or of the top bar. Search on top; a tick — the tag is on the picture (on all the
+    selected), "–" — on some of them; a click puts the tag on (on all) or takes it off, the list stays open, so several
+    can be ticked; what is typed and is not a tag yet makes a new one (the last line, or Enter). */
+let TAGPICK = null;
+async function tagPicker(anchor, ids) {
+  if (!ids.length) return;
+  if (TAGPICK) { const again = TAGPICK.anchor === anchor; TAGPICK.close(); if (again) return; }
+  S.allTags = await get("tags");
+  const menu = el("div", "dd-menu civ-menu tag-menu"), find = el("input", "inp civ-find"), list = el("div", "civ-list");
+  find.placeholder = t("tagFind");
+  menu.append(find, list);
+  document.body.append(menu);
+  const has = (name) => ids.filter((id) => (S.items.find((x) => x.id === id)?.tags || []).includes(name)).length;
+  const fill = () => {
+    const q = find.value.trim(), ql = q.toLowerCase();
+    const names = S.allTags.map(([n]) => n).filter((n) => !ql || n.toLowerCase().includes(ql));
+    let h = names.map((n) => {
+      const k = has(n), on = k === ids.length, part = k > 0 && !on;
+      return `<div class="dd-i${on ? " on" : ""}" data-k="${esc(n)}">${on ? ic("check") : part ? '<span class="mixed">–</span>' : '<i class="ic"></i>'}`
+        + `<span>${esc(n)}</span>${ids.length > 1 && k ? `<span class="cnt">${esc(t("of", { i: num(k), n: num(ids.length) }))}</span>` : ""}</div>`;
+    }).join("");
+    if (q && !S.allTags.some(([n]) => n.toLowerCase() === ql)) h += `<div class="dd-i new" data-new="1">${ic("plus")}<span>${esc(t("tagNew", { v: q }))}</span></div>`;
+    list.innerHTML = h || `<div class="muted civ-none">${esc(t("tagNone"))}</div>`;
   };
+  const place = () => {
+    const r = anchor.getBoundingClientRect(), below = innerHeight - r.bottom - 12;
+    menu.style.maxHeight = Math.max(160, Math.min(360, below > 220 ? below : r.top - 12)) + "px";
+    menu.style.left = Math.max(8, Math.min(r.left, innerWidth - 268)) + "px";
+    menu.style.top = (below > 220 ? r.bottom + 4 : Math.max(8, r.top - 4 - parseFloat(menu.style.maxHeight))) + "px";
+  };
+  const toggle = async (name) => { await (has(name) === ids.length ? editTags(ids, [], [name]) : editTags(ids, [name], [])); fill(); };
+  const create = async () => { const q = find.value.trim(); if (!q) return; await editTags(ids, [q], []); find.value = ""; fill(); find.focus(); };
+  list.onclick = (e) => {
+    const row = e.target.closest(".dd-i");
+    if (row?.dataset.new) create(); else if (row) toggle(row.dataset.k);
+  };
+  find.oninput = fill;
+  find.onkeydown = (e) => {
+    e.stopPropagation();
+    if (e.key === "Escape") return close();
+    if (e.key !== "Enter") return;
+    const q = find.value.trim(), hit = S.allTags.find(([n]) => n.toLowerCase() === q.toLowerCase());
+    if (hit) { toggle(hit[0]); find.select(); } else create();
+  };
+  const away = (e) => { if (!menu.contains(e.target) && !anchor.contains(e.target)) close(); };
+  const esc_ = (e) => { if (e.key === "Escape") { e.stopPropagation(); e.preventDefault(); close(); } };
+  function close() {
+    menu.remove(); TAGPICK = null;
+    document.removeEventListener("pointerdown", away, true); removeEventListener("keydown", esc_, true);
+  }
+  document.addEventListener("pointerdown", away, true); addEventListener("keydown", esc_, true);
+  TAGPICK = { anchor, close };
+  place(); fill(); find.focus();
 }
 
 /** Delete: to the recycle bin (Delete), or permanently, past the bin (Shift + Delete, Shift + click on a Delete
@@ -962,30 +1168,6 @@ function rateDialog(ids) {
   st.onclick = (e) => { const r = starOf(e) || (e.target.classList.contains("clear0") ? 0 : null); if (r != null) { close(); setRating(ids, r); } };
 }
 
-async function tagsDialog(ids) {
-  if (!ids.length) return;
-  S.allTags = await get("tags");
-  const have = new Map();
-  for (const it of S.items) if (ids.includes(it.id)) for (const x of it.tags || []) have.set(x, (have.get(x) || 0) + 1);
-  const body = el("div", "dlg-b");
-  const cur = el("div", "chips");
-  const draw = () => cur.replaceChildren(...[...have.keys()].sort().map((x) => {
-    const c = el("span", "", tagHtml(x, ` <b style="color:#999;font-weight:400">${have.get(x)}</b> <i class="x">✕</i>`)).firstChild;
-    c.title = t("tagsRemove");
-    c.onclick = async () => { await editTags(ids, [], [x]); have.delete(x); draw(); };
-    return c;
-  }));
-  draw();
-  const list = el("datalist"); list.id = "tags-all"; list.append(...S.allTags.map(([n]) => new Option(n)));
-  const inp = el("input", "inp"); inp.placeholder = t("tagPh"); inp.setAttribute("list", "tags-all");
-  const go = el("button", "btn pri", t("tagsAdd"));
-  go.onclick = async () => { const n = inp.value.trim(); if (!n) return; await editTags(ids, [n], []); have.set(n, ids.length); inp.value = ""; draw(); };
-  inp.onkeydown = (e) => { if (e.key === "Enter") go.click(); };
-  const line = el("div", "addline"); line.append(inp, go);
-  body.append(cur, line, list);
-  dialog(t("tagsTitle", { n: num(ids.length), pics: picsWord(ids.length) }), body);
-  inp.focus();
-}
 
 async function manageTags() {
   const body = el("div", "dlg-b");
@@ -1018,14 +1200,489 @@ async function sendToComfy(id, kind) {
   try { await post("send", { id, kind }); toast(t("sentWf")); } catch (e) { fail(e); }
 }
 
+// ---- to Civitai: one post of the chosen pictures, in the order they were chosen; the server does the sending ------
+const CIV = { enabled: false, local: true, max: 20, limit: 10 * 1024 * 1024 };
+const civCheck = async () => { try { Object.assign(CIV, await get("civitai/status")); } catch { /* as it was */ } return CIV; };
+/** Settings → Rigstools → Civitai → Allow posting: off — no Civitai buttons anywhere, File data takes the whole row of
+    the card. Looked at when the page opens and when you come back to it. */
+async function civApply() {
+  const was = CIV.enabled;
+  await civCheck();
+  for (const id of ["b-civ", "v-civ"]) {
+    $(id).style.display = CIV.enabled ? "" : "none";
+    $(id).disabled = !CIV.local; if (!CIV.local) $(id).title = t("civLocal");
+  }
+  if (was !== CIV.enabled && S.cur != null) showCard(S.items.find((x) => x.id === S.cur));
+  fitTopBar();
+}
+
+/** The mark of a picture posted to Civitai, next to its format: grey — its posts are drafts, blue — published.
+    A click shows the posts. It cannot be removed by hand, unlike a tag. Before it, the Civitai rating once Civitai has
+    rated the picture (of a draft: the rating of the whole post — the highest of its pictures). */
+const NSFW = { 1: "PG", 2: "PG-13", 4: "R", 8: "X", 16: "XXX", 32: "Blocked" };
+const nsfwUnknown = () => `<span class="civr l0" title="${esc(t("civNotRatedTip"))}">?</span>`;
+const nsfwChip = (level, post = false) => NSFW[level]
+  ? `<span class="civr l${level}" title="${esc(t(post ? "civRatingPost" : "civRating", { v: NSFW[level], d: t("nsfw" + level) }))}">${NSFW[level]}</span>` : "";
+// R, X and XXX live on civitai.red (Civitai split in two in 2026): the mark in its red tones, links go there
+const civRed = (level) => level >= 4;
+const civBadge = (it) => `<span class="civm${it.civitai === 2 ? " pub" : ""}${civRed(it.civitai_nsfw) ? " red" : ""}" role="button" title="${esc(t(it.civitai === 2 ? (civRed(it.civitai_nsfw) ? "civMarkRed" : "civMarkPub") : "civMarkDraft"))}">CIVIT<b>AI</b></span>`;
+const civUrl = (url, level) => civRed(level) ? String(url).replace("://civitai.com/", "://civitai.red/") : url;
+const civMark = (it) => it.civitai ? `<span class="civw">${civBadge(it)}${nsfwChip(it.civitai_nsfw, it.civitai_nsfw_post)}</span>` : "";
+function wireCivMark(box, it) {
+  const m = box.querySelector(".civw");
+  if (!m) return;
+  m.onclick = (e) => { e.stopPropagation(); civitaiPosts(it); };
+  m.ondblclick = (e) => e.stopPropagation();
+}
+/** Takes the mark the server sends (state and rating) into the item; redraws it when it changed. */
+function civTake(it, mark) {
+  if (!mark) return;
+  const was = [it.civitai, it.civitai_nsfw, it.civitai_nsfw_post].join();
+  it.civitai = mark.state; it.civitai_nsfw = mark.nsfw; it.civitai_nsfw_post = mark.post;
+  if ([it.civitai, it.civitai_nsfw, it.civitai_nsfw_post].join() !== was) refreshItems([it.id]);
+}
+async function civRefresh(it) {
+  try { civTake(it, (await get(`civitai/posts/${it.id}`)).mark); } catch { /* no answer: the mark stays as it is */ }
+}
+
+async function civitaiPosts(it) {
+  const body = el("div", "dlg-b", `<div class="muted">${esc(t("loading"))}</div>`);
+  const closeAll = dialog(`${t("civPostsTitle")} | ${it.name}`, body);
+  body.closest(".dlg").classList.add("civ-posts-dlg");
+  const head0 = body.closest(".modal")?.querySelector(".dlg-h b");
+  if (head0) head0.innerHTML = `${esc(t("civPostsTitle"))}${SEP}${esc(it.name)}`;
+  let r;
+  try { r = await get(`civitai/posts/${it.id}`, "force=1"); } catch (e) { body.innerHTML = `<div class="err">${esc(String(e.message || e))}</div>`; return; }
+  const dt = (p) => { const d = new Date(p.published_at || NaN); return isNaN(d) ? new Date(p.posted * 1000) : d; };
+  const draw = (posts) => {
+    if (!posts.length) return closeAll();             // the last post is gone: nothing to show
+    // one line: the post, its state and rating, the date, the delete buttons; narrower — the buttons keep only their
+    // icons; narrowest — the state and rating go to a second line (container queries in gallery.css)
+    body.innerHTML = `<div class="civ-posts">${posts.map((p) => `<div class="civ-post"><span>${esc(t("civPostWord"))} <a href="${esc(civUrl(p.url, +p.nsfw_level || p.post_nsfw))}" target="_blank" rel="noopener">#${p.post_id}</a></span>
+      <span class="civ-meta"><span class="civst${p.published ? " pub" : ""}">${esc(t(p.published ? "civPublished" : "civDraftSt"))}</span>
+      ${nsfwChip(+p.nsfw_level || p.post_nsfw, !+p.nsfw_level) || nsfwUnknown()}</span>
+      <span class="muted civ-date">${esc(dt(p).toLocaleString(LANG === "ru" ? "ru-RU" : "en-US", { dateStyle: "medium", timeStyle: "short" }))}</span>
+      <span class="sp"></span>${CIV.enabled && CIV.local ? `<span class="civ-acts">${civDelButtons(p)}</span>` : ""}</div>`).join("")}</div>`;
+    const after = (postId, gone) => (r) => {
+      if (gone || r.post) posts = posts.filter((p) => p.post_id !== postId);
+      for (const id of r.ids || []) { const x = S.items.find((y) => y.id === id); if (x) civRefresh(x); }
+      draw(posts);
+    };
+    for (const btn of body.querySelectorAll(".civ-del")) {
+      const p = posts.find((x) => x.post_id === +btn.dataset.post), whole = btn.dataset.kind === "post" || p.count <= 1;
+      btn.onclick = () => civDelete(whole
+        ? { title: t("civDelTitle"), text: (btn.dataset.kind === "post" ? "" : t("civDelLast", { v: "#" + p.post_id }) + " ") + t("civDelText", { v: "#" + p.post_id }),
+            label: t("civDelPost"), url: "civitai/delete", body: { post: p.post_id }, done: after(p.post_id, true) }
+        : { title: t("civDelImgTitle"), text: t("civDelImgText", { v: "#" + p.post_id }), label: t("civDelImg"),
+            url: "civitai/delete_image", body: { post: p.post_id, image: it.id }, done: after(p.post_id, true) });
+    }
+  };
+  let posts = r.posts || [];
+  if (!posts.length) toast(t("civGone"));             // deleted on the Civitai site meanwhile
+  draw(posts);
+  civTake(it, r.mark);
+}
+
+/** The delete buttons of a post in the list of posts: this picture out of the post, or the whole post. Both wait while
+    Civitai checks the pictures (it asks not to delete then); without the Civitai id of the picture only the post. */
+function civDelButtons(p) {
+  const wait = p.pending > 0, noId = !p.civitai_image_id;
+  const img = wait ? t("civPending") : noId ? t("civNoId") : t(p.count <= 1 ? "civDelImgLast" : "civDelImg");
+  // full: the trash and the words; narrow: what is deleted → the trash (a picture, or a stack of them for the post)
+  const face = (what, word) => `<span class="full">${ic("trash")}<span>${esc(word)}</span></span><span class="short">${ic(what)}${ic("send")}${ic("trash")}</span>`;
+  return `<button class="btn dang civ-del" data-kind="image" data-post="${p.post_id}" title="${esc(img)}" ${wait || noId ? "disabled" : ""}>${face("image", t("civDelImgBtn"))}</button>`
+    + `<button class="btn dang civ-del" data-kind="post" data-post="${p.post_id}" title="${esc(wait ? t("civPending") : t("civDelPost"))}" ${wait ? "disabled" : ""}>${face("images", t("civDelPost"))}</button>`;
+}
+
+/** Deletes on Civitai (a picture or a post) after a warning: a red title, Cancel in focus. */
+function civDelete({ title, text, label, url, body: data, done }) {
+  const body = el("div", "dlg-b", `<div>${esc(text)}</div>`);
+  const cancel = el("button", "btn", t("cancel")), go = el("button", "btn dang", icl("trash", label));
+  const line = el("div", "addline"); line.style.justifyContent = "flex-end"; line.append(cancel, go);
+  const msg = el("div", "civ-state");
+  body.append(msg, line);
+  const close = dialog(title, body);
+  body.closest(".dlg").querySelector(".dlg-h b").classList.add("dang");
+  cancel.onclick = close; cancel.focus();
+  go.onclick = async () => {
+    go.disabled = cancel.disabled = true; msg.textContent = t("loading");
+    let r;
+    try { r = await post(url, data); }
+    catch (e) { msg.className = "civ-state err"; msg.textContent = t(e.message) !== e.message ? t(e.message) : e.message; go.disabled = cancel.disabled = false; return; }
+    close(); toast(t(r.post || url.endsWith("/delete") ? "civDeleted" : "civImgDeleted", { v: "#" + (data.post) })); done(r);
+  };
+}
+
+function civitaiKeyDialog() {
+  const body = el("div", "dlg-b", `<div>${esc(t("civNoKey"))}</div><div>${esc(t("civKeyWhere"))}</div><div class="muted">${esc(t("civKeyPut"))}</div>`);
+  const go = el("a", "btn pri", esc(t("civKeyOpen"))); go.href = "https://civitai.com/user/account"; go.target = "_blank"; go.rel = "noopener";
+  const ok = el("button", "btn", t("close"));
+  const line = el("div", "addline"); line.style.justifyContent = "flex-end"; line.append(ok, go);
+  body.append(line);
+  ok.onclick = dialog(t("civNoKeyTitle"), body);
+}
+
+/** A row of chosen names (each with a red ✕ that takes it out) and a "+ …" button opening a list drawn as the other
+    drop-downs of the gallery: several items can be ticked at once, the list stays open; search for long lists.
+    -> redraw(). */
+function chipPicker(row, { label, add, chosen, all, search = false, save }) {
+  const chips = el("div", "chips"), box = el("div", "dd civ-dd");
+  const btn = el("button", "chip addtag", esc(add)); btn.type = "button";
+  const menu = el("div", "dd-menu civ-menu"); menu.hidden = true;
+  const find = search ? el("input", "inp civ-find") : null;
+  if (find) { find.placeholder = t("civFind"); menu.append(find); }
+  const list = el("div", "civ-list"); menu.append(list);
+  box.append(btn);
+  row.replaceChildren(el("span", "civ-l", esc(label)), chips);
+  document.body.append(menu);
+  const redraw = () => {
+    chips.replaceChildren(...chosen.map((name) => {
+      const c = el("span", "chip civ-c on", `${esc(name)}<i class="x" title="${esc(t("remove"))}">${ic("close")}</i>`);
+      c.querySelector(".x").onclick = () => { chosen.splice(chosen.indexOf(name), 1); save(); redraw(); };
+      return c;
+    }), box);
+    if (!menu.hidden) fill();
+  };
+  const fill = () => {
+    const q = (find?.value || "").trim().toLowerCase();
+    const names = all().filter((n) => !q || n.toLowerCase().includes(q));
+    list.innerHTML = names.map((n) => `<div class="dd-i${chosen.includes(n) ? " on" : ""}" data-k="${esc(n)}">` +
+      `${chosen.includes(n) ? ic("check") : '<i class="ic"></i>'}<span>${esc(n)}</span></div>`).join("")
+      || `<div class="muted civ-none">${esc(t(all().length ? "civNothing" : "loading"))}</div>`;
+  };
+  const open = (on) => {
+    menu.hidden = !on; box.classList.toggle("open", on);
+    if (!on) return;
+    const r = btn.getBoundingClientRect();                       // fixed: the window body would cut the list
+    menu.style.left = r.left + "px";
+    const below = innerHeight - r.bottom - 12;
+    menu.style.maxHeight = Math.max(160, Math.min(320, below > 200 ? below : r.top - 12)) + "px";
+    menu.style.top = (below > 200 ? r.bottom + 4 : Math.max(8, r.top - 4 - parseFloat(menu.style.maxHeight))) + "px";
+    if (find) { find.value = ""; }
+    fill();
+    (find || list).focus?.();
+  };
+  btn.onclick = () => open(menu.hidden);
+  list.onclick = (e) => {
+    const k = e.target.closest(".dd-i")?.dataset.k;
+    if (k == null) return;
+    const i = chosen.indexOf(k);
+    if (i < 0) chosen.push(k); else chosen.splice(i, 1);
+    save(); redraw();
+  };
+  if (find) { find.oninput = fill; find.onkeydown = (e) => e.stopPropagation(); }
+  const away = (e) => {
+    if (!row.isConnected) { document.removeEventListener("pointerdown", away, true); menu.remove(); return; }
+    if (!box.contains(e.target) && !menu.contains(e.target)) open(false);
+  };
+  document.addEventListener("pointerdown", away, true);
+  // Esc with the list open closes the list, not the window (the window listens on the document, this is earlier)
+  const esc_ = (e) => {
+    if (!row.isConnected) return removeEventListener("keydown", esc_, true);
+    if (e.key === "Escape" && !menu.hidden) { e.stopPropagation(); e.preventDefault(); open(false); }
+  };
+  addEventListener("keydown", esc_, true);
+  // the window closes: the list goes with it
+  new MutationObserver((_, obs) => { if (!row.isConnected) { menu.remove(); obs.disconnect(); } })
+    .observe(document.body, { childList: true });
+  redraw();
+  return redraw;
+}
+
+/** The format a picture goes to Civitai in, on its thumbnail in the post window: the format of the file, or — when it
+    has to be recompressed to fit the 10 MiB of Civitai's MCP (how — from the precheck) — the format it goes in, after
+    the "compressed" mark (two arrows inwards: made smaller, not worse; the tip tells what is done). */
+const CIV_SQUEEZE = '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 1.5 5 5M5 2.2V5H2.2M10.5 10.5 7 7M7 9.8V7h2.8"/></svg>';
+function civFormat(it, how) {
+  const src = String(it.fmt || "").toUpperCase().replace("JPG", "JPEG");
+  const dst = { png: "PNG", webp: "WEBP", jpeg: "JPEG" }[how];
+  const tip = t({ png: "civFmtPng", webp: "civFmtWebp", jpeg: "civFmtJpeg" }[how] || "civFmtAsIs");
+  const cls = (dst || src).toLowerCase();
+  const text = dst ? CIV_SQUEEZE + esc(dst) : esc(src);
+  return `<span class="ct-f fmt ${esc(cls)}" title="${esc(tip)}">${text}</span>`;
+}
+
+/** The window of a post being sent: closed, it hides to a progress bar on the status bar (a click brings it back) and
+    comes back by itself when the post is made. There is no cancel: Civitai cannot delete an uploaded picture that is
+    not in a post yet. */
+let CIVJOB = null;          // { back, show() } of the window while a post is being sent
+
+async function civitaiDialog(ids, runningJob = null) {
+  if (CIVJOB) return CIVJOB.show();
+  if (!runningJob) {
+    if (!ids.length) return;
+    await civCheck();
+    if (!CIV.enabled) return toast(t("disabled"), true);
+    if (!CIV.local) return toast(t("civLocal"), true);
+    if (!CIV.key) return civitaiKeyDialog();
+    if (ids.length > CIV.max) return toast(t("civMax", { n: CIV.max }), true);
+  }
+  let items = ids.map((id) => S.items.find((x) => x.id === id)).filter(Boolean);
+  const pre = {};                                     // id -> ok | jpeg | too_big (pictures over 10 MB only)
+  const state = {};                                   // id -> upload | ok | error, while sending
+  let sending = !!runningJob;
+  const body = el("div", "dlg-b civ");
+  const thumbs = el("div", "civ-thumbs");
+  const dragHint = el("div", "note civ-drag", esc(t("civDrag")));
+  const title = el("input", "inp"); title.placeholder = t("civTitlePh"); title.maxLength = 255;
+  const detail = el("textarea", "inp"); detail.placeholder = t("civDetailPh"); detail.rows = 3;
+  const check = (key, on) => el("label", "civ-chk", `<input type="checkbox" ${on ? "checked" : ""}> <span>${esc(t(key))}</span>`);
+  const pub = check("civPublish", store.get("civPublish", false)), keep = check("civKeepWf", store.get("civKeepWf", true));
+  const pubOn = () => pub.querySelector("input").checked, keepOn = () => keep.querySelector("input").checked;
+  // Tools and Techniques: chosen once, kept for the next posts (ComfyUI; workflow, txt2img, img2img to start with)
+  let lists = null;
+  const tools = store.get("civTools", ["ComfyUI"]), techs = store.get("civTech", ["workflow", "txt2img", "img2img"]);
+  const TECH0 = ["txt2img", "img2img", "inpainting", "controlnet", "workflow", "Paintover"];
+  const trow = el("div", "civ-row"), hrow = el("div", "civ-row");
+  const redrawTools = chipPicker(trow, { label: t("civTools"), add: t("civAddTool"), chosen: tools, search: true,
+    all: () => (lists?.tools || []).map((x) => x.name), save: () => store.set("civTools", tools) });
+  const redrawTech = chipPicker(hrow, { label: t("civTech"), add: t("civAddTech"), chosen: techs,
+    all: () => lists?.techniques?.length ? lists.techniques.map((x) => x.name) : TECH0, save: () => store.set("civTech", techs) });
+  get("civitai/lists").then((r) => { if (r.tools?.length) { lists = r; redrawTools(); redrawTech(); } }).catch(() => {});
+  const civIds = (kind, names) => names.map((n) => (lists?.[kind] || []).find((x) => x.name.toLowerCase() === n.toLowerCase())?.id).filter(Boolean);
+  const note = el("div", "note", esc(t("civNote")));
+  const sizeNote = el("div", "note", esc(t("civSizeNote")));
+  const msg = el("div", "civ-state");
+  const close = el("button", "btn", t("cancel")), send = el("button", "btn pri civ-send");
+  const line = el("div", "addline"); line.style.justifyContent = "flex-end"; line.append(close, send);
+  const sendLabel = () => { send.innerHTML = icl("upload", t(pubOn() ? "civPublishBtn" : "civDraftBtn")); };
+  sendLabel();
+  // the state of a picture while sending, all drawn with the same line (2.2 of 24, round ends):
+  //  uploading — two open rings (2/3 of a circle, no track) turning opposite ways; done — the ring draws itself, then the short stroke of the check,
+  //  then the long one, out of the ring; failed — a closed ring with a cross that turns over once.
+  // An animation that plays once plays only the first time (a redraw shows the end); the endless ones go on where they
+  // were (a negative delay from the page clock), so a redraw does not make them jump.
+  const phase = (ms) => `animation-delay:-${Math.round(performance.now() % ms)}ms`;
+  const spinner = (cls = "") => `<svg class="cspin ${cls}" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round">`
+    + `<circle class="o" cx="12" cy="12" r="9.5" stroke="#ffc857" stroke-dasharray="40 20" style="${phase(800)}"/>`
+    + `<circle class="i" cx="12" cy="12" r="5" stroke="#ffc857" stroke-dasharray="21 11" style="${phase(1100)}"/></svg>`;
+  const shown = new Set();                            // "ok:<id>" / "error:<id>": their animation has played
+  const ICON = {
+    ok: (a) => `<svg class="cok${a ? " anim" : ""}" viewBox="0 0 24 24" fill="none" stroke="#3ccf6e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">`
+      + '<path class="ring" pathLength="1" d="M15.25 3.07A9.5 9.5 0 1 0 20.93 8.75"/><path class="s1" pathLength="1" d="M7.6 11.4l3.6 3.6"/>'
+      + '<path class="s2" pathLength="1" d="M11.2 15 22 4.2"/></svg>',
+    error: (a) => `<svg class="cerr${a ? " anim" : ""}" viewBox="0 0 24 24" fill="none" stroke="#ff5c7a" stroke-width="2.2" stroke-linecap="round">`
+      + '<circle cx="12" cy="12" r="9.5"/><path class="x" d="m9 9 6 6M15 9l-6 6"/></svg>' };
+  const stateIcon = (id, st) => {
+    if (st === "upload") return spinner();
+    if (!ICON[st]) return "";
+    const k = `${st}:${id}`, first = !shown.has(k);
+    shown.add(k);
+    return ICON[st](first);
+  };
+  // being checked / compressed: a yellow ring squeezes a blue circle (the picture) a little, opens again — three times,
+  // the circle smaller each time — then the circle comes back and it all starts again
+  const PRESS = () => `<svg class="csq" viewBox="0 0 24 24" fill="none" stroke-width="2.2" style="--d:-${Math.round(performance.now() % 3600)}ms">`
+    + '<circle class="ring" cx="12" cy="12" r="9.5" stroke="#ffc857"/><circle class="dot" cx="12" cy="12" r="5" fill="#4cc9f0"/></svg>';
+  // the thumbnails are not redrawn while one is being dragged (a check finishing then — JPEG marks, the account —
+  // would rebuild them under the cursor); the width of each is known before its picture loads, so nothing jumps
+  let dragging = false, redrawLater = false;
+  const TH = 186;
+  let drawn = "";
+  const drawThumbs = () => {
+    if (dragging) { redrawLater = true; return; }
+    redrawLater = false;
+    // nothing changed (the progress is asked every 0.7 s): the thumbnails stay, their animations go on
+    const sig = JSON.stringify([sending, items.map((it) => [it.id, pre[it.id], state[it.id]])]);
+    if (sig === drawn) return statusLine();
+    drawn = sig;
+    thumbs.replaceChildren(...items.map((it, n) => {
+      const c = el("div", "ct" + (n === 0 ? " cover" : ""));
+      c.draggable = !sending; c.dataset.n = n;
+      const w = it.width && it.height ? Math.round(TH * it.width / it.height) : TH;
+      let h = `<img src="${thumbUrl(it, 512)}" alt="" title="${esc(it.name)}" style="width:${w}px"><span class="ct-n">${n + 1}</span>`;
+      if (n === 0) h += `<span class="ct-cover">${esc(t("civCover"))}</span>`;
+      const busy = pre[it.id] === "busy";
+      const warn = busy ? [] : [civFormat(it, pre[it.id])];
+      if (!it.has_params) warn.push(`<span class="ct-w" title="${esc(t("civNoParams"))}">!</span>`);
+      if (pre[it.id] === "too_big") warn.push(`<span class="ct-w bad" title="${esc(t("civTooBigOne"))}">10+</span>`);
+      h += `<span class="ct-warn">${warn.join("")}</span>`;
+      if (!sending && items.length > 1) h += `<button class="ct-x" title="${esc(t("civRemove"))}">${ic("close")}</button>`;
+      const st = state[it.id];
+      if (st) h += `<span class="ct-st ${st}">${stateIcon(it.id, st)}</span>`;
+      else if (busy) h += `<span class="ct-st busy" title="${esc(t("civSqueezing"))}">${PRESS()}</span>`;
+      c.innerHTML = h;
+      c.querySelector(".ct-x")?.addEventListener("click", () => { items.splice(n, 1); drawThumbs(); });
+      // dragging: a bright bar shows where the picture goes — before this one (left half) or after it (right half)
+      const side = (e) => { const r = c.getBoundingClientRect(); return e.clientX < r.left + r.width / 2 ? "before" : "after"; };
+      c.ondragstart = (e) => { e.dataTransfer.setData("text/plain", String(n)); e.dataTransfer.effectAllowed = "move"; c.classList.add("drag"); dragging = true; };
+      c.ondragend = () => {
+        c.classList.remove("drag"); for (const x of thumbs.children) x.classList.remove("before", "after");
+        dragging = false; if (redrawLater) drawThumbs();
+      };
+      c.ondragover = (e) => {
+        if (sending) return;
+        e.preventDefault(); e.dataTransfer.dropEffect = "move";
+        const sd = side(e);
+        c.classList.toggle("before", sd === "before"); c.classList.toggle("after", sd === "after");
+      };
+      c.ondragleave = () => c.classList.remove("before", "after");
+      c.ondrop = (e) => {
+        e.preventDefault();
+        dragging = false;
+        const from = +e.dataTransfer.getData("text/plain");
+        let to = n + (side(e) === "after" ? 1 : 0);
+        if (Number.isFinite(from) && from !== to && from + 1 !== to) {
+          const [x] = items.splice(from, 1);
+          items.splice(from < to ? to - 1 : to, 0, x);
+        }
+        drawThumbs();
+      };
+      return c;
+    }));
+    // the send button waits for the check of the big pictures: their format (and whether they fit) is not known yet
+    const big = items.filter((it) => pre[it.id] !== undefined), waiting = big.filter((it) => pre[it.id] === "busy").length;
+    send.disabled = sending || !items.length || !!waiting || items.some((it) => pre[it.id] === "too_big");
+    send.title = waiting && !sending ? t("civPreparing", { i: num(big.length - waiting), n: num(big.length) }) : "";
+    // the notes and the hint keep their place, so the window does not change its height
+    dragHint.style.visibility = items.length > 1 && !sending ? "" : "hidden";
+    statusLine();
+  };
+  // the big PNGs are checked one at a time (the server compresses them and keeps the copies for the sending), so each
+  // thumbnail gets its format as soon as it is known; a new check (the checkbox) stops the one under way
+  // the status line under the notes, from the start: the check of the big pictures, then "your turn"; while sending
+  // progress() and finish() write it
+  const statusLine = () => {
+    if (sending || msg.dataset.final) return;
+    const big = items.filter((it) => pre[it.id] !== undefined), waiting = big.filter((it) => pre[it.id] === "busy").length;
+    const html = waiting ? `${spinner("sm")}<span>${esc(t("civPreparing", { i: num(big.length - waiting), n: num(big.length) }))}…</span>`
+      : `<span class="cdots"><i></i><i></i><i></i></span><span>${esc(t("civReady"))}</span>`;
+    const key = waiting ? `w${big.length - waiting}/${big.length}` : "ready";
+    if (msg.dataset.key === key) return;
+    msg.dataset.key = key; msg.className = "civ-state"; msg.innerHTML = html;
+  };
+  const working = (text) => {                         // a step of the sending, with the small spinner
+    const key = `s:${text}`;
+    if (msg.dataset.key === key) return;
+    msg.dataset.key = key; msg.className = "civ-state"; msg.innerHTML = `${spinner("sm")}<span>${esc(text)}</span>`;
+  };
+  let checkRun = 0;
+  const precheck = async () => {
+    const run = ++checkRun, keepWf = keepOn();
+    const big = items.filter((it) => (it.size || 0) > CIV.limit && /png/i.test(it.fmt || "")).map((it) => it.id);
+    for (const id of big) pre[id] = "busy";
+    drawThumbs();
+    for (const id of big) {
+      if (run !== checkRun) return;
+      if (!items.some((it) => it.id === id)) { delete pre[id]; continue; }     // taken out of the post meanwhile
+      let r = {};
+      try { r = await post("civitai/precheck", { ids: [id], keep_workflow: keepWf }); } catch { /* checked again on sending */ }
+      if (run !== checkRun) return;
+      pre[id] = r[id] || "as is";
+      drawThumbs();
+    }
+  };
+  const forget = () => { checkRun++; post("civitai/forget", { ids: items.map((x) => x.id) }).catch(() => {}); };
+  pub.querySelector("input").onchange = () => { store.set("civPublish", pubOn()); sendLabel(); };
+  keep.querySelector("input").onchange = () => { store.set("civKeepWf", keepOn()); precheck(); };
+  if (runningJob) for (const x of [title, detail, pub, keep, trow, hrow]) x.style.display = "none";
+  body.append(dragHint, thumbs, title, detail, trow, hrow, keep, pub, note, sizeNote, msg, line);
+  drawThumbs(); precheck();
+
+  // closed while sending: hidden to the status bar, not closed
+  const closeDlg = dialog(t("civTitle"), body, true, { beforeClose: () => { if (!sending) { forget(); return true; } hide(); return false; } });
+  const back = body.closest(".modal"), head = back.querySelector(".dlg-h b");
+  const bar = $("st-civ");
+  const hide = () => { back.classList.add("min"); bar.style.display = ""; };
+  const show = () => { back.classList.remove("min"); bar.style.display = "none"; };
+  bar.onclick = show;
+  close.onclick = () => (sending ? hide() : (forget(), closeDlg()));
+  title.focus();
+  // the account in the header (the check of the key is remembered on the server: no extra request to Civitai)
+  get("civitai/key").then((k) => {
+    if (k.user) head.innerHTML = `${esc(t("civTitle"))}${SEP}${esc(k.user)}`;
+    else if (k.check === "bad") head.innerHTML = `${esc(t("civTitle"))}${SEP}<span class="err">${esc(t("civKeyRejected"))}</span>`;
+  }).catch(() => {});
+
+  const lock = (on) => { for (const x of body.querySelectorAll("input, textarea")) x.disabled = on; body.classList.toggle("locked", on); };
+  const takeStates = (j) => (j.ids || items.map((x) => x.id)).forEach((id, k) => {
+    if (j.items?.[k] && j.items[k] !== "wait") state[id] = j.items[k];
+  });
+  const progress = (j) => {
+    takeStates(j);
+    drawThumbs();
+    const i = Math.min(j.done + (j.stage === "upload" ? 1 : 0), j.total);
+    working(j.stage === "upload" ? t("civUploading", { i: num(i), n: num(j.total) }) : j.stage === "post" ? t("civPosting")
+      : j.stage === "tools" ? t("civTagging") : t("civChecking"));
+    bar.innerHTML = `<span>${esc(t("civBar", { i: num(i), n: num(j.total) }))}</span><span class="bar"><i style="width:${Math.round(100 * j.done / Math.max(1, j.total))}%"></i></span>`;
+    bar.title = t("civBarTip");
+  };
+  const finish = (j) => {
+    sending = false; CIVJOB = null;
+    takeStates(j);
+    show();
+    drawThumbs();
+    msg.dataset.key = ""; msg.dataset.final = "1";        // the result stays until the next try
+    if (j.error) {
+      msg.className = "civ-state err";
+      msg.textContent = (t(j.error) !== j.error ? t(j.error) : j.error) + (j.detail ? ` (${j.detail})` : "");
+      lock(false); drawThumbs();
+      close.textContent = t("close");
+      return;
+    }
+    // the result in the status line; the moderation (a published post) after it in the line, as the notes
+    msg.className = "civ-state ok";
+    msg.innerHTML = `${ICON.ok(true)}<span>${esc(t(j.published ? "civDone" : "civDraft"))}`
+      + (j.url ? ` <a href="${esc(j.url)}" target="_blank" rel="noopener">${esc(j.url.replace("https://", ""))}</a>` : "")
+      + (j.published ? ` <span class="note civ-mod">${esc(t("civModeration"))}</span>` : "") + "</span>";
+    // rare and long: under the line
+    if (j.tag_error) msg.insertAdjacentHTML("afterend", `<div class="note civ-warn">${esc(t("civTagFailed"))}</div>`);
+    send.remove(); close.textContent = t("close"); close.classList.add("pri");
+    // the mark on the thumbnails
+    const ids2 = j.ids || items.map((x) => x.id);
+    for (const it of S.items) if (ids2.includes(it.id)) it.civitai = Math.max(it.civitai || 0, j.published ? 2 : 1);
+    refreshItems(ids2);
+  };
+  const follow = (job) => {
+    sending = true; lock(true); drawThumbs();
+    CIVJOB = { back, show };
+    close.textContent = t("close");
+    const tick = async () => {
+      let j;
+      try { j = await get(`civitai/job/${job}`); } catch { j = { stage: "error", error: "network" }; }
+      if (j.error === "gone") j = { stage: "error", error: "civitai" };
+      if (j.stage === "done" || j.stage === "error") return finish(j);
+      progress(j);
+      setTimeout(tick, 700);
+    };
+    tick();
+  };
+  send.onclick = async () => {
+    for (const k in state) delete state[k];
+    msg.dataset.final = ""; msg.nextElementSibling?.classList.contains("civ-warn") && msg.nextElementSibling.remove();
+    working(t("civChecking"));
+    let r;
+    try {
+      if (!lists && (tools.length || techs.length)) toast(t("civNoLists"), true);
+      r = await post("civitai/post", { ids: items.map((x) => x.id), title: title.value, detail: detail.value,
+        publish: pubOn(), keep_workflow: keepOn(), tools: civIds("tools", tools), techniques: civIds("techniques", techs) });
+    } catch (e) { msg.dataset.key = ""; msg.dataset.final = "1"; msg.className = "civ-state err"; msg.textContent = t(e.message) !== e.message ? t(e.message) : e.message; return; }
+    follow(r.job);
+  };
+  if (runningJob) { follow(runningJob); hide(); }
+}
+
+/** A post still being sent when the page was opened (reloaded): its bar on the status bar. */
+async function civResume() {
+  try {
+    const r = await get("civitai/running");
+    if (!r.job) return;
+    const j = await get(`civitai/job/${r.job}`);
+    civitaiDialog(j.ids || [], r.job);
+  } catch { /* nothing to resume */ }
+}
+
 // ---- dialogs -----------------------------------------------------------------------------------------------------
-function dialog(title, body, wide = false) {
+function dialog(title, body, wide = false, opts = {}) {
   const back = el("div", "modal");
-  const box = el("div", "dlg" + (wide ? " wide" : ""), `<div class="dlg-h"><b>${esc(title)}</b><button class="btn x" title="${t("close")}">${ic("close")}</button></div>`);
+  const box = el("div", "dlg" + (wide ? " wide" : ""), `<div class="dlg-h"><b title="${esc(title)}">${esc(title)}</b><button class="btn x" title="${t("close")}">${ic("close")}</button></div>`);
   box.append(body);
   back.append(box);
-  const close = () => { back.remove(); document.removeEventListener("keydown", key, true); };
-  const key = (e) => { if (e.key === "Escape") { e.stopPropagation(); close(); } };
+  const close = () => {
+    if (opts.beforeClose && opts.beforeClose() === false) return;       // e.g. a post being sent: hidden, not closed
+    back.remove(); document.removeEventListener("keydown", key, true);
+  };
+  const key = (e) => { if (e.key === "Escape" && !back.classList.contains("min")) { e.stopPropagation(); close(); } };
   back.onclick = (e) => { if (e.target === back) close(); };
   box.querySelector(".x").onclick = close;
   document.addEventListener("keydown", key, true);
@@ -1233,14 +1890,39 @@ function place() {
   setHint("v-hint", big ? t("hintZoom") : t("hintFit"));
 }
 /** The top bar of the viewer on a narrow window: when it has no room, buttons drop their names (the icon and the
-    tooltip stay), the least needed first — the two "to workflow" buttons, then Tags and Parameters; on a very narrow
-    window the title goes, then the zoom slider (the % list and − / + stay). */
-const V_SHRINK = 4;
+    tooltip stay), the least needed first — the two "to workflow" buttons, then Tags, Parameters and Fit; on a very narrow
+    window the title goes, then the zoom slider (the % list and − / + stay), then the name of Close. */
+const V_SHRINK = 5;
 function fitViewerBar() {
   const bar = document.querySelector(".v-top");
   if (!bar.offsetParent) return;
-  bar.classList.remove("shrink1", "shrink2", "shrink3", "shrink4");
+  bar.classList.remove("shrink1", "shrink2", "shrink3", "shrink4", "shrink5");
   for (let k = 1; k <= V_SHRINK && bar.scrollWidth > bar.clientWidth + 1; k++) bar.classList.add("shrink" + k);
+}
+
+/** The top bar of the gallery on a narrow window: the same way, the names go (icon + tooltip stay), the least needed
+    first — the "Size" label, Civitai and Move, Tags and Rating, Delete and Rescan, then Compare (its count stays as
+    a small number at the icon), last the size slider (the % list and − / + stay). */
+const T_SHRINK = 6;
+function fitTopBar() {
+  const bar = document.querySelector(".top");
+  for (let k = 1; k <= T_SHRINK; k++) bar.classList.remove("tshrink" + k);
+  for (let k = 1; k <= T_SHRINK && bar.scrollWidth > bar.clientWidth + 1; k++) bar.classList.add("tshrink" + k);
+}
+function cmpButton() {
+  const n = S.sel.size;
+  $("b-compare").innerHTML = icl("swap", t("compare") + (n ? ` (${n})` : "")) + (n ? `<i class="cnt">${n}</i>` : "");
+}
+/** The top bar of the comparison: the hints fold first (see foldHint); then Fit and Side by side / Slider keep only
+    their icons, then the title goes, then the zoom slider. */
+const C_SHRINK = 3;
+function fitCompareBar() {
+  const bar = document.querySelector(".c-top");
+  if (!bar.offsetParent) return;
+  for (let k = 1; k <= C_SHRINK; k++) bar.classList.remove("cshrink" + k);
+  foldHint($("c-hint"));
+  for (let k = 1; k <= C_SHRINK && bar.scrollWidth > bar.clientWidth + 1; k++) bar.classList.add("cshrink" + k);
+  foldHint($("c-hint"));
 }
 
 function step(d) {
@@ -1253,7 +1935,7 @@ function step(d) {
 function initViewer() {
   $("v-close").innerHTML = icl("close", t("close"));
   $("v-title").textContent = t("viewTitle");
-  $("v-fit").textContent = $("v-fit").dataset.w = t("fit");
+  $("v-fit").innerHTML = icl("scan", t("fit")); $("v-fit").querySelector("span").dataset.w = t("fit"); $("v-fit").title = t("fit");
   $("v-info").innerHTML = icl("info", t("info")); $("v-info").querySelector("span").dataset.w = t("info");
   $("v-keep-l").textContent = t("keepZoom");
   const keep = $("v-keep");
@@ -1305,7 +1987,10 @@ function openCompare() {
   [C.a, C.b] = ids.map((id) => S.items.find((x) => x.id === id));
   $("compare").hidden = false;
   $("c-title").textContent = t("cmpTitle");
-  $("c-side").textContent = $("c-side").dataset.w = t("side"); $("c-slider").textContent = $("c-slider").dataset.w = t("slider");
+  for (const [id, icon, k] of [["c-side", "pair", "side"], ["c-slider", "split", "slider"]]) {
+    $(id).innerHTML = `${ic(icon)}<em data-w="${esc(t(k))}">${esc(t(k))}</em>`; $(id).title = t(k);
+  }
+  requestAnimationFrame(fitCompareBar);
   setHint("c-hint", t("cmpHint")); requestAnimationFrame(() => foldHint($("c-hint")));
   $("c-hide-l").textContent = t("hideSame");
   $("c-hide").checked = C.hide;
@@ -1402,7 +2087,7 @@ function cTable() {
 
 function initCompare() {
   $("c-close").innerHTML = icl("close", t("close"));
-  $("c-fit").textContent = $("c-fit").dataset.w = t("fit");
+  $("c-fit").innerHTML = icl("scan", t("fit")); $("c-fit").querySelector("span").dataset.w = t("fit"); $("c-fit").title = t("fit");
   $("c-fit").onclick = () => { if (C.w) cFit(); };
   const cz = $("c-zoomctl");
   cz.innerHTML = zoomHtml();
@@ -1453,7 +2138,7 @@ function cols() {
   return Math.max(1, Math.round(g.clientWidth / (first.offsetWidth + parseFloat(getComputedStyle(g).columnGap || 10))));
 }
 document.addEventListener("keydown", (e) => {
-  if (e.target.closest?.("input, select, textarea") || document.querySelector(".modal")) return;
+  if (e.target.closest?.("input, select, textarea") || document.querySelector(".modal:not(.min)")) return;
   if (!$("compare").hidden) {
     // the same keys as in the viewer: + / − zoom by a step around the middle, Ctrl + 0 fits, Esc closes
     const mid = () => { const r = cBox(); return [r.width / 2, r.height / 2]; };
@@ -1469,7 +2154,7 @@ document.addEventListener("keydown", (e) => {
   const ids0 = V.open ? [S.items[V.i]?.id].filter((x) => x != null) : targets();
   if (/^[0-5]$/.test(e.key) && !e.ctrlKey && !e.metaKey) { if (ids0.length) setRating(ids0, +e.key); e.preventDefault(); return; }
   if (e.key === "Delete") { deleteDialog(ids0, e.shiftKey); e.preventDefault(); return; }
-  if (e.code === "KeyT") { tagsDialog(ids0); e.preventDefault(); return; }
+  if (e.code === "KeyT") { tagPicker(V.open ? $("v-tags") : $("b-tags"), ids0); e.preventDefault(); return; }
   if (e.code === "KeyM" && !V.open) { moveDialog(ids0); e.preventDefault(); return; }
   if (e.code === "KeyC" && !V.open && !e.ctrlKey && !e.metaKey) { openCompare(); e.preventDefault(); return; }
   if (V.open) {
@@ -1663,6 +2348,7 @@ async function init() {
   $("date-clear").onclick = () => { S.from = S.to = ""; $("from").value = $("to").value = ""; for (const b of document.querySelectorAll(".date")) b.classList.add("blank"); reload(); };
   $("rescan").onclick = async () => { lastAuto = Date.now(); await fetch(`${API}/scan`, { method: "POST" }); poll(); };
   // back to the tab after a while: scan now, not at the next tick
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") civApply(); });
   document.addEventListener("visibilitychange", () => {
     if (AUTO_SCAN && document.visibilityState === "visible" && Date.now() - lastAuto > AUTO_SCAN) { lastAuto = 0; poll(); }
   });
@@ -1671,14 +2357,21 @@ async function init() {
   // a click on the empty space of the grid (not on a picture or the note): nothing picked
   $("main").addEventListener("click", (e) => { if (!e.target.closest(".cell, .fresh")) unpick(); });
   $("main").addEventListener("scroll", () => { if (S.unseen.size || S.held.size) requestAnimationFrame(onGridScroll); }, { passive: true });
-  for (const [id, key, fn] of [["b-rate", "rate", () => rateDialog(targets())], ["b-tags", "tags", () => tagsDialog(targets())],
-    ["b-move", "move", () => moveDialog(targets())], ["b-del", "del", (e) => deleteDialog(targets(), e?.shiftKey)], ["b-compare", "compare", openCompare]]) {
-    $(id).innerHTML = icl({ rate: "star", tags: "hash", move: "move", del: "trash", compare: "swap" }[key], t(key));
+  for (const [id, key, fn] of [["b-rate", "rate", () => rateDialog(targets())], ["b-tags", "tags", () => tagPicker($("b-tags"), targets())],
+    ["b-move", "move", () => moveDialog(targets())], ["b-del", "del", (e) => deleteDialog(targets(), e?.shiftKey)],
+    ["b-civ", "civ", () => civitaiDialog(S.sel.size ? [...S.sel] : targets())],
+    ["b-compare", "compare", openCompare]]) {
+    $(id).innerHTML = icl({ rate: "star", tags: "hash", move: "move", del: "trash", civ: "upload", compare: "swap" }[key], t(key));
     $(id).onclick = fn;
+    $(id).title = t(key);
   }
+  new ResizeObserver(fitTopBar).observe(document.querySelector(".top"));
+  new MutationObserver(fitTopBar).observe($("b-compare"), { childList: true });   // "Compare (3)" grows
+  new ResizeObserver(fitCompareBar).observe(document.querySelector(".c-top"));
   $("b-compare").disabled = true;
   $("v-rate").onclick = (e) => { const it = S.items[V.i]; const r = starOf(e); if (it && r) setRating([it.id], r === it.rating ? 0 : r); };
-  $("v-tags").innerHTML = icl("hash", t("tags")); $("v-tags").onclick = () => tagsDialog([S.items[V.i]?.id].filter((x) => x != null));
+  $("v-tags").innerHTML = icl("hash", t("tags")); $("v-tags").onclick = () => tagPicker($("v-tags"), [S.items[V.i]?.id].filter((x) => x != null));
+  $("v-civ").innerHTML = ic("upload"); $("v-civ").title = t("civ"); $("v-civ").onclick = () => civitaiDialog([S.items[V.i]?.id].filter((x) => x != null));
   $("v-del").innerHTML = ic("trash"); $("v-del").title = t("del"); $("v-del").onclick = (e) => deleteDialog([S.items[V.i]?.id].filter((x) => x != null), e.shiftKey);
   // with names: an arrow; icons only (narrow window): a picture and sliders, so the two buttons differ
   const alt = (name) => ic(name).replace('class="ic"', 'class="ic alt"');
@@ -1689,6 +2382,8 @@ async function init() {
   new ResizeObserver(fitViewerBar).observe(document.querySelector(".v-top"));
   initCompare();
   initViewer();
+  await civApply();
+  civResume();
   showCard(null);
   await loadFolders();
   reload();

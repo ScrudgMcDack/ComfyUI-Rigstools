@@ -66,6 +66,15 @@ CREATE TABLE IF NOT EXISTS image_tags(image_id INTEGER, tag_id INTEGER, PRIMARY 
 CREATE INDEX IF NOT EXISTS i_it_tag ON image_tags(tag_id);
 -- tags and rating of pictures deleted from the gallery: they come back with a file restored to the same place
 CREATE TABLE IF NOT EXISTS trash(path TEXT PRIMARY KEY, rating INTEGER, tags TEXT, deleted REAL);
+-- pictures posted to Civitai from the gallery: one row per picture and post (the mark on the thumbnail)
+CREATE TABLE IF NOT EXISTS civitai(image_id INTEGER, post_id INTEGER, url TEXT, uuid TEXT, civitai_image_id INTEGER,
+  published INTEGER DEFAULT 0, published_at TEXT, nsfw_level TEXT, posted REAL, post_nsfw INTEGER,
+  tools TEXT, tagged INTEGER DEFAULT 0, ingestion TEXT, PRIMARY KEY(image_id, post_id));
+-- ingestion: the Civitai check of the picture (Pending while it is being checked — it must not be deleted then)
+-- tools: JSON {"tools": [ids], "techniques": [ids]} chosen for the post; tagged: 1 once set on Civitai
+-- nsfw_level: the Civitai rating of the picture (1 PG, 2 PG-13, 4 R, 8 X, 16 XXX), known once the post is published;
+-- post_nsfw: the rating of the whole post (the highest of its pictures), known for a draft too
+CREATE TRIGGER IF NOT EXISTS t_ad_civitai AFTER DELETE ON images BEGIN DELETE FROM civitai WHERE image_id = old.id; END;
 CREATE VIRTUAL TABLE IF NOT EXISTS images_fts USING fts5(positive, negative, name, content='images', content_rowid='id',
   tokenize='unicode61');
 CREATE TRIGGER IF NOT EXISTS t_ai AFTER INSERT ON images BEGIN
@@ -89,6 +98,15 @@ class Index:
         with self.lock:
             c = self.db()
             c.executescript(SCHEMA)
+            for sql in ("ALTER TABLE trash ADD COLUMN civitai TEXT",      # added in 2.1 with the Civitai marks
+                        "ALTER TABLE civitai ADD COLUMN post_nsfw INTEGER",
+                        "ALTER TABLE civitai ADD COLUMN tools TEXT",
+                        "ALTER TABLE civitai ADD COLUMN tagged INTEGER DEFAULT 0",
+                        "ALTER TABLE civitai ADD COLUMN ingestion TEXT"):
+                try:
+                    c.execute(sql)
+                except sqlite3.OperationalError:
+                    pass
             c.execute("INSERT OR REPLACE INTO meta VALUES ('schema', ?)", (str(SCHEMA_VERSION),))
             out = norm(folder_paths.get_output_directory())
             c.execute("INSERT OR IGNORE INTO roots(path, label, builtin, added) VALUES (?, 'output', 1, ?)",
@@ -320,12 +338,17 @@ class Scanner:
                                     [key, real, root, folder, name, mtime, size, *vals, time.time()])
                     iid = cur.lastrowid
                     self.state["added"] += 1
-                    kept = c.execute("SELECT rating, tags FROM trash WHERE path = ?", (key,)).fetchone()
+                    kept = c.execute("SELECT rating, tags, civitai FROM trash WHERE path = ?", (key,)).fetchone()
                     if kept:                      # restored from the recycle bin: its tags and rating come back
                         c.execute("UPDATE images SET rating = ? WHERE id = ?", (kept["rating"], iid))
                         for name in json.loads(kept["tags"] or "[]"):
                             _tag_ids(c, [name])
                             c.execute("INSERT OR IGNORE INTO image_tags SELECT ?, id FROM tags WHERE name = ?", (iid, name))
+                        for p in json.loads(kept["civitai"] or "[]"):
+                            c.execute("INSERT OR IGNORE INTO civitai(image_id, post_id, url, uuid, civitai_image_id, "
+                                      "published, published_at, nsfw_level, posted, post_nsfw, tools, tagged, "
+                                      "ingestion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                      (iid, *[p.get(k) for k in CIVITAI_COLS]))
                         c.execute("DELETE FROM trash WHERE path = ?", (key,))
                 for lname, w in json.loads(row.get("loras") or "[]"):
                     c.execute("INSERT INTO image_loras VALUES (?, ?, ?)", (iid, lname, w))
@@ -386,8 +409,11 @@ def where(q):
     return " AND ".join(w), a
 
 
-def image_row(r, tags=None):
+def image_row(r, tags=None, civitai=None):
     d = dict(r)
+    civitai = civitai or {"state": 0, "nsfw": 0, "post": False}
+    d["civitai"] = civitai["state"]     # 0 — not on Civitai, 1 — in a draft post only, 2 — published
+    d["civitai_nsfw"], d["civitai_nsfw_post"] = civitai["nsfw"], civitai["post"]
     d["loras"] = json.loads(d.get("loras") or "[]")
     for k in ("path", "real_path", "root", "indexed"):    # paths on disk stay on the server
         d.pop(k, None)
@@ -407,7 +433,131 @@ def list_images(index, q, offset=0, limit=100):
         for t in c.execute(f"SELECT image_id, name FROM image_tags JOIN tags ON tags.id = tag_id "
                            f"WHERE image_id IN ({','.join('?' * len(ids))}) ORDER BY name", ids):
             tags.setdefault(t["image_id"], []).append(t["name"])
-    return {"total": total, "offset": offset, "items": [image_row(r, tags.get(r["id"], [])) for r in rows]}
+    civ = civitai_marks(index, ids)
+    return {"total": total, "offset": offset,
+            "items": [image_row(r, tags.get(r["id"], []), civ.get(r["id"])) for r in rows]}
+
+
+# ---- Civitai marks ---------------------------------------------------------------------------------------------
+CIVITAI_COLS = ("post_id", "url", "uuid", "civitai_image_id", "published", "published_at", "nsfw_level", "posted",
+                "post_nsfw", "tools", "tagged", "ingestion")
+
+
+def civitai_marks(index, ids):
+    """{gallery id: {"state": 1 (its posts are drafts) | 2 (in a published post), "nsfw": the rating (0 — unknown),
+    "post": True when it is the rating of a whole post, not of the picture}}."""
+    out = {}
+    if not ids:
+        return out
+    for r in index.db().execute(f"SELECT image_id, published, nsfw_level, post_nsfw FROM civitai "
+                                f"WHERE image_id IN ({','.join('?' * len(ids))}) ORDER BY posted", list(ids)):
+        m = out.setdefault(r["image_id"], {"state": 1, "nsfw": 0, "post": False})
+        if r["published"]:
+            m["state"] = 2
+        own = int(r["nsfw_level"] or 0)
+        if own:                                   # the picture's own rating wins over the rating of a post
+            m["nsfw"], m["post"] = own, False
+        elif r["post_nsfw"] and (m["post"] or not m["nsfw"]):
+            m["nsfw"], m["post"] = max(m["nsfw"], int(r["post_nsfw"])), True
+    return out
+
+
+def civitai_mark(index, image_id):
+    return civitai_marks(index, [image_id]).get(image_id, {"state": 0, "nsfw": 0, "post": False})
+
+
+def civitai_post_ids(index, image_id):
+    return [r[0] for r in index.db().execute("SELECT post_id FROM civitai WHERE image_id = ?", (image_id,))]
+
+
+def civitai_update_post(index, post_id, published, published_at=None, post_nsfw=None):
+    c = index.db()
+    with index.lock:
+        c.execute("UPDATE civitai SET published = ?, published_at = COALESCE(?, published_at), "
+                  "post_nsfw = COALESCE(?, post_nsfw) WHERE post_id = ?",
+                  (1 if published else 0, published_at, post_nsfw or None, post_id))
+        c.commit()
+
+
+def civitai_set_images(index, post_id, images):
+    """images: [(uuid, Civitai image id, rating)] of a published post, matched to ours by the uuid of the upload."""
+    c = index.db()
+    with index.lock:
+        for uid, cid, level in images:
+            c.execute("UPDATE civitai SET civitai_image_id = ?, nsfw_level = COALESCE(?, nsfw_level) "
+                      "WHERE post_id = ? AND uuid = ?", (cid, str(level) if level else None, post_id, uid))
+        c.commit()
+
+
+def civitai_add(index, post_id, url, images, published, tools=None):
+    """images: [(gallery id, uuid, Civitai image id or None)] of a post just made; tools: {"tools": [ids],
+    "techniques": [ids]} to set on them."""
+    c = index.db()
+    want = json.dumps(tools) if tools and (tools.get("tools") or tools.get("techniques")) else None
+    with index.lock:
+        for iid, uid, cid in images:
+            c.execute("INSERT OR REPLACE INTO civitai(image_id, post_id, url, uuid, civitai_image_id, published, posted, "
+                      "tools, tagged, ingestion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                      (iid, post_id, url, uid, cid, 1 if published else 0, time.time(), want, 0 if want else 1,
+                       "Pending" if cid else None))
+        c.commit()
+
+
+def civitai_forget_post(index, post_id):
+    """A post deleted on Civitai: its rows go; -> the gallery ids that were in it (their marks change)."""
+    c = index.db()
+    ids = [r[0] for r in c.execute("SELECT image_id FROM civitai WHERE post_id = ?", (post_id,))]
+    with index.lock:
+        c.execute("DELETE FROM civitai WHERE post_id = ?", (post_id,))
+        c.commit()
+    return ids
+
+
+def civitai_untagged(index, post_id):
+    """[(Civitai image id, {"tools", "techniques"})] of a post whose Tools and Techniques are still to be set."""
+    return [(r[0], json.loads(r[1])) for r in index.db().execute(
+        "SELECT civitai_image_id, tools FROM civitai WHERE post_id = ? AND tagged <= 0 AND tools IS NOT NULL "
+        "AND civitai_image_id IS NOT NULL", (post_id,))]
+
+
+def civitai_tagged(index, post_id, civitai_image_id, ok=True):
+    """tagged: 1 — set; -1 — the last try failed (tried again at the next check; the posts window says so)."""
+    c = index.db()
+    with index.lock:
+        c.execute("UPDATE civitai SET tagged = ? WHERE post_id = ? AND civitai_image_id = ?",
+                  (1 if ok else -1, post_id, civitai_image_id))
+        c.commit()
+
+
+def civitai_posts(index, image_id):
+    """The posts of a picture; count — how many gallery pictures the post has, pending — some are still being checked."""
+    return [dict(r) for r in index.db().execute(
+        "SELECT c.*, (SELECT COUNT(*) FROM civitai x WHERE x.post_id = c.post_id) AS count, "
+        "(SELECT COUNT(*) FROM civitai x WHERE x.post_id = c.post_id AND x.ingestion = 'Pending') AS pending "
+        "FROM civitai c WHERE c.image_id = ? ORDER BY c.posted DESC", (image_id,))]
+
+
+def civitai_post_rows(index, post_id):
+    return [dict(r) for r in index.db().execute("SELECT * FROM civitai WHERE post_id = ?", (post_id,))]
+
+
+def civitai_image_state(index, post_id, cid, nsfw, ingestion):
+    c = index.db()
+    with index.lock:
+        c.execute("UPDATE civitai SET nsfw_level = COALESCE(?, nsfw_level), ingestion = ? "
+                  "WHERE post_id = ? AND civitai_image_id = ?", (str(nsfw) if nsfw else None, ingestion, post_id, cid))
+        c.commit()
+
+
+def civitai_forget_image(index, post_id, cid):
+    """A picture deleted on Civitai: its row goes; -> the gallery ids it was."""
+    c = index.db()
+    ids = [r[0] for r in c.execute("SELECT image_id FROM civitai WHERE post_id = ? AND civitai_image_id = ?",
+                                   (post_id, cid))]
+    with index.lock:
+        c.execute("DELETE FROM civitai WHERE post_id = ? AND civitai_image_id = ?", (post_id, cid))
+        c.commit()
+    return ids
 
 
 def facets(index, q):
@@ -534,11 +684,13 @@ def delete_files(index, ids, permanent=False):
             errors.append([r["name"], str(e)])
             continue
         tags = [t[0] for t in c.execute("SELECT name FROM tags JOIN image_tags ON tag_id = id WHERE image_id = ?", (i,))]
+        civ = [{k: p[k] for k in CIVITAI_COLS} for p in civitai_posts(index, i)]
         with index.lock:
-            if (tags or r["rating"]) and not permanent:
-                c.execute("INSERT OR REPLACE INTO trash VALUES (?, ?, ?, ?)",
-                          (r["path"], r["rating"], json.dumps(tags, ensure_ascii=False), time.time()))
-            c.execute("DELETE FROM images WHERE id = ?", (i,))
+            if (tags or r["rating"] or civ) and not permanent:
+                c.execute("INSERT OR REPLACE INTO trash(path, rating, tags, deleted, civitai) VALUES (?, ?, ?, ?, ?)",
+                          (r["path"], r["rating"], json.dumps(tags, ensure_ascii=False), time.time(),
+                           json.dumps(civ, ensure_ascii=False) if civ else None))
+            c.execute("DELETE FROM images WHERE id = ?", (i,))      # its Civitai rows go too (t_ad_civitai)
             c.commit()
         done.append(i)
     return done, errors

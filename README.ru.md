@@ -39,8 +39,8 @@ Rigstools делает всю работу в одном месте: показ�
 - **comfy-cli:** `comfy node install comfyui-rigstools`
 - **Вручную:** `git clone https://github.com/ScrudgMcDack/ComfyUI-Rigstools` в папку `ComfyUI/custom_nodes/`.
 
-После установки перезапустите ComfyUI. Единственный дополнительный Python-пакет — `send2trash` (удаление в корзину в
-галерее); ComfyUI-Manager и comfy-cli ставят его сами, при ручной установке выполните `pip install -r requirements.txt`.
+После установки перезапустите ComfyUI. Дополнительные Python-пакеты — `send2trash` (удаление в корзину в
+галерее) и `pyoxipng` (сжатие больших PNG без потерь перед отправкой на Civitai); ComfyUI-Manager и comfy-cli ставят их сами, при ручной установке выполните `pip install -r requirements.txt`.
 
 ## PicoTeka — галерея
 PicoTeka — быстрая и простая галерея для организации ваших генераций. Открывается своей кнопкой (четыре цветных
